@@ -7,16 +7,35 @@ public class PlayerStatus
 public class PlayerController : ManagerBase
 {
     private PlayerMovement playerMovement;
-    private PlayerInputHandler playerInputHandler;
+    private IInputHandler inputHandler;    
     private PlayerAnims playerAnims;
     private PlayerStatus playerStatus = new PlayerStatus();
+    private PlayerAttack playerAttack;
+
+    [SerializeField]
+    Transform targetTrans;
+    [SerializeField]
+    bool isTargetting = false;
+
+    ClickReturn inputReturn;
     private void Awake()
     {
-        TryGetComponent<PlayerMovement>(out playerMovement);
-        TryGetComponent<PlayerInputHandler>(out  playerInputHandler);
+        TryGetComponent<PlayerMovement>(out playerMovement);        
         TryGetComponent<PlayerAnims>(out playerAnims);
-
+        TryGetComponent<PlayerAttack>(out playerAttack);
         playerMovement.moveAnims += playerAnims.MoveAnims;
+        playerMovement.runAnims += playerAnims.RunAnims;
+        playerAttack.OnStopMove += playerMovement.StopMove;
+    }
+
+    private void PlayerMovement_runAnims(bool obj)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void CurrentInputHandler(IInputHandler curHandler)
+    {
+        inputHandler = curHandler;
     }
 
     public override void StartGame()
@@ -29,15 +48,30 @@ public class PlayerController : ManagerBase
     public override void CustomUpdate()
     {
         base.CustomUpdate();
-        if(Input.GetMouseButtonDown(1))
+
+        inputReturn = inputHandler.GetInputClick();
+        if (inputReturn.pos != Vector3.zero)
         {
-            Vector3 destination = playerInputHandler.GetInputMousePosition();
-            if (destination != Vector3.zero)
-            {
-                playerMovement.SetDestination(destination);
-            }
+            playerMovement.ChangeMoveSpeed(2f);
+            playerMovement.SetDestination(inputReturn.pos);
+            targetTrans = null;
+            isTargetting = false;
+        }        
+        if (inputReturn.targetTrans != null)
+        {
+            targetTrans = inputReturn.targetTrans;
+            Debug.Log($"{targetTrans.position} , {targetTrans.name}");            
+            isTargetting = true;
         }
+        if(isTargetting && targetTrans !=null)
+        {
+            playerMovement.SetDestination(targetTrans.position);
+            playerMovement.ChangeMoveSpeed(5f);
+        }      
+
         playerMovement.MovingCheck();
+        playerMovement.TargetMoving(isTargetting);
+      
     }
 
     public override void StopGame()

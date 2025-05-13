@@ -6,10 +6,10 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 destination;
-
     private NavMeshAgent agent;
 
     public event Action<float> moveAnims;
+    public event Action<bool> runAnims;
 
     private void Awake()
     {
@@ -27,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {        
         SetEnable(true);        
         agent.speed = newSpeed;
+        agent.angularSpeed = 999f;
     }
 
     public void StopMove()
@@ -57,4 +58,8 @@ public class PlayerMovement : MonoBehaviour
         moveAnims?.Invoke(agent.velocity.sqrMagnitude);
     }
 
+    public void TargetMoving(bool isOn)
+    {
+        runAnims?.Invoke(isOn);
+    }
 }

@@ -1,16 +1,27 @@
+using System;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour
+public class PlayerAttack : MonoBehaviour, IAttack
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public event Action OnStopMove;
+    
+
+    public void Attack()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetEnable()
     {
-        
+        throw new System.NotImplementedException();
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Enemy"))
+        {
+            Debug.Log("Àû ¹ß°ß");
+        }
+    }
+
 }
