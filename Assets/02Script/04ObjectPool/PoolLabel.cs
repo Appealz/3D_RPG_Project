@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class PoolLabel : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected ObjectPool myPool;
+
+    public void Create(ObjectPool newPool)
     {
-        
+        myPool = newPool;
+        gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ReturnPool()
     {
-        
+        myPool.PushObj(this);
     }
 }

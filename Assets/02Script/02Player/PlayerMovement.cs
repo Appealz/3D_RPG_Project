@@ -29,6 +29,10 @@ public class PlayerMovement : MonoBehaviour
         agent.speed = newSpeed;
         agent.angularSpeed = 999f;
     }
+    public void SetEnable(bool newEnable)
+    {
+        agent.enabled = newEnable;
+    }
 
     public void StartMove()
     {
@@ -45,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         if (agent.enabled)
         {
             agent.SetDestination(dest);
-        }        
+        }
     }
 
     public void ChangeMoveSpeed(float newSpeed)
@@ -53,10 +57,7 @@ public class PlayerMovement : MonoBehaviour
         agent.speed = newSpeed;
     }
 
-    public void SetEnable(bool newEnable)
-    {
-        agent.enabled = newEnable;
-    }
+
 
     public void MovingCheck()
     {

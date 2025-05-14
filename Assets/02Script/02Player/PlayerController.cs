@@ -17,8 +17,6 @@ public class PlayerController : ManagerBase
     [SerializeField]
     bool isTargetting = false;
     bool isAttacking = false;
-    bool isMoving = false;
-
     ClickReturn inputReturn;
     private void Awake()
     {
@@ -29,11 +27,6 @@ public class PlayerController : ManagerBase
         playerMovement.runAnims += playerAnims.RunAnims;
         playerAttack.OnStopMove += playerMovement.StopMove;
         playerAttack.OnAttackAnims += playerAnims.AttackAnims;
-    }
-
-    private void PlayerMovement_runAnims(bool obj)
-    {
-        throw new System.NotImplementedException();
     }
 
     public void CurrentInputHandler(IInputHandler curHandler)
@@ -53,41 +46,59 @@ public class PlayerController : ManagerBase
         base.CustomUpdate();
 
         inputReturn = inputHandler.GetInputClick();
+
+        Moving(inputReturn);        
+
+        AttackState();
+    }
+    
+    private void Moving(ClickReturn inputReturn)
+    {
         if (inputReturn.pos != Vector3.zero)
         {
             playerMovement.ChangeMoveSpeed(2f);
             playerMovement.SetDestination(inputReturn.pos);
             targetTrans = null;
-            isTargetting = false;
-        }        
+            isTargetting = false;            
+        }
+
         if (inputReturn.targetTrans != null)
         {
-            targetTrans = inputReturn.targetTrans;            
+            targetTrans = inputReturn.targetTrans;
             isTargetting = true;
         }
-        if(isTargetting && targetTrans !=null)
+
+        if (isTargetting && targetTrans != null)
         {
             playerMovement.SetDestination(targetTrans.position);
             playerMovement.ChangeMoveSpeed(5f);
-        }      
-
-        playerMovement.MovingCheck();
+        }
         playerMovement.TargetMoving(isTargetting);
+        playerMovement.MovingCheck();
+    }
 
-        if(isTargetting && (targetTrans.position - transform.position).sqrMagnitude < 25f)
+
+    private void AttackState()
+    {
+        if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude < 25f)
         {
-            playerAttack.SetEnable(true);
+            isAttacking = true;
+            playerAttack.SetEnable(isAttacking);
             playerAttack.Attack(targetTrans);
         }
-        else if(isTargetting && (targetTrans.position - transform.position).sqrMagnitude >= 25f)
+        else if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude >= 25f)
         {
-            playerMovement.StartMove();
-            playerMovement.SetDestination(targetTrans.position);
-            playerMovement.ChangeMoveSpeed(5f);
+            isAttacking = false;
+            playerAttack.SetEnable(isAttacking);
+            if(!isAttacking)
+            {
+                playerMovement.StartMove();
+            }
         }
-        else if(!isTargetting)
+        else if (!isTargetting)
         {
             playerMovement.StartMove();
+            playerAttack.SetEnable(false);
         }
     }
 
