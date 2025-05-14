@@ -6,6 +6,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
 {
     public event Action OnStopMove;
     public event Action OnAttackAnims;
+    public event Action OnStartMove;
 
     private bool isAttack;
     private bool isAttacking;
@@ -13,20 +14,35 @@ public class PlayerAttack : MonoBehaviour, IAttack
     GameObject obj;
 
     Transform firePoint;
+    Transform target;
 
-    private float attackRate = 1f;
+    [SerializeField]
+    private float attackRate;
 
     private void Awake()
     {
         firePoint = FindObjectTransform.FindChildTransform(transform, "FirePoint");
+        attackRate = 1f;
     }
 
-    public void Attack(Transform targetTrans)
-    {   
-        if(isAttack && !isAttacking)
+    public void TargetSetting(Transform targetTrans)
+    {
+        target = targetTrans;
+    }
+
+    public void AttackEvent()
+    {
+        if (!isAttacking && isAttack)
         {
-            StartCoroutine(AttackCoroutine(targetTrans));
+            isAttacking = true;
+            OnStopMove?.Invoke();            
+            OnAttackAnims?.Invoke();
         }
+    }
+
+    public void Attack()
+    {
+        StartCoroutine(AttackCoroutine());                           
     }
 
     public void SetEnable(bool newEnable)
@@ -34,20 +50,19 @@ public class PlayerAttack : MonoBehaviour, IAttack
         isAttack = newEnable;
     }
 
-    IEnumerator AttackCoroutine(Transform targetTrans)
+    IEnumerator AttackCoroutine()
     {
-        isAttacking = true;
-        OnStopMove?.Invoke();
-        OnAttackAnims?.Invoke();
+        //OnAttackAnims?.Invoke();
         obj = ObjectPoolManager.Instance.pool.PopObj();
         obj.transform.position = firePoint.position;
         if (obj.TryGetComponent<Projectile>(out Projectile proj))
         {
-            proj.TargetSetting(targetTrans);
+            proj.TargetSetting(target);
             proj.SetEnable(true);
         }
         //Debug.Log($"АјАн : {targetTrans.name}, {targetTrans}");
         yield return new WaitForSeconds(attackRate);
         isAttacking = false;
+        OnStartMove?.Invoke();
     }
 }

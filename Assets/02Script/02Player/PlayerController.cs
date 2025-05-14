@@ -26,7 +26,17 @@ public class PlayerController : ManagerBase
         playerMovement.moveAnims += playerAnims.MoveAnims;
         playerMovement.runAnims += playerAnims.RunAnims;
         playerAttack.OnStopMove += playerMovement.StopMove;
+        playerAttack.OnStartMove += playerMovement.StartMove;
         playerAttack.OnAttackAnims += playerAnims.AttackAnims;
+    }
+
+    private void OnDisable()
+    {
+        playerMovement.moveAnims -= playerAnims.MoveAnims;
+        playerMovement.runAnims -= playerAnims.RunAnims;
+        playerAttack.OnStopMove -= playerMovement.StopMove;
+        playerAttack.OnStartMove -= playerMovement.StartMove;
+        playerAttack.OnAttackAnims -= playerAnims.AttackAnims;
     }
 
     public void CurrentInputHandler(IInputHandler curHandler)
@@ -47,7 +57,7 @@ public class PlayerController : ManagerBase
 
         inputReturn = inputHandler.GetInputClick();
 
-        Moving(inputReturn);        
+        Moving(inputReturn);
 
         AttackState();
     }
@@ -73,33 +83,42 @@ public class PlayerController : ManagerBase
             playerMovement.SetDestination(targetTrans.position);
             playerMovement.ChangeMoveSpeed(5f);
         }
-        playerMovement.TargetMoving(isTargetting);
-        playerMovement.MovingCheck();
+        playerMovement.RunAnims(isTargetting);
+        playerMovement.WalkAnims();
     }
-
 
     private void AttackState()
     {
-        if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude < 25f)
+        if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude < 50f)
         {
             isAttacking = true;
             playerAttack.SetEnable(isAttacking);
-            playerAttack.Attack(targetTrans);
+            RotateTowardsTarget(targetTrans);
+            playerAttack.TargetSetting(targetTrans);
+            playerAttack.AttackEvent();
         }
-        else if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude >= 25f)
+        else if (isTargetting && (targetTrans.position - transform.position).sqrMagnitude >= 50f)
         {
             isAttacking = false;
             playerAttack.SetEnable(isAttacking);
-            if(!isAttacking)
-            {
-                playerMovement.StartMove();
-            }
         }
         else if (!isTargetting)
         {
             playerMovement.StartMove();
             playerAttack.SetEnable(false);
         }
+    }
+    void RotateTowardsTarget(Transform target)
+    {
+        Vector3 direction = target.position - transform.position;
+        direction.y = 0f; // Y축 고정 (수평 회전만 원할 때)
+
+        if (direction == Vector3.zero) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        float rotationSpeed = 180f; // 회전 속도 (조절 가능)
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,rotationSpeed * Time.deltaTime);
     }
 
     public override void StopGame()

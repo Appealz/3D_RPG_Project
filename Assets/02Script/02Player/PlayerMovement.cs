@@ -59,12 +59,12 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    public void MovingCheck()
+    public void WalkAnims()
     {
         moveAnims?.Invoke(agent.velocity.sqrMagnitude);
     }
 
-    public void TargetMoving(bool isOn)
+    public void RunAnims(bool isOn)
     {
         runAnims?.Invoke(isOn);
     }

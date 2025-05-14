@@ -13,7 +13,7 @@ public class MoveTest : MonoBehaviour
     {
         TryGetComponent<NavMeshAgent>(out agent);
         agent.enabled = true;
-        agent.speed = 1.0f;
+        agent.speed = 3.0f;
         randomPosX = Random.Range(60f, 120f);
         randomPosZ = Random.Range(20f, 30f);
         destPos = new Vector3(randomPosX, 0.6f, randomPosZ);

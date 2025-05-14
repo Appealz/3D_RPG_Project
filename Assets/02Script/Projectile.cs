@@ -22,8 +22,9 @@ public class Projectile : PoolLabel
     {        
         if(isMove)
         {
+            moveDir = (target.position - transform.position).normalized;
             Move(moveDir);
-        }        
+        }
     }
 
     public void TargetSetting(Transform targetTrans)
@@ -44,7 +45,7 @@ public class Projectile : PoolLabel
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Enemy"))
+        if(other.CompareTag("Enemy") && other.gameObject == target.gameObject)
         {
             Debug.Log(other.name);
             ReturnPool();
