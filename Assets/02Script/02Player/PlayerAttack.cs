@@ -4,24 +4,27 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour, IAttack
 {
     public event Action OnStopMove;
+    public event Action OnAttackAnims;
+
+    private bool isAttack;
+
     
 
-    public void Attack()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void SetEnable()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Enemy"))
+    public void Attack(Transform targetTrans)
+    {   
+        if(isAttack)
         {
-            Debug.Log("적 발견");
+            OnStopMove?.Invoke();
+            OnAttackAnims?.Invoke();
+            Debug.Log($"공격 : {targetTrans.name}, {targetTrans}");
         }
     }
+
+    public void SetEnable(bool newEnable)
+    {
+        isAttack = newEnable;
+    }
+
+
 
 }

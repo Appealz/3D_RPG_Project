@@ -16,6 +16,8 @@ public class PlayerController : ManagerBase
     Transform targetTrans;
     [SerializeField]
     bool isTargetting = false;
+    bool isAttacking = false;
+    bool isMoving = false;
 
     ClickReturn inputReturn;
     private void Awake()
@@ -26,6 +28,7 @@ public class PlayerController : ManagerBase
         playerMovement.moveAnims += playerAnims.MoveAnims;
         playerMovement.runAnims += playerAnims.RunAnims;
         playerAttack.OnStopMove += playerMovement.StopMove;
+        playerAttack.OnAttackAnims += playerAnims.AttackAnims;
     }
 
     private void PlayerMovement_runAnims(bool obj)
@@ -59,8 +62,7 @@ public class PlayerController : ManagerBase
         }        
         if (inputReturn.targetTrans != null)
         {
-            targetTrans = inputReturn.targetTrans;
-            Debug.Log($"{targetTrans.position} , {targetTrans.name}");            
+            targetTrans = inputReturn.targetTrans;            
             isTargetting = true;
         }
         if(isTargetting && targetTrans !=null)
@@ -71,7 +73,22 @@ public class PlayerController : ManagerBase
 
         playerMovement.MovingCheck();
         playerMovement.TargetMoving(isTargetting);
-      
+
+        if(isTargetting && (targetTrans.position - transform.position).sqrMagnitude < 25f)
+        {
+            playerAttack.SetEnable(true);
+            playerAttack.Attack(targetTrans);
+        }
+        else if(isTargetting && (targetTrans.position - transform.position).sqrMagnitude >= 25f)
+        {
+            playerMovement.StartMove();
+            playerMovement.SetDestination(targetTrans.position);
+            playerMovement.ChangeMoveSpeed(5f);
+        }
+        else if(!isTargetting)
+        {
+            playerMovement.StartMove();
+        }
     }
 
     public override void StopGame()

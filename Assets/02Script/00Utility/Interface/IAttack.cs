@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IAttack
 {
-    void SetEnable();
-    void Attack();
+    void SetEnable(bool newEnable);
+    void Attack(Transform targetTrans);
 
 }

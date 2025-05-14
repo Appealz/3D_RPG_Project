@@ -14,8 +14,8 @@ public class MoveTest : MonoBehaviour
         TryGetComponent<NavMeshAgent>(out agent);
         agent.enabled = true;
         agent.speed = 1.0f;
-        randomPosX = Random.Range(60f, 70f);
-        randomPosZ = Random.Range(20f, 23f);
+        randomPosX = Random.Range(60f, 120f);
+        randomPosZ = Random.Range(20f, 30f);
         destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
         SetDest(destPos);
     }
@@ -24,8 +24,8 @@ public class MoveTest : MonoBehaviour
     {
         if(agent.velocity.sqrMagnitude <= 0)
         {
-            randomPosX = Random.Range(60f, 70f);
-            randomPosZ = Random.Range(20f, 23f);
+            randomPosX = Random.Range(60f, 120f);
+            randomPosZ = Random.Range(20f, 30f);
             destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
             SetDest(destPos);
         }

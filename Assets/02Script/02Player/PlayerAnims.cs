@@ -6,6 +6,7 @@ public class PlayerAnims : MonoBehaviour
 
     private int isMove;
     private int isRun;
+    private int isAttack;
 
 
     private void Awake()
@@ -13,6 +14,7 @@ public class PlayerAnims : MonoBehaviour
         TryGetComponent<Animator>(out anims);
         isMove = Animator.StringToHash("isMove");
         isRun = Animator.StringToHash("isTargetMove");
+        isAttack = Animator.StringToHash("isAttack");
     }
 
     public void MoveAnims(float newSpeed)
@@ -23,5 +25,10 @@ public class PlayerAnims : MonoBehaviour
     public void RunAnims(bool onAnims)
     {
         anims.SetBool(isRun, onAnims);
+    }
+
+    public void AttackAnims()
+    {
+        anims.SetTrigger(isAttack);
     }
 }

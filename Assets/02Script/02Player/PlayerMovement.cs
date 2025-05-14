@@ -30,6 +30,11 @@ public class PlayerMovement : MonoBehaviour
         agent.angularSpeed = 999f;
     }
 
+    public void StartMove()
+    {
+        SetEnable(true);
+    }
+
     public void StopMove()
     {
         SetEnable(false);
