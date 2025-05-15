@@ -14,6 +14,7 @@ public class PlayerController : ManagerBase
 
     [SerializeField]
     Transform targetTrans;
+    Vector3 movePos;
     [SerializeField]
     bool isTargetting = false;
     bool isAttacking = false;
@@ -56,18 +57,17 @@ public class PlayerController : ManagerBase
         base.CustomUpdate();
 
         inputReturn = inputHandler.GetInputClick();
-
-        Moving(inputReturn);
-
         AttackState();
+        Moving(inputReturn);
     }
     
     private void Moving(ClickReturn inputReturn)
     {
         if (inputReturn.pos != Vector3.zero)
         {
+            movePos = inputReturn.pos;
             playerMovement.ChangeMoveSpeed(2f);
-            playerMovement.SetDestination(inputReturn.pos);
+            playerMovement.Move(movePos);
             targetTrans = null;
             isTargetting = false;            
         }
@@ -80,8 +80,13 @@ public class PlayerController : ManagerBase
 
         if (isTargetting && targetTrans != null)
         {
-            playerMovement.SetDestination(targetTrans.position);
+            playerMovement.Move(targetTrans.position);
             playerMovement.ChangeMoveSpeed(5f);
+        }
+        if (!isTargetting)
+        {            
+            playerMovement.StartMove();
+            playerMovement.Move(movePos);
         }
         playerMovement.RunAnims(isTargetting);
         playerMovement.WalkAnims();
@@ -103,10 +108,11 @@ public class PlayerController : ManagerBase
             playerAttack.SetEnable(isAttacking);
         }
         else if (!isTargetting)
-        {
-            playerMovement.StartMove();
+        {            
+            playerMovement.StartMove();            
             playerAttack.SetEnable(false);
         }
+
     }
     void RotateTowardsTarget(Transform target)
     {

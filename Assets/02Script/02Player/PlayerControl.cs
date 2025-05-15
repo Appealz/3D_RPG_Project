@@ -14,7 +14,7 @@ public class PlayerControl : ManagerBase
     public override void CustomUpdate()
     {
         base.CustomUpdate();
-        playerState.Handle_UpdateState();
+        //playerState.Handle_UpdateState();
       
     }
 

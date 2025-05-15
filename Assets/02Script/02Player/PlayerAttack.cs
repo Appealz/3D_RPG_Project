@@ -53,7 +53,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
     IEnumerator AttackCoroutine()
     {
         //OnAttackAnims?.Invoke();
-        obj = ObjectPoolManager.Instance.pool.PopObj();
+        obj = ObjectPoolManager.Instance.pool[0].PopObj();
         obj.transform.position = firePoint.position;
         if (obj.TryGetComponent<Projectile>(out Projectile proj))
         {
@@ -61,7 +61,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
             proj.SetEnable(true);
         }
         //Debug.Log($"АјАн : {targetTrans.name}, {targetTrans}");
-        yield return new WaitForSeconds(attackRate);
+        yield return new WaitForSeconds(1f/attackRate);
         isAttacking = false;
         OnStartMove?.Invoke();
     }

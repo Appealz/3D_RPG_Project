@@ -19,6 +19,8 @@ public class PCInputManager : MonoBehaviour, IInputHandler
             {
                 clickReturn.pos = hit.point;
                 clickReturn.targetTrans = null;
+                GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
+                obj.transform.position = hit.point;
             }
 
         }

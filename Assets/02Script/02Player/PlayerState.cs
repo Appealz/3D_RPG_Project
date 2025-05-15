@@ -1,34 +1,80 @@
 using System;
 using UnityEngine;
 
+public enum StateType
+{
+    Idle,
+    Move,
+    Attack,
+    Chase,
+}
+
 public class PlayerState : MonoBehaviour
 {
-    IState curState;
-    IdleState idleState = new IdleState();
+    //IState curState;
+    StateType curStateType;
+    public static Action OnIdleEvent;
+    public static Action OnMoveEvent;
+    public static Action OnAttackEvent;
+    public static Action OnChaseEvent;
 
     private void Awake()
     {
-        InitState(idleState);
+        
     }
 
-    public void InitState(IState state)
+    public void InitState()
     {
-        curState = state;
-        state.EnterState();
+        curStateType = StateType.Idle;
     }
 
-    public void ChangeState(IState state)
+    public void ChangeState(StateType newState)
     {
-        state.EndState();
-        curState = state;
-        state.EnterState();
+        curStateType = newState;
     }
 
-    public void Handle_UpdateState()
+    public void UpdateState()
     {
-        curState.StateUpdate();
-        //OnUpdateState?.Invoke();
+        switch (curStateType)
+        {
+            case StateType.Idle:
+                OnIdleEvent?.Invoke();
+                break;
+            case StateType.Move:
+                OnMoveEvent?.Invoke();
+                break;
+            case StateType.Chase:
+                OnChaseEvent?.Invoke();
+                break;
+            case StateType.Attack:
+                OnAttackEvent?.Invoke();
+                break;
+        }
     }
+
+    //public void InitState(IState state)
+    //{
+    //    curState = state;
+    //    state.EnterState();
+    //}
+
+    //public void ChangeState(IState state)
+    //{
+    //    state.EndState();
+    //    curState = state;
+    //    state.EnterState();
+    //}
+
+    //public void Handle_UpdateState()
+    //{
+    //    curState.StateUpdate();
+    //}
+
+    //public void Move()
+    //{
+
+    //}
+
 
 
 }

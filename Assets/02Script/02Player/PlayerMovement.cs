@@ -21,10 +21,12 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("PlayerMovement.cs - Awake() - agent is not ref");
         }
+
+        PlayerState.OnMoveEvent += () => Move(destination);
     }
 
     public void InitMove(float newSpeed)
-    {        
+    {
         SetEnable(true);        
         agent.speed = newSpeed;
         agent.angularSpeed = 999f;
@@ -41,10 +43,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void StopMove()
     {
-        SetEnable(false);
+        SetEnable(false);        
     }
 
-    public void SetDestination(Vector3 dest)
+    public void Move(Vector3 dest)
     {        
         if (agent.enabled)
         {
@@ -57,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
         agent.speed = newSpeed;
     }
 
-
+    #region _Anims_
 
     public void WalkAnims()
     {
@@ -68,4 +70,5 @@ public class PlayerMovement : MonoBehaviour
     {
         runAnims?.Invoke(isOn);
     }
+    #endregion
 }
