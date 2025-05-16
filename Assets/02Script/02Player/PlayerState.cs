@@ -12,26 +12,12 @@ public enum StateType
 
 public class PlayerState : MonoBehaviour
 {
-    IState curState;
     StateType curStateType;
 
-    Dictionary<StateType, IState> states = new Dictionary<StateType, IState>();
-
-    public static Action OnIdleEvent;
-    public static Action OnMoveEvent;
-    public static Action OnAttackEvent;
-    public static Action OnChaseEvent;
-
-    private void Awake()
-    {
-        
-    }
-
-    public void BindStateTypetoState(StateType stateType, IState state)
-    {
-        states[stateType] = state;
-        state.OnStateChaged += ChangeState;
-    }
+    public event Action OnIdleEvent;
+    public event Action OnMoveEvent;
+    public event Action OnAttackEvent;
+    public event Action OnChaseEvent;
 
     public void InitState()
     {
@@ -41,30 +27,29 @@ public class PlayerState : MonoBehaviour
 
     public void ChangeState(StateType newState)
     {
-        curState.EndState();
-        curStateType = newState;
-        curState = states[curStateType];
-        curState.EnterState();        
+        if(curStateType != newState)
+        {
+            curStateType = newState;
+            Debug.Log($"상태 변환 : {newState}");
+        }        
     }
 
     public void UpdateState()
     {
-        curState?.StateUpdate();
-
-        //switch (curStateType)
-        //{
-        //    case StateType.Idle:
-        //        OnIdleEvent?.Invoke();
-        //        break;
-        //    case StateType.Move:
-        //        OnMoveEvent?.Invoke();
-        //        break;
-        //    case StateType.Chase:
-        //        OnChaseEvent?.Invoke();
-        //        break;
-        //    case StateType.Attack:
-        //        OnAttackEvent?.Invoke();
-        //        break;
-        //}
+        switch (curStateType)
+        {
+            case StateType.Idle:
+                OnIdleEvent?.Invoke();
+                break;
+            case StateType.Move:
+                OnMoveEvent?.Invoke();
+                break;
+            case StateType.Chase:
+                OnChaseEvent?.Invoke();
+                break;
+            case StateType.Attack:
+                OnAttackEvent?.Invoke();
+                break;
+        }
     }
 }

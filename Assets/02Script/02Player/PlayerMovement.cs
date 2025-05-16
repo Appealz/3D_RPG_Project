@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Editor;
@@ -7,12 +9,17 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 destination;
+    [SerializeField]
     private Transform target;
     private NavMeshAgent agent;
+    PlayerStatus playerStatus;
 
-    public event Action<float> moveAnims;
+    public event Action<bool> moveAnims;
     public event Action<bool> runAnims;
 
+    public event Action<StateType> OnChangeState;
+    [SerializeField]
+    private bool OnTarget;
     private void Awake()
     {
         if(!TryGetComponent<Rigidbody>(out rb))
@@ -24,51 +31,93 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("PlayerMovement.cs - Awake() - agent is not ref");
         }
 
-
-        PCInputManager.OnMoveEvent += SetPosition;
+        PCInputManager.OnMouseMoveClick += SetPosition;
+        PCInputManager.OnMouseTargetClick += SetTarget;
+        playerStatus = new PlayerStatus();
     }
 
     public void InitMove(float newSpeed)
     {
+        agent.enabled = true;
         SetEnable(true);        
         agent.speed = newSpeed;
         agent.angularSpeed = 999f;
     }
+
     public void SetEnable(bool newEnable)
     {
-        agent.enabled = newEnable;
+        if (agent.enabled)
+        {
+            agent.isStopped = !newEnable;
+            if(agent.isStopped)
+            {
+                agent.ResetPath();
+                agent.velocity = Vector3.zero;
+            }            
+        }
     }
 
     public void StartMove()
-    {
-        SetEnable(true);
+    {        
+        SetEnable(true);        
+        if(target)
+        {
+            OnTarget = true;
+        }
     }
 
     public void StopMove()
     {
-        SetEnable(false);        
+        SetEnable(false);
+        WalkAnims(false);  
+        RunAnims(false);        
     }
 
-    public void SetTarget(Transform transform)
-    {
-        SetEnable(true);
-        target = transform;
-    }
+
     public void SetPosition(Vector3 vector)
     {        
-        destination = vector;
-        SetEnable(true);
+        OnChangeState?.Invoke(StateType.Move);
+        agent.speed = 2f;
+        StartMove();        
+        target = null;
+        OnTarget = false;
+        destination = vector;        
     }
 
     public void Move()
     {        
         if (agent.enabled)
         {
-            agent.SetDestination(destination);
+            agent.SetDestination(destination);            
+            WalkAnims(true);
+            if(agent.velocity.sqrMagnitude < 0.001f)
+            {
+                WalkAnims(false);
+            }
         }
-        if (agent.velocity.sqrMagnitude <= 0.1f)
+    }
+    public void SetTarget(Transform transform)
+    {
+        SetEnable(true);
+        target = transform;
+        OnTarget = true;
+        agent.speed = 5f;
+        StartMove();
+        OnChangeState?.Invoke(StateType.Chase);
+    }
+
+    public void ChaseMove()
+    {
+        StartMove();
+        if (agent.enabled && target)
         {
-            SetEnable(false);
+            agent.SetDestination(target.position);
+            RunAnims(OnTarget);
+            if ((target.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
+            {
+                StopMove();
+                OnChangeState?.Invoke(StateType.Attack);                
+            }
         }
     }
 
@@ -79,9 +128,9 @@ public class PlayerMovement : MonoBehaviour
 
     #region _Anims_
 
-    public void WalkAnims()
-    {
-        moveAnims?.Invoke(agent.velocity.sqrMagnitude);
+    public void WalkAnims(bool isMoving)
+    {        
+        moveAnims?.Invoke(isMoving);
     }
 
     public void RunAnims(bool isOn)

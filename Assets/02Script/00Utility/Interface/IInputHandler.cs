@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IInputHandler
 {
-    ClickReturn GetInputClick();
+    void GetInputClick();
     void CustomUpdate();
 }
 

@@ -1,16 +1,24 @@
+using System;
 using UnityEngine;
 
-public class ChaseState : MonoBehaviour
+public class ChaseState : MonoBehaviour, IState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public event Action<StateType> OnStateChaged;
+
+    public void EndState()
     {
-        
+        throw new NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void EnterState()
     {
-        
+        throw new NotImplementedException();
     }
+
+    public void StateUpdate()
+    {
+        OnStateChaged?.Invoke(StateType.Idle);
+    }
+
+
 }

@@ -14,11 +14,12 @@ public class GameManager : DontDestroySingleton<GameManager>
     private void Start()
     {
         playerController?.CurrentInputHandler(curInputHandler);
+        playerController?.StartGame();
     }
 
     private void Update()
     {
-        playerController?.CustomUpdate();        
+        playerController?.CustomUpdate();
         curInputHandler?.CustomUpdate();
     }
 

@@ -47,7 +47,7 @@ public class Projectile : PoolLabel
     {
         if(other.CompareTag("Enemy") && other.gameObject == target.gameObject)
         {
-            Debug.Log(other.name);
+            //Debug.Log(other.name);
             ReturnPool();
         }        
     }

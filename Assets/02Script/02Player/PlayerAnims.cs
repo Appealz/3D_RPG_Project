@@ -12,14 +12,14 @@ public class PlayerAnims : MonoBehaviour
     private void Awake()
     {
         TryGetComponent<Animator>(out anims);
-        isMove = Animator.StringToHash("isMove");
+        isMove = Animator.StringToHash("IsMove");
         isRun = Animator.StringToHash("isTargetMove");
         isAttack = Animator.StringToHash("isAttack");
     }
 
-    public void MoveAnims(float newSpeed)
+    public void MoveAnims(bool onAnims)
     {
-        anims.SetFloat(isMove, newSpeed);
+        anims.SetBool(isMove, onAnims);
     }
 
     public void RunAnims(bool onAnims)
