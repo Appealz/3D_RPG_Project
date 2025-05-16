@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 public class IdleState : IState
 {
     PlayerState playerState;
     MoveState moveState;
+
+    public event Action<StateType> OnStateChaged;
+
     public void EndState()
     {
         

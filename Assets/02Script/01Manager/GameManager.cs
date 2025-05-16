@@ -19,6 +19,7 @@ public class GameManager : DontDestroySingleton<GameManager>
     private void Update()
     {
         playerController?.CustomUpdate();        
+        curInputHandler?.CustomUpdate();
     }
 
     public void StopGame()

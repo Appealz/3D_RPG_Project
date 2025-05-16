@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum StateType
@@ -11,8 +12,11 @@ public enum StateType
 
 public class PlayerState : MonoBehaviour
 {
-    //IState curState;
+    IState curState;
     StateType curStateType;
+
+    Dictionary<StateType, IState> states = new Dictionary<StateType, IState>();
+
     public static Action OnIdleEvent;
     public static Action OnMoveEvent;
     public static Action OnAttackEvent;
@@ -23,58 +27,44 @@ public class PlayerState : MonoBehaviour
         
     }
 
+    public void BindStateTypetoState(StateType stateType, IState state)
+    {
+        states[stateType] = state;
+        state.OnStateChaged += ChangeState;
+    }
+
     public void InitState()
     {
         curStateType = StateType.Idle;
+        ChangeState(curStateType);
     }
 
     public void ChangeState(StateType newState)
     {
+        curState.EndState();
         curStateType = newState;
+        curState = states[curStateType];
+        curState.EnterState();        
     }
 
     public void UpdateState()
     {
-        switch (curStateType)
-        {
-            case StateType.Idle:
-                OnIdleEvent?.Invoke();
-                break;
-            case StateType.Move:
-                OnMoveEvent?.Invoke();
-                break;
-            case StateType.Chase:
-                OnChaseEvent?.Invoke();
-                break;
-            case StateType.Attack:
-                OnAttackEvent?.Invoke();
-                break;
-        }
+        curState?.StateUpdate();
+
+        //switch (curStateType)
+        //{
+        //    case StateType.Idle:
+        //        OnIdleEvent?.Invoke();
+        //        break;
+        //    case StateType.Move:
+        //        OnMoveEvent?.Invoke();
+        //        break;
+        //    case StateType.Chase:
+        //        OnChaseEvent?.Invoke();
+        //        break;
+        //    case StateType.Attack:
+        //        OnAttackEvent?.Invoke();
+        //        break;
+        //}
     }
-
-    //public void InitState(IState state)
-    //{
-    //    curState = state;
-    //    state.EnterState();
-    //}
-
-    //public void ChangeState(IState state)
-    //{
-    //    state.EndState();
-    //    curState = state;
-    //    state.EnterState();
-    //}
-
-    //public void Handle_UpdateState()
-    //{
-    //    curState.StateUpdate();
-    //}
-
-    //public void Move()
-    //{
-
-    //}
-
-
-
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 public interface IInputHandler
 {
     ClickReturn GetInputClick();
+    void CustomUpdate();
 }
 
 public struct ClickReturn

@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.Editor;
 
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
     private Vector3 destination;
+    private Transform target;
     private NavMeshAgent agent;
 
     public event Action<float> moveAnims;
@@ -22,7 +24,8 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("PlayerMovement.cs - Awake() - agent is not ref");
         }
 
-        PlayerState.OnMoveEvent += () => Move(destination);
+
+        PCInputManager.OnMoveEvent += SetPosition;
     }
 
     public void InitMove(float newSpeed)
@@ -46,11 +49,26 @@ public class PlayerMovement : MonoBehaviour
         SetEnable(false);        
     }
 
-    public void Move(Vector3 dest)
+    public void SetTarget(Transform transform)
+    {
+        SetEnable(true);
+        target = transform;
+    }
+    public void SetPosition(Vector3 vector)
+    {        
+        destination = vector;
+        SetEnable(true);
+    }
+
+    public void Move()
     {        
         if (agent.enabled)
         {
-            agent.SetDestination(dest);
+            agent.SetDestination(destination);
+        }
+        if (agent.velocity.sqrMagnitude <= 0.1f)
+        {
+            SetEnable(false);
         }
     }
 

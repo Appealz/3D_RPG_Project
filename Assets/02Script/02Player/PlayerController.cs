@@ -55,42 +55,43 @@ public class PlayerController : ManagerBase
     public override void CustomUpdate()
     {
         base.CustomUpdate();
+        playerMovement.Move();
 
-        inputReturn = inputHandler.GetInputClick();
+        //inputReturn = inputHandler.GetInputClick();
         AttackState();
-        Moving(inputReturn);
+        //Moving(inputReturn);
     }
     
-    private void Moving(ClickReturn inputReturn)
-    {
-        if (inputReturn.pos != Vector3.zero)
-        {
-            movePos = inputReturn.pos;
-            playerMovement.ChangeMoveSpeed(2f);
-            playerMovement.Move(movePos);
-            targetTrans = null;
-            isTargetting = false;            
-        }
+    //private void Moving(ClickReturn inputReturn)
+    //{
+    //    if (inputReturn.pos != Vector3.zero)
+    //    {
+    //        movePos = inputReturn.pos;
+    //        playerMovement.ChangeMoveSpeed(2f);
+    //        playerMovement.Move(movePos);
+    //        targetTrans = null;
+    //        isTargetting = false;            
+    //    }
 
-        if (inputReturn.targetTrans != null)
-        {
-            targetTrans = inputReturn.targetTrans;
-            isTargetting = true;
-        }
+    //    if (inputReturn.targetTrans != null)
+    //    {
+    //        targetTrans = inputReturn.targetTrans;
+    //        isTargetting = true;
+    //    }
 
-        if (isTargetting && targetTrans != null)
-        {
-            playerMovement.Move(targetTrans.position);
-            playerMovement.ChangeMoveSpeed(5f);
-        }
-        if (!isTargetting)
-        {            
-            playerMovement.StartMove();
-            playerMovement.Move(movePos);
-        }
-        playerMovement.RunAnims(isTargetting);
-        playerMovement.WalkAnims();
-    }
+    //    if (isTargetting && targetTrans != null)
+    //    {
+    //        playerMovement.Move(targetTrans.position);
+    //        playerMovement.ChangeMoveSpeed(5f);
+    //    }
+    //    if (!isTargetting)
+    //    {            
+    //        playerMovement.StartMove();
+    //        playerMovement.Move(movePos);
+    //    }
+    //    playerMovement.RunAnims(isTargetting);
+    //    playerMovement.WalkAnims();
+    //}
 
     private void AttackState()
     {
