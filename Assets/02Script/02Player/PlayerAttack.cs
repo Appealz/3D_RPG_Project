@@ -3,12 +3,9 @@ using System.Collections;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour, IAttack
-{
-    public event Action OnStopMove;
-    public event Action OnAttackAnims;
-    public event Action OnStartMove;
+{    
+    public event Action OnAttackAnims;    
     public event Action<StateType> OnChangeState;
-
 
     private bool isAttack;
     private bool isAttacking;
@@ -30,8 +27,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
         firePoint = FindObjectTransform.FindChildTransform(transform, "FirePoint");
         attackRate = 1f;
         attackRange = 25f;
-        PCInputManager.OnMouseTargetClick += TargetSetting;
-       
+        PCInputManager.OnMouseTargetClick += TargetSetting;       
     }
 
     public void TargetSetting(Transform targetTrans)

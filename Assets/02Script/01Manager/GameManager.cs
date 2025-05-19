@@ -9,11 +9,12 @@ public class GameManager : DontDestroySingleton<GameManager>
     {
         playerController = GameObject.FindAnyObjectByType<PlayerController>();
         curInputHandler = GameObject.FindAnyObjectByType<PCInputManager>();
+
+        playerController?.CurrentInputHandler(curInputHandler);
     }
 
     private void Start()
     {
-        playerController?.CurrentInputHandler(curInputHandler);
         playerController?.StartGame();
     }
 

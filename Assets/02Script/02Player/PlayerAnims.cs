@@ -8,7 +8,6 @@ public class PlayerAnims : MonoBehaviour
     private int isRun;
     private int isAttack;
 
-
     private void Awake()
     {
         TryGetComponent<Animator>(out anims);
@@ -31,4 +30,6 @@ public class PlayerAnims : MonoBehaviour
     {
         anims.SetTrigger(isAttack);
     }
+
+
 }

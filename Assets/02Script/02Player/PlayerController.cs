@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerStatus
@@ -13,6 +14,7 @@ public class PlayerController : ManagerBase
     private PlayerStatus playerStatus = new PlayerStatus();
     private PlayerAttack playerAttack;
     private PlayerState playerState;
+    private PlayerSkillManager playerSkillManager;
 
     //[SerializeField]
     //Transform targetTrans;
@@ -27,11 +29,14 @@ public class PlayerController : ManagerBase
         TryGetComponent<PlayerAnims>(out playerAnims);
         TryGetComponent<PlayerAttack>(out playerAttack);
         TryGetComponent<PlayerState>(out playerState);
+        TryGetComponent<PlayerSkillManager>(out playerSkillManager);
+    }
 
+    private void OnEnable()
+    {
         playerMovement.moveAnims += playerAnims.MoveAnims;
         playerMovement.runAnims += playerAnims.RunAnims;
-        playerAttack.OnStopMove += playerMovement.StopMove;
-        playerAttack.OnStartMove += playerMovement.StartMove;
+
         playerAttack.OnAttackAnims += playerAnims.AttackAnims;
 
         playerState.OnMoveEvent += playerMovement.Move;
@@ -39,14 +44,16 @@ public class PlayerController : ManagerBase
         playerState.OnAttackEvent += playerAttack.Attack;
         playerMovement.OnChangeState += playerState.ChangeState;
         playerAttack.OnChangeState += playerState.ChangeState;
+
+
+        inputHandler.OnSkillInput += playerSkillManager.UseSkill;
     }
 
     private void OnDisable()
     {
         playerMovement.moveAnims -= playerAnims.MoveAnims;
         playerMovement.runAnims -= playerAnims.RunAnims;
-        playerAttack.OnStopMove -= playerMovement.StopMove;
-        playerAttack.OnStartMove -= playerMovement.StartMove;
+
         playerAttack.OnAttackAnims -= playerAnims.AttackAnims;
 
         playerState.OnMoveEvent -= playerMovement.Move;
@@ -54,6 +61,8 @@ public class PlayerController : ManagerBase
         playerState.OnAttackEvent -= playerAttack.Attack;
         playerMovement.OnChangeState -= playerState.ChangeState;
         playerAttack.OnChangeState -= playerState.ChangeState;
+
+        inputHandler.OnSkillInput -= playerSkillManager.UseSkill;
     }
 
     public void CurrentInputHandler(IInputHandler curHandler)
@@ -67,6 +76,8 @@ public class PlayerController : ManagerBase
         playerStatus.moveSpeed = 2f;
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
+        Debug.Log("인풋매니저 스킬 사용등록");
+
     }
 
     public override void CustomUpdate()
@@ -79,11 +90,16 @@ public class PlayerController : ManagerBase
         //AttackState();        
     }
 
-
     public override void StopGame()
     {
         base.StopGame();
         playerMovement?.StopMove();
+    }
+
+    public void RegistSkill(KeyCode key, ISkill skill)
+    {
+        playerSkillManager.AddSkill(key, skill);
+        inputHandler.BindKeyToSkill(key, skill.myType);
     }
 
 

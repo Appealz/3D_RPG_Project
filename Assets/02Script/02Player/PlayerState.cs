@@ -8,6 +8,10 @@ public enum StateType
     Move,
     Attack,
     Chase,
+    Skill1,
+    Skill2,
+    Skill3,
+    Skill4,
 }
 
 public class PlayerState : MonoBehaviour

@@ -3,8 +3,10 @@ using UnityEngine;
 
 public interface IInputHandler
 {
+    event Action<SkillType> OnSkillInput;
     void GetInputClick();
     void CustomUpdate();
+    void BindKeyToSkill(KeyCode key, SkillType skillType);
 }
 
 public struct ClickReturn
