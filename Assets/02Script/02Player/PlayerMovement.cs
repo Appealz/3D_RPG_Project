@@ -90,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
         {
             agent.SetDestination(destination);            
             WalkAnims(true);
+            RunAnims(false);
             if(agent.velocity.sqrMagnitude < 0.001f)
             {
                 WalkAnims(false);

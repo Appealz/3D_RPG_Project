@@ -5,6 +5,12 @@ public class PlayerStatus
 {
     public float moveSpeed;
     public float attackRagne = 25f;
+    public float maxMp;
+    public float curMp;
+    public float maxHp;
+    public float curHp;
+    public float attackDamage;
+
 }
 public class PlayerController : ManagerBase
 {
@@ -43,10 +49,7 @@ public class PlayerController : ManagerBase
         playerState.OnChaseEvent += playerMovement.ChaseMove;
         playerState.OnAttackEvent += playerAttack.Attack;
         playerMovement.OnChangeState += playerState.ChangeState;
-        playerAttack.OnChangeState += playerState.ChangeState;
-
-
-        inputHandler.OnSkillInput += playerSkillManager.UseSkill;
+        playerAttack.OnChangeState += playerState.ChangeState;        
     }
 
     private void OnDisable()
@@ -68,6 +71,7 @@ public class PlayerController : ManagerBase
     public void CurrentInputHandler(IInputHandler curHandler)
     {
         inputHandler = curHandler;
+        inputHandler.OnSkillInput += playerSkillManager.UseSkill;
     }
 
     public override void StartGame()
@@ -76,18 +80,12 @@ public class PlayerController : ManagerBase
         playerStatus.moveSpeed = 2f;
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
-        Debug.Log("인풋매니저 스킬 사용등록");
-
     }
 
     public override void CustomUpdate()
     {
         base.CustomUpdate();        
-        playerState.UpdateState();
-
-        //inputReturn = inputHandler.GetInputClick();
-        //Moving(inputReturn);
-        //AttackState();        
+        playerState.UpdateState();    
     }
 
     public override void StopGame()

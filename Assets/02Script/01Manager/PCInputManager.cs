@@ -17,16 +17,23 @@ public class PCInputManager : ManagerBase, IInputHandler
     public static event Action<Transform> OnMouseTargetClick;
     public event Action<SkillType> OnSkillInput;
 
+    public static event Action<bool> OnReadyToAttack;
+
     private Dictionary<KeyCode, SkillType> keySkillBindings = new Dictionary<KeyCode, SkillType>();
 
+    private bool isAttackOn;
     public override void CustomUpdate()
     {
         base.CustomUpdate();
+        
+        // 마우스 우클릭
         if (Input.GetMouseButtonDown(1))
         {
             GetInputClick();
+            OnReadyToAttack?.Invoke(false);
         }
 
+        // 스킬 키 입력
         foreach (var binding in keySkillBindings)
         {
             if (Input.GetKeyDown(binding.Key))
@@ -35,6 +42,24 @@ public class PCInputManager : ManagerBase, IInputHandler
                 OnSkillInput?.Invoke(binding.Value);
             }
         }
+
+        // 공격(A)키 입력
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            OnReadyToAttack?.Invoke(true);
+            isAttackOn = true;
+        }
+
+        // 공격키가 입력되어있을때
+        if (isAttackOn)
+        {
+            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+            {
+                GetInputClick();
+                OnReadyToAttack?.Invoke(false);
+            }
+        }
+
     }
 
     public void GetInputClick()
@@ -50,9 +75,11 @@ public class PCInputManager : ManagerBase, IInputHandler
             GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
             obj.transform.position = hit.point;         
             OnMouseMoveClick?.Invoke(hit.point);
-        }        
+            OnReadyToAttack?.Invoke(false);
+        }
+        isAttackOn = false;
     }
-       
+    
 
     public void BindKeyToSkill(KeyCode key, SkillType skillType)
     {

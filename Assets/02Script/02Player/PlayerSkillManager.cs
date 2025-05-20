@@ -9,23 +9,40 @@ public class PlayerSkillManager : MonoBehaviour
 
     Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    PlayerAnims playerAnims;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        TryGetComponent<PlayerAnims>(out playerAnims);
     }
 
     public void AddSkill(KeyCode keyType, ISkill skill)
     {
         skills[skill.myType] = skill;
         Debug.Log($"{skill.myType} 등록");
-        // skill.OnSkillActivated += 
+        skill.SetOwner(gameObject);
+        Debug.Log($"{gameObject} 오너 등록");
+
+        if(skill.myType == SkillType.Q_Skill)
+        {
+            skill.OnSkillActivated += playerAnims.QSkillAnims;
+        }
+
+        if (skill.myType == SkillType.W_Skill)
+        {
+            skill.OnSkillActivated += playerAnims.WSkillAnims;
+        }
+
+        if (skill.myType == SkillType.E_Skill)
+        {
+            skill.OnSkillActivated += playerAnims.ESkillAnims;
+        }
+
+        if (skill.myType == SkillType.R_Skill)
+        {
+            skill.OnSkillActivated += playerAnims.RSkillAnims;
+        }
+
     }
 
     public void UseSkill(SkillType useSkillType)

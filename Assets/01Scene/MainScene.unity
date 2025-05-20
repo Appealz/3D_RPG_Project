@@ -1712,9 +1712,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Qskill: {fileID: 11400000, guid: 4f8e764ff72de8348ab23318a5548cac, type: 2}
-  Wskill: {fileID: 0}
-  Eskill: {fileID: 0}
-  Rskill: {fileID: 0}
+  Wskill: {fileID: 11400000, guid: 86b72f7e17fef4447aac86b1906fc280, type: 2}
+  Eskill: {fileID: 11400000, guid: 46fe16c7b8e434e4aa326581ef08048c, type: 2}
+  Rskill: {fileID: 11400000, guid: 92b9536ea551ca74186096fdf4d687f1, type: 2}
 --- !u!4 &1055272829
 Transform:
   m_ObjectHideFlags: 0
@@ -2854,6 +2854,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2092850441}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1913919515
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1913919517}
+  - component: {fileID: 1913919516}
+  m_Layer: 0
+  m_Name: CursorManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1913919516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913919515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 785659c02f0bd1c4da6269847b83e4ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initCursor: {fileID: 2800000, guid: a9ae0267b06e7b24d90f188a4370cce3, type: 3}
+  attackCursor: {fileID: 2800000, guid: 78bdc1d51cd53a648ac0c56ff5aaf59f, type: 3}
+--- !u!4 &1913919517
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913919515}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 59.17686, y: -2.702654, z: 32.05329}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2037079257
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,6 +3289,10 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8963873752686876975, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 1800
+      objectReference: {fileID: 0}
     - target: {fileID: 9094860961011923210, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_Name
       value: Player
@@ -3335,6 +3385,7 @@ SceneRoots:
   - {fileID: 1055272829}
   - {fileID: 935560480}
   - {fileID: 2092850441}
+  - {fileID: 1913919517}
   - {fileID: 2037079258}
   - {fileID: 172811860}
   - {fileID: 1045005760}

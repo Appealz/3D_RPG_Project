@@ -16,4 +16,5 @@ MonoBehaviour:
   skillType: 2
   damage: 0
   coolTime: 0
-  prefabPath: 
+  mpCost: 0
+  obj: {fileID: 1154143626418177890, guid: f9fbf919788288d4aa4a585ad85041b1, type: 3}
