@@ -1711,10 +1711,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51c794e9c6d325e4d86489a744979382, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Qskill: {fileID: 11400000, guid: 4f8e764ff72de8348ab23318a5548cac, type: 2}
-  Wskill: {fileID: 11400000, guid: 86b72f7e17fef4447aac86b1906fc280, type: 2}
-  Eskill: {fileID: 11400000, guid: 46fe16c7b8e434e4aa326581ef08048c, type: 2}
-  Rskill: {fileID: 11400000, guid: 92b9536ea551ca74186096fdf4d687f1, type: 2}
+  Qskill: {fileID: 11400000, guid: c7323f15a98a794428f21aa8735535dc, type: 2}
+  Wskill: {fileID: 11400000, guid: f7a8b6b02d93298428847581c4a23167, type: 2}
+  Eskill: {fileID: 11400000, guid: de814a5306675854d8fe9def71453c4b, type: 2}
+  Rskill: {fileID: 11400000, guid: 771dd66cafc764645a2518ccc9426eb8, type: 2}
 --- !u!4 &1055272829
 Transform:
   m_ObjectHideFlags: 0

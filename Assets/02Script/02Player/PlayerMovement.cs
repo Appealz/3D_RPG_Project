@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviour
     public event Action<StateType> OnChangeState;
     [SerializeField]
     private bool OnTarget;
+
+    [SerializeField]
+    private float rotateSpeed;
+
     private void Awake()
     {
         if(!TryGetComponent<Rigidbody>(out rb))
@@ -33,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
         PCInputManager.OnMouseMoveClick += SetPosition;
         PCInputManager.OnMouseTargetClick += SetTarget;
-        playerStatus = new PlayerStatus();
+        playerStatus = new PlayerStatus();        
     }
 
     public void InitMove(float newSpeed)
@@ -42,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         SetEnable(true);        
         agent.speed = newSpeed;
         agent.angularSpeed = 999f;
+        agent.updateRotation = false; // 꼭 꺼주기!
+        rotateSpeed = 5f;
     }
 
     public void SetEnable(bool newEnable)
@@ -91,12 +97,17 @@ public class PlayerMovement : MonoBehaviour
             agent.SetDestination(destination);            
             WalkAnims(true);
             RunAnims(false);
-            if(agent.velocity.sqrMagnitude < 0.001f)
+
+            ManualRotate(agent.desiredVelocity);
+
+            if (agent.velocity.sqrMagnitude < 0.001f)
             {
                 WalkAnims(false);
-            }
-        }
+            }            
+        }    
     }
+
+
     public void SetTarget(Transform transform)
     {
         SetEnable(true);
@@ -114,6 +125,8 @@ public class PlayerMovement : MonoBehaviour
         {
             agent.SetDestination(target.position);
             RunAnims(OnTarget);
+
+            ManualRotate(agent.desiredVelocity);
             if ((target.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
                 StopMove();
@@ -121,6 +134,19 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+    private void ManualRotate(Vector3 direction)
+    {
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                Time.deltaTime * rotateSpeed // 이 값이 클수록 빠르고 작을수록 부드러움
+            );
+        }
+    }
+
 
     public void ChangeMoveSpeed(float newSpeed)
     {

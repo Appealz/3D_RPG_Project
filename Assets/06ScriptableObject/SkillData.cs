@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Skill", menuName = "Scriptable Objects/Skill")]
+[CreateAssetMenu(fileName = "SkillData", menuName = "Scriptable Objects/SkillData")]
 public class SkillData : ScriptableObject
 {
     public string skillName;

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef76d54df3bad394aaa36dcbf55328e8, type: 3}
   m_Name: Q_Skill
   m_EditorClassIdentifier: 
-  skillName: QSkill
+  skillName: 
   skillType: 0
-  damage: 10
-  coolTime: 5
-  mpCost: 10
+  damage: 0
+  coolTime: 0
+  mpCost: 0
   obj: {fileID: 5488602477814172820, guid: 68d59a7eb2f946148943a7808feb1114, type: 3}
