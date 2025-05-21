@@ -9,6 +9,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     private bool isAttack;
     private bool isAttacking;
+
     [SerializeField]
     private float attackRange;
 
@@ -20,14 +21,24 @@ public class PlayerAttack : MonoBehaviour, IAttack
     [SerializeField]
     private float attackRate;
 
-
+    private float attackDamage;
 
     private void Awake()
     {
         firePoint = FindObjectTransform.FindChildTransform(transform, "FirePoint");
+        if( firePoint == null )
+        {
+            Debug.Log($"{gameObject.name} : PlayerAttack.cs - Awake() - firePoint is not ref");
+        }
         attackRate = 1f;
         attackRange = 25f;
-        PCInputManager.OnMouseTargetClick += TargetSetting;       
+        attackDamage = 10f;
+        PCInputManager.OnMouseTargetClick += TargetSetting;
+    }
+
+    private void OnDisable()
+    {
+        PCInputManager.OnMouseTargetClick -= TargetSetting;
     }
 
     public void TargetSetting(Transform targetTrans)
@@ -59,12 +70,14 @@ public class PlayerAttack : MonoBehaviour, IAttack
     {   
         obj = ObjectPoolManager.Instance.pool[0].PopObj();
         obj.transform.position = firePoint.position;
-        if (obj.TryGetComponent<Projectile>(out Projectile proj))
-        {
-            proj.TargetSetting(target);
-            proj.SetEnable(true);
-        }
-        
+        //if (obj.TryGetComponent<Projectile>(out Projectile proj))
+        //{
+        //    proj.TargetSetting(target);
+        //    proj.SetOwner(gameObject);
+        //    proj.SetEnable(true);
+        //}
+        Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(target, gameObject, attackDamage, ProjectileType.Normal));
+
         yield return new WaitForSeconds(1f/attackRate);
         isAttacking = false;
         if (target && (target.position - transform.position).sqrMagnitude >= attackRange)

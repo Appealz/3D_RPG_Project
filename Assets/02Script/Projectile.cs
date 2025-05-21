@@ -5,16 +5,27 @@ public class Projectile : PoolLabel
     Rigidbody rb;
     Transform target;
     Vector3 moveDir;
+    GameObject Owner;
+    float damage;
 
     bool isMove;
     private void Awake()
     {
-        TryGetComponent<Rigidbody>(out rb);
+        if(!TryGetComponent<Rigidbody>(out rb))
+        {
+            Debug.Log($"{gameObject.name} : Proejctile.cs - Awake() - rb is not ref");
+        }
         isMove = false;
+    }
+
+    private void OnEnable()
+    {
+        Skill_Event.ProjectileSpawned += SettingInfo;
     }
 
     private void OnDisable()
     {
+        Skill_Event.ProjectileSpawned -= SettingInfo;
         isMove = false;
     }
 
@@ -26,6 +37,22 @@ public class Projectile : PoolLabel
             Move(moveDir);
         }
     }
+
+    public void SettingInfo(ProjectileInfo projInfo)
+    {
+        if(projInfo.myType == ProjectileType.Normal)
+        {            
+            Owner = projInfo.owner;
+            damage = projInfo.damage;
+            TargetSetting(projInfo.target);
+            SetEnable(true);
+        }
+    }
+
+    //public void SetOwner(GameObject myOwner)
+    //{
+    //    Owner = myOwner;
+    //}
 
     public void TargetSetting(Transform targetTrans)
     {
@@ -46,9 +73,9 @@ public class Projectile : PoolLabel
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Enemy") && other.gameObject == target.gameObject)
-        {
-            //Debug.Log(other.name);
+        {            
+            Damage_Event.TakeDamage(new DamageInfo(Owner, target.gameObject, damage));
             ReturnPool();
-        }        
+        }
     }
 }

@@ -21,7 +21,7 @@ public class PlayerSkillManager : MonoBehaviour
         skills[skill.myType] = skill;
         Debug.Log($"{skill.myType} 등록");
         skill.SetOwner(gameObject);
-        Debug.Log($"{gameObject} 오너 등록");
+        Debug.Log($"{gameObject.name} 오너 등록");
 
         if(skill.myType == SkillType.Q_Skill)
         {

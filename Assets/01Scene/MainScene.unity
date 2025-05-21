@@ -2885,6 +2885,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initCursor: {fileID: 2800000, guid: a9ae0267b06e7b24d90f188a4370cce3, type: 3}
   attackCursor: {fileID: 2800000, guid: 78bdc1d51cd53a648ac0c56ff5aaf59f, type: 3}
+  AclickCursor: {fileID: 2800000, guid: 8565063079ea8204eaeb228bc3d8b92d, type: 3}
 --- !u!4 &1913919517
 Transform:
   m_ObjectHideFlags: 0
@@ -3290,8 +3291,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8963873752686876975, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_Acceleration
+      value: 999
+      objectReference: {fileID: 0}
+    - target: {fileID: 8963873752686876975, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_AngularSpeed
-      value: 1800
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9094860961011923210, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_Name

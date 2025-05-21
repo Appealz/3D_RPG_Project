@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float rotateSpeed;
 
+    [SerializeField]
+    private float moveSpeed;
+
     private void Awake()
     {
         if(!TryGetComponent<Rigidbody>(out rb))
@@ -44,10 +47,11 @@ public class PlayerMovement : MonoBehaviour
     {
         agent.enabled = true;
         SetEnable(true);        
-        agent.speed = newSpeed;
-        agent.angularSpeed = 999f;
-        agent.updateRotation = false; // 꼭 꺼주기!
-        rotateSpeed = 5f;
+        moveSpeed = newSpeed;
+        agent.speed = moveSpeed;
+        agent.updateRotation = false;
+        rotateSpeed = 12f;
+        agent.autoBraking = false;
     }
 
     public void SetEnable(bool newEnable)
@@ -76,14 +80,14 @@ public class PlayerMovement : MonoBehaviour
     {
         SetEnable(false);
         WalkAnims(false);  
-        RunAnims(false);        
+        RunAnims(false);
     }
 
 
     public void SetPosition(Vector3 vector)
     {        
         OnChangeState?.Invoke(StateType.Move);
-        agent.speed = 2f;
+        agent.speed = moveSpeed;
         StartMove();        
         target = null;
         OnTarget = false;
@@ -93,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
     public void Move()
     {        
         if (agent.enabled)
-        {
+        {            
             agent.SetDestination(destination);            
             WalkAnims(true);
             RunAnims(false);
@@ -144,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
                 targetRot,
                 Time.deltaTime * rotateSpeed // 이 값이 클수록 빠르고 작을수록 부드러움
             );
+            
         }
     }
 

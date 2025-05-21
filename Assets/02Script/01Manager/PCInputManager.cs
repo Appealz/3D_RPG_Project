@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
+using UnityEngine.UIElements;
 
 public enum SkillType
 {
@@ -18,10 +20,14 @@ public class PCInputManager : ManagerBase, IInputHandler
     public event Action<SkillType> OnSkillInput;
 
     public static event Action<bool> OnReadyToAttack;
+    public static event Action<StateType> OnStop;
 
     private Dictionary<KeyCode, SkillType> keySkillBindings = new Dictionary<KeyCode, SkillType>();
 
     private bool isAttackOn;
+    private bool isQkeyOn;
+
+    private SkillType? currentReadySkill = null;
     public override void CustomUpdate()
     {
         base.CustomUpdate();
@@ -38,16 +44,36 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             if (Input.GetKeyDown(binding.Key))
             {
-                Debug.Log($"{binding.Key}눌림, 스킬 입력");
-                OnSkillInput?.Invoke(binding.Value);
+                Debug.Log($"{binding.Key}눌림, 스킬 입력");                
+                OnReadyToAttack?.Invoke(true);                    
+                currentReadySkill = binding.Value;                
             }
         }
 
+        // 스킬 준비 상태
+        if (Input.GetMouseButtonDown(0) && currentReadySkill.HasValue)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+            {
+                Debug.Log("타겟 추적");                
+                OnReadyToAttack?.Invoke(false);
+                OnSkillInput?.Invoke(currentReadySkill.Value);
+                currentReadySkill = null;
+            }            
+        }
+
         // 공격(A)키 입력
-        if(Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             OnReadyToAttack?.Invoke(true);
             isAttackOn = true;
+        }
+
+        // 정지(S)키 입력
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            OnStop?.Invoke(StateType.Idle);
         }
 
         // 공격키가 입력되어있을때
@@ -66,8 +92,8 @@ public class PCInputManager : ManagerBase, IInputHandler
     {   
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-        {                    
-            Debug.Log("타겟 추적");            
+        {
+            Debug.Log("타겟 추적");
             OnMouseTargetClick?.Invoke(hit.transform);
         }
         else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))

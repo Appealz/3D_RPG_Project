@@ -20,6 +20,11 @@ public class MoveTest : MonoBehaviour
         SetDest(destPos);
     }
 
+    private void OnEnable()
+    {
+        Damage_Event.OnDamageChange += Handle_TakeDamaged;
+    }
+
     private void Update()
     {
         if(agent.velocity.sqrMagnitude <= 0)
@@ -31,10 +36,17 @@ public class MoveTest : MonoBehaviour
         }
     }
 
-
     private void SetDest(Vector3 dest)
     {
         agent.SetDestination(dest);
+    }
+
+    public void Handle_TakeDamaged(DamageInfo damageInfo)
+    {
+        if(damageInfo.defender == gameObject)
+        {
+            Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
+        }
     }
 
     

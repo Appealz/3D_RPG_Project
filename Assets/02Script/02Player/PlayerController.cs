@@ -45,11 +45,14 @@ public class PlayerController : ManagerBase
 
         playerAttack.OnAttackAnims += playerAnims.AttackAnims;
 
+        playerState.OnIdleEvent += playerMovement.StopMove;
         playerState.OnMoveEvent += playerMovement.Move;
         playerState.OnChaseEvent += playerMovement.ChaseMove;
         playerState.OnAttackEvent += playerAttack.Attack;
         playerMovement.OnChangeState += playerState.ChangeState;
-        playerAttack.OnChangeState += playerState.ChangeState;        
+        playerAttack.OnChangeState += playerState.ChangeState;
+
+        PCInputManager.OnStop += playerState.ChangeState;
     }
 
     private void OnDisable()
@@ -66,18 +69,21 @@ public class PlayerController : ManagerBase
         playerAttack.OnChangeState -= playerState.ChangeState;
 
         inputHandler.OnSkillInput -= playerSkillManager.UseSkill;
+
+        PCInputManager.OnStop -= playerState.ChangeState;
     }
 
     public void CurrentInputHandler(IInputHandler curHandler)
     {
         inputHandler = curHandler;
         inputHandler.OnSkillInput += playerSkillManager.UseSkill;
+        
     }
 
     public override void StartGame()
     {
         base.StartGame();
-        playerStatus.moveSpeed = 2f;
+        playerStatus.moveSpeed = 3f;
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
     }
