@@ -5,6 +5,7 @@ public class SkillData : ScriptableObject
 {
     public string skillName;
     public SkillType skillType;
+    public StateType stateType;
     public float damage;
     public float coolTime;
     public float mpCost;

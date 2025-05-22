@@ -13,7 +13,8 @@ public abstract class SkillBase : MonoBehaviour,ISkill
     public virtual float coolTime => skillData.coolTime;
     public virtual float damage => skillData.damage;
     public virtual float mpCost => skillData.mpCost;
-    
+    public StateType myState => skillData.stateType;
+
     public virtual void SetOwner(GameObject owner)
     {
         fireOwner = owner;

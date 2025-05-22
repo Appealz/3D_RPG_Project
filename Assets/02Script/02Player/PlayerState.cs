@@ -8,10 +8,11 @@ public enum StateType
     Move,
     Attack,
     Chase,
-    Skill1,
-    Skill2,
-    Skill3,
-    Skill4,
+    SkillReady,
+    SkillQ,
+    SkillW,
+    SkillE,
+    SkillR,
 }
 
 public class PlayerState : MonoBehaviour
@@ -34,8 +35,11 @@ public class PlayerState : MonoBehaviour
         if(curStateType != newState)
         {
             curStateType = newState;
-            Debug.Log($"상태 변환 : {newState}");
-        }        
+            //ActionQueue.Instance.EnqueueAction(newState);
+            //curStateType = ActionQueue.Instance.DequeueAction();
+            //Debug.Log($"상태 변환 : {newState}");
+            //Debug.Log($"현재 상태 : {curStateType}");
+        }
     }
 
     public void UpdateState()
@@ -54,6 +58,8 @@ public class PlayerState : MonoBehaviour
             case StateType.Attack:
                 OnAttackEvent?.Invoke();
                 break;
+            //case StateType.SkillReady:                
+            //    break;
         }
     }
 }

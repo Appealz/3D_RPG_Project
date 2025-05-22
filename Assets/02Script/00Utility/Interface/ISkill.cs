@@ -3,6 +3,7 @@ using UnityEngine;
 
 public interface ISkill 
 {    
+    StateType myState { get; }
     SkillType myType { get; }
     string skillName { get; }
     float coolTime { get; }

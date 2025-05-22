@@ -79,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
     public void StopMove()
     {
         SetEnable(false);
-        WalkAnims(false);  
+        WalkAnims(false);
         RunAnims(false);
     }
 
@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             if (agent.velocity.sqrMagnitude < 0.001f)
             {
                 WalkAnims(false);
-            }            
+            }
         }    
     }
 
@@ -134,7 +134,18 @@ public class PlayerMovement : MonoBehaviour
             if ((target.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
                 StopMove();
-                OnChangeState?.Invoke(StateType.Attack);                
+                OnChangeState?.Invoke(StateType.Attack);
+                //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+
+                //StopMove();
+                //if (ActionQueue.Instance.HasQueue())
+                //{
+                //    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                //}
+                //else
+                //{
+                //    OnChangeState?.Invoke(StateType.Idle);
+                //}
             }
         }
     }
@@ -147,8 +158,7 @@ public class PlayerMovement : MonoBehaviour
                 transform.rotation,
                 targetRot,
                 Time.deltaTime * rotateSpeed // 이 값이 클수록 빠르고 작을수록 부드러움
-            );
-            
+            );            
         }
     }
 

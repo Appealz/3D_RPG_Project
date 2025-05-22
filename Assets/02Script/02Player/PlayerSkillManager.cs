@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class PlayerSkillManager : MonoBehaviour
@@ -11,11 +12,14 @@ public class PlayerSkillManager : MonoBehaviour
 
     PlayerAnims playerAnims;
 
+    public event Action<StateType> OnChangeState;
+
     private void Awake()
     {
         TryGetComponent<PlayerAnims>(out playerAnims);
     }
 
+    
     public void AddSkill(KeyCode keyType, ISkill skill)
     {
         skills[skill.myType] = skill;
@@ -50,7 +54,9 @@ public class PlayerSkillManager : MonoBehaviour
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {
-            skills[useSkillType].Activate();
+            skills[useSkillType].Activate();           
+            
+            OnChangeState?.Invoke(StateType.SkillReady);
         }
     }
 }

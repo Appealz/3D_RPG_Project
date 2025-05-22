@@ -83,12 +83,14 @@ public class PlayerAttack : MonoBehaviour, IAttack
         if (target && (target.position - transform.position).sqrMagnitude >= attackRange)
         {
             OnChangeState?.Invoke(StateType.Chase);
+            //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
         }
+
 
         if (target == null)
         {
             OnChangeState?.Invoke(StateType.Idle);
-        }        
+        }
     }
 
 

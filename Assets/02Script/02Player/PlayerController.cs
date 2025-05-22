@@ -29,6 +29,8 @@ public class PlayerController : ManagerBase
     //bool isTargetting = false;
     //bool isAttacking = false;
     //ClickReturn inputReturn;
+
+
     private void Awake()
     {
         TryGetComponent<PlayerMovement>(out playerMovement);        
@@ -91,7 +93,7 @@ public class PlayerController : ManagerBase
     public override void CustomUpdate()
     {
         base.CustomUpdate();        
-        playerState.UpdateState();    
+        playerState.UpdateState();
     }
 
     public override void StopGame()
