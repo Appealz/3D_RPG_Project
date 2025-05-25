@@ -5,6 +5,7 @@ public class CursorManager : ManagerBase
     public Texture2D initCursor;
     public Texture2D attackCursor;
     public Texture2D AclickCursor;
+    public Texture2D skillCursor;
     private Texture2D currentCursor;
 
     private bool readyToAttack;

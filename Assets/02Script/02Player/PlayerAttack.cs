@@ -16,6 +16,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
     GameObject obj;
 
     Transform firePoint;
+    [SerializeField]
     Transform target;
 
     [SerializeField]
@@ -83,6 +84,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
         if (target && (target.position - transform.position).sqrMagnitude >= attackRange)
         {
             OnChangeState?.Invoke(StateType.Chase);
+            ActionQueue.Instance.EnqueueAction(StateType.Attack);
             //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
         }
 

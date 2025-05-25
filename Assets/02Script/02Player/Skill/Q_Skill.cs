@@ -8,10 +8,13 @@ public class Q_Skill : SkillBase
     {
         OnSkillActivated?.Invoke();
         Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(null, fireOwner, 10f, ProjectileType.Qskill));
+        Debug.Log($"{gameObject.name} 스킬 발동");
     }
 
     public override void TriggerEvent()
     {
         
     }
+
+
 }

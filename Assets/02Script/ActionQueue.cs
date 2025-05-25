@@ -7,11 +7,6 @@ public class ActionQueue : Singleton<ActionQueue>
     StateType newState;
     public void EnqueueAction(StateType curState)
     {
-        Debug.Log($"큐 들어옴 :{curState}");
-        if (curState == StateType.Attack || curState == StateType.SkillQ || curState == StateType.SkillR)
-        {
-            stateQueue.Enqueue(StateType.Chase);
-        }
         stateQueue.Enqueue(curState);
     }
 
@@ -20,7 +15,7 @@ public class ActionQueue : Singleton<ActionQueue>
         if(HasQueue())
         {
             newState = stateQueue.Dequeue();
-            Debug.Log($"큐 나감 : {newState}");
+            Debug.Log($"현재 큐 개수 : {stateQueue.Count}");
         }
         return newState;
     }

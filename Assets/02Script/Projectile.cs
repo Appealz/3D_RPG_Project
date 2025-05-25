@@ -46,13 +46,9 @@ public class Projectile : PoolLabel
             damage = projInfo.damage;
             TargetSetting(projInfo.target);
             SetEnable(true);
+            Skill_Event.ProjectileSpawned -= SettingInfo;
         }
     }
-
-    //public void SetOwner(GameObject myOwner)
-    //{
-    //    Owner = myOwner;
-    //}
 
     public void TargetSetting(Transform targetTrans)
     {

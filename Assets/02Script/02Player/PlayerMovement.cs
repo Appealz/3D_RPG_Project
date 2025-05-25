@@ -39,7 +39,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         PCInputManager.OnMouseMoveClick += SetPosition;
-        PCInputManager.OnMouseTargetClick += SetTarget;
+        PCInputManager.OnMouseTargetClick += SetTarget;        
+        Debug.Log("OnRotate 연결 완료");
         playerStatus = new PlayerStatus();        
     }
 
@@ -133,23 +134,19 @@ public class PlayerMovement : MonoBehaviour
             ManualRotate(agent.desiredVelocity);
             if ((target.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
-                StopMove();
-                OnChangeState?.Invoke(StateType.Attack);
-                //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
-
-                //StopMove();
-                //if (ActionQueue.Instance.HasQueue())
-                //{
-                //    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
-                //}
-                //else
-                //{
-                //    OnChangeState?.Invoke(StateType.Idle);
-                //}
+                StopMove();                
+                if(ActionQueue.Instance.HasQueue())
+                {
+                    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                }
+                else
+                {
+                    OnChangeState?.Invoke(StateType.Attack);
+                }
             }
         }
     }
-    private void ManualRotate(Vector3 direction)
+    public void ManualRotate(Vector3 direction)
     {
         if (direction.sqrMagnitude > 0.01f)
         {

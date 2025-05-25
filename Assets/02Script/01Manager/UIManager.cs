@@ -1,16 +1,24 @@
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : ManagerBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
         
+    }
+
+    private void OnDisable()
+    {
+        
+    }
+
+    public override void CustomUpdate()
+    {
+        base.CustomUpdate();
     }
 }

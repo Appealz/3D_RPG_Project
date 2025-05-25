@@ -94,6 +94,7 @@ public class PlayerController : ManagerBase
     {
         base.CustomUpdate();        
         playerState.UpdateState();
+        playerSkillManager.UpdateSKillCoolTIme();
     }
 
     public override void StopGame()

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: 
   skillType: 3
+  stateType: 8
   damage: 50
   coolTime: 50
   mpCost: 100

@@ -17,15 +17,22 @@ public class PCInputManager : ManagerBase, IInputHandler
 {
     public static event Action<Vector3> OnMouseMoveClick;
     public static event Action<Transform> OnMouseTargetClick;
+
+    public static event Func<SkillType, bool> OnSkillAvailablity;
+
     public event Action<SkillType> OnSkillInput;
 
+    
+    // CursorManager
     public static event Action<bool> OnReadyToAttack;
+
+
     public static event Action<StateType> OnStop;
 
     private Dictionary<KeyCode, SkillType> keySkillBindings = new Dictionary<KeyCode, SkillType>();
 
     private bool isAttackOn;
-    private bool isQkeyOn;
+    private bool isSkillReady;
 
     private SkillType? currentReadySkill = null;
     public override void CustomUpdate()
@@ -37,6 +44,10 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             GetInputClick();
             OnReadyToAttack?.Invoke(false);
+            if(currentReadySkill.HasValue)
+            {
+                currentReadySkill = null;
+            }
         }
 
         // 스킬 키 입력
@@ -44,23 +55,56 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             if (Input.GetKeyDown(binding.Key))
             {
-                Debug.Log($"{binding.Key}눌림, 스킬 입력");                
-                OnReadyToAttack?.Invoke(true);                    
-                currentReadySkill = binding.Value;                
+                if(!OnSkillAvailablity.Invoke(binding.Value))
+                {
+                    Debug.Log("스킬 사용 불가");
+                    return;
+                }
+                //OnStop?.Invoke(StateType.Idle);
+                Debug.Log($"{binding.Key}눌림, 스킬 입력");
+                OnReadyToAttack?.Invoke(true);
+                currentReadySkill = binding.Value;
+                if (currentReadySkill == SkillType.E_Skill)
+                {
+                    OnSkillInput?.Invoke(currentReadySkill.Value);
+                    OnReadyToAttack?.Invoke(false);
+                    currentReadySkill = null;
+                }
             }
         }
 
-        // 스킬 준비 상태
+        // 스킬 준비 후 조건에 만족하면 발동.
         if (Input.GetMouseButtonDown(0) && currentReadySkill.HasValue)
         {
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-            {
-                Debug.Log("타겟 추적");                
-                OnReadyToAttack?.Invoke(false);
-                OnSkillInput?.Invoke(currentReadySkill.Value);
-                currentReadySkill = null;
+            if (currentReadySkill == SkillType.Q_Skill)
+            {                
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+                {
+                    Debug.Log("타겟 추적");
+                    OnReadyToAttack?.Invoke(false);
+                    OnSkillInput?.Invoke(currentReadySkill.Value);
+                    currentReadySkill = null;
+                }
             }            
+            else if(currentReadySkill == SkillType.W_Skill)
+            {                
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                {
+                    Vector3 dir;
+                    dir = (hit.point- transform.position).normalized;                    
+                    OnSkillInput?.Invoke(currentReadySkill.Value);
+                    OnReadyToAttack?.Invoke(false);
+                }
+            }
+            else if(currentReadySkill == SkillType.R_Skill)
+            {
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                {
+                    OnSkillInput?.Invoke(currentReadySkill.Value);
+                    OnReadyToAttack?.Invoke(false);
+                }
+            }
         }
 
         // 공격(A)키 입력
@@ -74,6 +118,7 @@ public class PCInputManager : ManagerBase, IInputHandler
         if(Input.GetKeyDown(KeyCode.S))
         {
             OnStop?.Invoke(StateType.Idle);
+            OnReadyToAttack?.Invoke(false);
         }
 
         // 공격키가 입력되어있을때

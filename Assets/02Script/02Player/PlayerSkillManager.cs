@@ -6,20 +6,38 @@ using UnityEngine;
 
 public class PlayerSkillManager : MonoBehaviour
 {
-    List<ISkill> skillList = new List<ISkill>();
+    private List<ISkill> skillList = new List<ISkill>();
 
-    Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
+    private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
+    private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
 
     PlayerAnims playerAnims;
 
-    public event Action<StateType> OnChangeState;
+    SkillModel skillModel;
+
+    //public event Action<StateType> OnChangeState;
 
     private void Awake()
     {
         TryGetComponent<PlayerAnims>(out playerAnims);
+        InitSkillAnimMap();
+        skillModel = new SkillModel();
+        PCInputManager.OnSkillAvailablity += IsSkillUsable;
     }
 
-    
+    private void OnDisable()
+    {
+        PCInputManager.OnSkillAvailablity -= IsSkillUsable;
+    }
+
+    private void InitSkillAnimMap()
+    {
+        skillAnimMap[SkillType.Q_Skill] = playerAnims.QSkillAnims;
+        skillAnimMap[SkillType.W_Skill] = playerAnims.WSkillAnims;
+        skillAnimMap[SkillType.E_Skill] = playerAnims.ESkillAnims;
+        skillAnimMap[SkillType.R_Skill] = playerAnims.RSkillAnims;
+    }
+
     public void AddSkill(KeyCode keyType, ISkill skill)
     {
         skills[skill.myType] = skill;
@@ -27,26 +45,15 @@ public class PlayerSkillManager : MonoBehaviour
         skill.SetOwner(gameObject);
         Debug.Log($"{gameObject.name} 오너 등록");
 
-        if(skill.myType == SkillType.Q_Skill)
+        if(skillAnimMap.TryGetValue(skill.myType, out var animAction))
         {
-            skill.OnSkillActivated += playerAnims.QSkillAnims;
+            skill.OnSkillActivated += animAction;
         }
+    }
 
-        if (skill.myType == SkillType.W_Skill)
-        {
-            skill.OnSkillActivated += playerAnims.WSkillAnims;
-        }
-
-        if (skill.myType == SkillType.E_Skill)
-        {
-            skill.OnSkillActivated += playerAnims.ESkillAnims;
-        }
-
-        if (skill.myType == SkillType.R_Skill)
-        {
-            skill.OnSkillActivated += playerAnims.RSkillAnims;
-        }
-
+    public void UpdateSKillCoolTIme()
+    {
+        skillModel.CoolTimeUpdate(Time.deltaTime);
     }
 
     public void UseSkill(SkillType useSkillType)
@@ -54,9 +61,13 @@ public class PlayerSkillManager : MonoBehaviour
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {
-            skills[useSkillType].Activate();           
-            
-            OnChangeState?.Invoke(StateType.SkillReady);
+            skills[useSkillType].Activate();
+            skillModel.UseSkill(useSkillType, skills[useSkillType].coolTime);
+            //OnChangeState?.Invoke(StateType.SkillReady);
         }
     }
+
+    public bool IsSkillUsable(SkillType useSkillType) => skillModel.CanUseSkill(useSkillType);
+    public float GetRemainingCoolTime(SkillType useSkillType) => skillModel.GetRemainingCoolTime(useSkillType);
+    public float GetMaxCoolTime(SkillType useSkillType) => skillModel.GetMaxCoolTime(useSkillType);
 }

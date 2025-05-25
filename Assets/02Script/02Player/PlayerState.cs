@@ -35,10 +35,6 @@ public class PlayerState : MonoBehaviour
         if(curStateType != newState)
         {
             curStateType = newState;
-            //ActionQueue.Instance.EnqueueAction(newState);
-            //curStateType = ActionQueue.Instance.DequeueAction();
-            //Debug.Log($"상태 변환 : {newState}");
-            //Debug.Log($"현재 상태 : {curStateType}");
         }
     }
 
@@ -58,8 +54,17 @@ public class PlayerState : MonoBehaviour
             case StateType.Attack:
                 OnAttackEvent?.Invoke();
                 break;
-            //case StateType.SkillReady:                
-            //    break;
+            case StateType.SkillReady:
+                break;
+            case StateType.SkillQ:
+                break;
+            case StateType.SkillW:
+                break;
+            case StateType.SkillE:
+                break;
+            case StateType.SkillR:
+                break;
+
         }
     }
 }
