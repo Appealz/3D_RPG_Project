@@ -70,7 +70,7 @@ public static class EventBus
 
     public static void Subscribe<T>(Action<T> newMethod)
     {
-        if(eventTable.TryGetValue(typeof(T), out var existMethod))
+        if (eventTable.TryGetValue(typeof(T), out var existMethod))
         {
             eventTable[typeof(T)] = Delegate.Combine(existMethod, newMethod);
         }
@@ -79,26 +79,26 @@ public static class EventBus
             eventTable[typeof(T)] = newMethod;
         }
     }
-        
+
     public static void UnSubscribe<T>(Action<T> removeMethod)
     {
-        if(eventTable.TryGetValue(typeof(T), out var existMethod))
+        if (eventTable.TryGetValue(typeof(T), out var existMethod))
         {
             var newDelegate = Delegate.Remove(existMethod, removeMethod);
-            if(newDelegate == null)
+            if (newDelegate == null)
             {
                 eventTable.Remove(typeof(T));
             }
             else
             {
-                eventTable[typeof (T)] = newDelegate;
+                eventTable[typeof(T)] = newDelegate;
             }
         }
     }
 
     public static void Publish<T>(T type)
     {
-        if(eventTable.TryGetValue(typeof(T), out var method))
+        if (eventTable.TryGetValue(typeof(T), out var method))
         {
             (method as Action<T>)?.Invoke(type);
         }

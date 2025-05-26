@@ -38,12 +38,25 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("PlayerMovement.cs - Awake() - agent is not ref");
         }
 
-        PCInputManager.OnMouseMoveClick += SetPosition;
-        PCInputManager.OnMouseTargetClick += SetTarget;
+        //PCInputManager.OnMouseMoveClick += SetPosition;
+        //PCInputManager.OnMouseTargetClick += SetTarget;
         Debug.Log("OnRotate 연결 완료");
-        playerStatus = new PlayerStatus();        
+        playerStatus = new PlayerStatus();
+
+        
     }
 
+    private void OnEnable()
+    {
+        EventBus.Subscribe<TargetSelectEvent>(SetTarget);
+        EventBus.Subscribe<TargetPositionEvent>(SetPosition);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.UnSubscribe<TargetSelectEvent>(SetTarget);
+        EventBus.UnSubscribe<TargetPositionEvent>(SetPosition);
+    }
     public void InitMove(float newSpeed)
     {
         agent.enabled = true;
@@ -64,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 agent.ResetPath();
                 agent.velocity = Vector3.zero;
-            }            
+            }
         }
     }
 
@@ -85,14 +98,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    public void SetPosition(Vector3 vector)
+    public void SetPosition(TargetPositionEvent targetPositionEvent)
     {        
         OnChangeState?.Invoke(StateType.Move);
         agent.speed = moveSpeed;
         StartMove();        
         target = null;
         OnTarget = false;
-        destination = vector;        
+        destination = targetPositionEvent.TargetPos;        
     }
 
     public void Move()
@@ -112,10 +125,10 @@ public class PlayerMovement : MonoBehaviour
         }    
     }
 
-    public void SetTarget(Transform transform)
+    public void SetTarget(TargetSelectEvent targetSelectEvent)
     {
         SetEnable(true);
-        target = transform;
+        target = targetSelectEvent.Target;
         OnTarget = true;
         agent.speed = 5f;
         StartMove();
@@ -127,11 +140,11 @@ public class PlayerMovement : MonoBehaviour
         StartMove();
         if (agent.enabled && target)
         {
-            agent.SetDestination(target.position);
+            agent.SetDestination(target.transform.position);
             RunAnims(OnTarget);
 
             ManualRotate(agent.desiredVelocity);
-            if ((target.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
+            if ((target.transform.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
                 StopMove();                
                 if(ActionQueue.Instance.HasQueue())

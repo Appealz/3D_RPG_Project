@@ -15,8 +15,8 @@ public enum SkillType
 
 public class PCInputManager : ManagerBase, IInputHandler
 {
-    public static event Action<Vector3> OnMouseMoveClick;
-    public static event Action<Transform> OnMouseTargetClick;
+    //public static event Action<Vector3> OnMouseMoveClick;
+    //public static event Action<Transform> OnMouseTargetClick;
 
     public static event Func<SkillType, bool> OnSkillAvailablity;
 
@@ -147,14 +147,16 @@ public class PCInputManager : ManagerBase, IInputHandler
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
         {
             //Debug.Log("Å¸°Ù ÃßÀû");
-            OnMouseTargetClick?.Invoke(hit.transform);
+            //OnMouseTargetClick?.Invoke(hit.transform);
+            EventBus.Publish(new TargetSelectEvent(hit.transform));
         }
         else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {            
             GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
             obj.transform.position = hit.point;         
-            OnMouseMoveClick?.Invoke(hit.point);
+            //OnMouseMoveClick?.Invoke(hit.point);
             OnReadyToAttackCursor?.Invoke(false);
+            EventBus.Publish(new TargetPositionEvent(hit.point));
         }
         isAttackOn = false;
     }

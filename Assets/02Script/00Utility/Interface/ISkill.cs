@@ -11,6 +11,7 @@ public interface ISkill
     float mpCost { get; }
 
     event Action OnSkillActivated;
+    event Action<StateType> OnStateChange;
     void Init(SkillData newData);
 
     void SetOwner(GameObject owner);

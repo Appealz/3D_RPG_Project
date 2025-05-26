@@ -16,7 +16,7 @@ public class PlayerSkillManager : MonoBehaviour
     private PlayerStatus playerStatus;
 
     SkillModel skillModel;
-    //public event Action<StateType> OnChangeState;
+    public event Action<StateType> OnChangeState;
 
     private SkillType? preparedSkillType = null;
 
@@ -95,7 +95,8 @@ public class PlayerSkillManager : MonoBehaviour
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {
-            skills[useSkillType].Activate();
+            //skills[useSkillType].Activate();
+            OnChangeState?.Invoke(skills[useSkillType].myState);
             skillModel.UseSkill(useSkillType, skills[useSkillType].coolTime);
             playerStatus.CurMp -= skills[useSkillType].mpCost;
             //OnChangeState?.Invoke(StateType.SkillReady);

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: QSkill
   skillType: 0
-  stateType: 5
+  stateType: 4
   damage: 10
   coolTime: 5
   mpCost: 20

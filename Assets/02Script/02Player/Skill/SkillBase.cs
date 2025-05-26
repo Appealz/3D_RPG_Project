@@ -7,6 +7,7 @@ public abstract class SkillBase : MonoBehaviour,ISkill
     protected GameObject fireOwner;
 
     public abstract event Action OnSkillActivated;
+    public abstract event Action<StateType> OnStateChange;
 
     public virtual SkillType myType => skillData.skillType;
     public virtual string skillName => skillData.skillName;

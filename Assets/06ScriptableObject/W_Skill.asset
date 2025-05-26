@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: WSkill
   skillType: 1
-  stateType: 6
+  stateType: 5
   damage: 20
   coolTime: 10
   mpCost: 30

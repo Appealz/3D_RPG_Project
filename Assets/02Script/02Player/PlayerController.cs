@@ -75,9 +75,7 @@ public class PlayerController : ManagerBase
         TryGetComponent<PlayerAnims>(out playerAnims);
         TryGetComponent<PlayerAttack>(out playerAttack);
         TryGetComponent<PlayerState>(out playerState);
-        TryGetComponent<PlayerSkillManager>(out playerSkillManager);
-
-       
+        TryGetComponent<PlayerSkillManager>(out playerSkillManager);       
     }
 
     private void OnEnable()
@@ -91,6 +89,7 @@ public class PlayerController : ManagerBase
         playerState.OnMoveEvent += playerMovement.Move;
         playerState.OnChaseEvent += playerMovement.ChaseMove;
         playerState.OnAttackEvent += playerAttack.Attack;
+        playerSkillManager.OnChangeState += playerState.ChangeState;
         playerMovement.OnChangeState += playerState.ChangeState;
         playerAttack.OnChangeState += playerState.ChangeState;
 
@@ -107,6 +106,8 @@ public class PlayerController : ManagerBase
         playerState.OnMoveEvent -= playerMovement.Move;
         playerState.OnChaseEvent -= playerMovement.ChaseMove;
         playerState.OnAttackEvent -= playerAttack.Attack;
+
+        playerSkillManager.OnChangeState -= playerState.ChangeState;
         playerMovement.OnChangeState -= playerState.ChangeState;
         playerAttack.OnChangeState -= playerState.ChangeState;
 
@@ -151,6 +152,28 @@ public class PlayerController : ManagerBase
     {
         playerSkillManager.AddSkill(key, skill);
         inputHandler.BindKeyToSkill(key, skill.myType);
+
+        switch (skill.myState)
+        {
+            case StateType.SkillQ:
+                playerState.OnQSkillEvent += skill.Activate;
+                Debug.Log("스킬 Active 등록");
+                skill.OnStateChange += playerState.ChangeState;
+                Debug.Log("ChangeState 등록");
+                break;
+            case StateType.SkillW:
+                playerState.OnWSkillEvent += skill.Activate;
+                skill.OnStateChange += playerState.ChangeState;
+                break;
+            case StateType.SkillE:
+                playerState.OnESkillEvent += skill.Activate;
+                skill.OnStateChange += playerState.ChangeState;
+                break;
+            case StateType.SkillR:
+                playerState.OnRSkillEvent += skill.Activate;
+                skill.OnStateChange += playerState.ChangeState;
+                break;
+        }
     }
 
 

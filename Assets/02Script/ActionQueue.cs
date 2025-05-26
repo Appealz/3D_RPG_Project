@@ -5,9 +5,14 @@ public class ActionQueue : Singleton<ActionQueue>
 {
     Queue<StateType> stateQueue = new Queue<StateType>();
     StateType newState;
+    StateType currentState = StateType.Idle;
     public void EnqueueAction(StateType curState)
     {
-        stateQueue.Enqueue(curState);
+        //if(currentState != curState)
+        //{
+        //    currentState = curState;
+            stateQueue.Enqueue(curState);            
+        //}
     }
 
     public StateType DequeueAction()
@@ -16,8 +21,10 @@ public class ActionQueue : Singleton<ActionQueue>
         {
             newState = stateQueue.Dequeue();
             Debug.Log($"현재 큐 개수 : {stateQueue.Count}");
+            return newState;
         }
-        return newState;
+        Debug.Log("큐 비어있음");
+        return StateType.Idle;
     }
 
     public void ClearQueue()

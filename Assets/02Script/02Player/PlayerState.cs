@@ -7,8 +7,7 @@ public enum StateType
     Idle,
     Move,
     Attack,
-    Chase,
-    SkillReady,
+    Chase,    
     SkillQ,
     SkillW,
     SkillE,
@@ -23,6 +22,10 @@ public class PlayerState : MonoBehaviour
     public event Action OnMoveEvent;
     public event Action OnAttackEvent;
     public event Action OnChaseEvent;
+    public event Action OnQSkillEvent;
+    public event Action OnWSkillEvent;
+    public event Action OnESkillEvent;
+    public event Action OnRSkillEvent;
 
     public void InitState()
     {
@@ -32,8 +35,12 @@ public class PlayerState : MonoBehaviour
 
     public void ChangeState(StateType newState)
     {
-        if(curStateType != newState)
-        {
+        if (curStateType != newState)
+        {            
+            if(newState == StateType.SkillQ || newState == StateType.SkillW || newState == StateType.SkillE || newState == StateType.SkillR)
+            {
+                ActionQueue.Instance.EnqueueAction(curStateType);
+            }
             curStateType = newState;
         }
     }
@@ -52,17 +59,19 @@ public class PlayerState : MonoBehaviour
                 OnChaseEvent?.Invoke();
                 break;
             case StateType.Attack:
-                OnAttackEvent?.Invoke();
-                break;
-            case StateType.SkillReady:
+                OnAttackEvent?.Invoke();                            
                 break;
             case StateType.SkillQ:
+                OnQSkillEvent?.Invoke();
                 break;
             case StateType.SkillW:
+                OnWSkillEvent?.Invoke();
                 break;
             case StateType.SkillE:
+                OnESkillEvent?.Invoke();
                 break;
             case StateType.SkillR:
+                OnRSkillEvent?.Invoke();
                 break;
 
         }

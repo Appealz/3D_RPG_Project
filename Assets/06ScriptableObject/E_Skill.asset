@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: ESkill
   skillType: 2
-  stateType: 7
+  stateType: 6
   damage: 0
   coolTime: 10
   mpCost: 30

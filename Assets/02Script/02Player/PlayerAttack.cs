@@ -34,17 +34,19 @@ public class PlayerAttack : MonoBehaviour, IAttack
         attackRate = 1f;
         attackRange = 25f;
         attackDamage = 10f;
-        PCInputManager.OnMouseTargetClick += TargetSetting;
+        //PCInputManager.OnMouseTargetClick += TargetSetting;
+        EventBus.Subscribe<TargetSelectEvent>(TargetSetting);
     }
 
     private void OnDisable()
     {
-        PCInputManager.OnMouseTargetClick -= TargetSetting;
+        //PCInputManager.OnMouseTargetClick -= TargetSetting;
+        EventBus.UnSubscribe<TargetSelectEvent>(TargetSetting);
     }
 
-    public void TargetSetting(Transform targetTrans)
+    public void TargetSetting(TargetSelectEvent targetSelectEvent)
     {
-        target = targetTrans;
+        target = targetSelectEvent.Target;
     }
 
     public void Attack()

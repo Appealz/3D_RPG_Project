@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: RSkill
   skillType: 3
-  stateType: 8
+  stateType: 7
   damage: 50
   coolTime: 50
   mpCost: 50
