@@ -14,7 +14,7 @@ public class CursorManager : ManagerBase
     private void Awake()
     {
         Cursor.SetCursor(initCursor, Vector2.zero, CursorMode.Auto);
-        PCInputManager.OnReadyToAttack += ReadyToAttack;
+        PCInputManager.OnReadyToAttackCursor += ReadyToAttack;
     }
 
     public override void CustomUpdate()

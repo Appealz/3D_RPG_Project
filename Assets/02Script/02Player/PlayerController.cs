@@ -1,17 +1,63 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
+public struct MpChangeEvent
+{
+    public float CurrentMP;
+    public float MaxMp;
+
+    public MpChangeEvent(float currentMP, float maxMp)
+    {
+        CurrentMP = currentMP;
+        MaxMp = maxMp;
+    }
+}
 public class PlayerStatus
 {
     public float moveSpeed;
     public float attackRagne = 25f;
-    public float maxMp;
-    public float curMp;
+    private float maxMp;
+    private float curMp;
     public float maxHp;
     public float curHp;
     public float attackDamage;
 
+    public float MaxMp
+    {
+        get => maxMp;
+        set
+        {
+            if(value < 0)
+            {
+                Debug.Log("MaxMp는 0 이상이여야 합니다.");
+                return;
+            }
+            maxMp = value;
+
+            if(curMp > maxMp)
+            {
+                curMp = maxMp;
+            }
+        }
+    }
+
+    public float CurMp
+    {
+        get => curMp;
+        set
+        {
+            curMp = Mathf.Clamp(value, 0, maxMp);
+            EventBus.Publish(new MpChangeEvent(curMp, maxMp));
+        }
+    }
+
+    public void RecoverMp(float deltaTime)
+    {
+        CurMp += 5f * deltaTime;
+    }
 }
+
+
 public class PlayerController : ManagerBase
 {
     private PlayerMovement playerMovement;
@@ -22,14 +68,6 @@ public class PlayerController : ManagerBase
     private PlayerState playerState;
     private PlayerSkillManager playerSkillManager;
 
-    //[SerializeField]
-    //Transform targetTrans;
-    //Vector3 movePos;
-    //[SerializeField]
-    //bool isTargetting = false;
-    //bool isAttacking = false;
-    //ClickReturn inputReturn;
-
 
     private void Awake()
     {
@@ -38,6 +76,8 @@ public class PlayerController : ManagerBase
         TryGetComponent<PlayerAttack>(out playerAttack);
         TryGetComponent<PlayerState>(out playerState);
         TryGetComponent<PlayerSkillManager>(out playerSkillManager);
+
+       
     }
 
     private void OnEnable()
@@ -78,7 +118,8 @@ public class PlayerController : ManagerBase
     public void CurrentInputHandler(IInputHandler curHandler)
     {
         inputHandler = curHandler;
-        inputHandler.OnSkillInput += playerSkillManager.UseSkill;
+        inputHandler.OnSkillInput += playerSkillManager.PreparedSkill;
+        
         
     }
 
@@ -86,8 +127,10 @@ public class PlayerController : ManagerBase
     {
         base.StartGame();
         playerStatus.moveSpeed = 3f;
+        playerStatus.CurMp = playerStatus.MaxMp = 100f;
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
+        playerSkillManager.InitStatus(playerStatus);
     }
 
     public override void CustomUpdate()
@@ -95,6 +138,7 @@ public class PlayerController : ManagerBase
         base.CustomUpdate();        
         playerState.UpdateState();
         playerSkillManager.UpdateSKillCoolTIme();
+        playerStatus.RecoverMp(Time.deltaTime);
     }
 
     public override void StopGame()

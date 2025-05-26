@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef76d54df3bad394aaa36dcbf55328e8, type: 3}
   m_Name: R_Skill
   m_EditorClassIdentifier: 
-  skillName: 
+  skillName: RSkill
   skillType: 3
   stateType: 8
   damage: 50
   coolTime: 50
-  mpCost: 100
+  mpCost: 50
   obj: {fileID: 1162504798070466608, guid: 91890601859370f4fa246ba37757e3d5, type: 3}

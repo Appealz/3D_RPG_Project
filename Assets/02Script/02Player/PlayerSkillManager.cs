@@ -13,21 +13,31 @@ public class PlayerSkillManager : MonoBehaviour
 
     PlayerAnims playerAnims;
 
-    SkillModel skillModel;
+    private PlayerStatus playerStatus;
 
+    SkillModel skillModel;
     //public event Action<StateType> OnChangeState;
+
+    private SkillType? preparedSkillType = null;
 
     private void Awake()
     {
         TryGetComponent<PlayerAnims>(out playerAnims);
         InitSkillAnimMap();
-        skillModel = new SkillModel();
-        PCInputManager.OnSkillAvailablity += IsSkillUsable;
+        skillModel = new SkillModel();        
+        PCInputManager.OnSkillAvailablity += IsSkillUse;
+        PCInputManager.OnSkillActive += HandleSkillUseRequested;
     }
 
     private void OnDisable()
     {
-        PCInputManager.OnSkillAvailablity -= IsSkillUsable;
+        PCInputManager.OnSkillAvailablity -= IsSkillUse;
+    }
+
+    public void InitStatus(PlayerStatus status)
+    {
+        playerStatus = status;
+        Debug.Log($"플레이어 스킬 매니저 status 장착, 현재 mp{playerStatus.CurMp}");
     }
 
     private void InitSkillAnimMap()
@@ -41,9 +51,7 @@ public class PlayerSkillManager : MonoBehaviour
     public void AddSkill(KeyCode keyType, ISkill skill)
     {
         skills[skill.myType] = skill;
-        Debug.Log($"{skill.myType} 등록");
         skill.SetOwner(gameObject);
-        Debug.Log($"{gameObject.name} 오너 등록");
 
         if(skillAnimMap.TryGetValue(skill.myType, out var animAction))
         {
@@ -56,6 +64,32 @@ public class PlayerSkillManager : MonoBehaviour
         skillModel.CoolTimeUpdate(Time.deltaTime);
     }
 
+    public void PreparedSkill(SkillType useSkillType)
+    {        
+        if(!IsSkillUse(useSkillType))
+        {
+            return;
+        }
+
+        if(useSkillType == SkillType.E_Skill)
+        {
+            UseSkill(useSkillType);
+        }
+        else
+        {
+            preparedSkillType = useSkillType;
+        }
+    }
+
+    private void HandleSkillUseRequested()
+    {
+        if(preparedSkillType.HasValue)
+        {
+            UseSkill(preparedSkillType.Value);
+            preparedSkillType = null;
+        }
+    }
+
     public void UseSkill(SkillType useSkillType)
     {
         Debug.Log("스킬 눌림");
@@ -63,11 +97,25 @@ public class PlayerSkillManager : MonoBehaviour
         {
             skills[useSkillType].Activate();
             skillModel.UseSkill(useSkillType, skills[useSkillType].coolTime);
+            playerStatus.CurMp -= skills[useSkillType].mpCost;
             //OnChangeState?.Invoke(StateType.SkillReady);
         }
     }
 
-    public bool IsSkillUsable(SkillType useSkillType) => skillModel.CanUseSkill(useSkillType);
+    public bool IsSkillUse(SkillType useSkillType)
+    {
+        return (IsSkillUsableCoolTime(useSkillType) && IsSkillUsableMp(useSkillType));        
+    }
+
+    public bool IsSkillUsableCoolTime(SkillType useSkillType)
+    {        
+        return skillModel.CanUseSkill(useSkillType);
+    }
+    public bool IsSkillUsableMp(SkillType useSkillType)
+    {
+        return skills[useSkillType].mpCost < playerStatus.CurMp;
+    }
+
     public float GetRemainingCoolTime(SkillType useSkillType) => skillModel.GetRemainingCoolTime(useSkillType);
     public float GetMaxCoolTime(SkillType useSkillType) => skillModel.GetMaxCoolTime(useSkillType);
 }

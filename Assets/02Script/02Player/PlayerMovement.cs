@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         PCInputManager.OnMouseMoveClick += SetPosition;
-        PCInputManager.OnMouseTargetClick += SetTarget;        
+        PCInputManager.OnMouseTargetClick += SetTarget;
         Debug.Log("OnRotate 연결 완료");
         playerStatus = new PlayerStatus();        
     }
@@ -112,7 +112,6 @@ public class PlayerMovement : MonoBehaviour
         }    
     }
 
-
     public void SetTarget(Transform transform)
     {
         SetEnable(true);
@@ -158,7 +157,6 @@ public class PlayerMovement : MonoBehaviour
             );            
         }
     }
-
 
     public void ChangeMoveSpeed(float newSpeed)
     {
