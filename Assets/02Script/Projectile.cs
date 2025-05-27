@@ -9,6 +9,8 @@ public class Projectile : PoolLabel
     float damage;
 
     bool isMove;
+
+    Vector3 lastTargetPos;
     private void Awake()
     {
         if(!TryGetComponent<Rigidbody>(out rb))
@@ -33,14 +35,32 @@ public class Projectile : PoolLabel
     {        
         if(isMove)
         {
+            //if (target == null)
+            //{
+            //    ReturnPool();
+            //}
+
+            //moveDir = (target.position - transform.position).normalized;
+            //Move(moveDir);
+
             if (target == null)
             {
-                ReturnPool();
+                // 타겟이 없으면 마지막 위치까지 이동
+                moveDir = (lastTargetPos - transform.position).normalized;
+                Move(moveDir);
+
+                // 마지막 위치 근처에 도착했으면 리턴
+                if (Vector3.Distance(transform.position, lastTargetPos) <= 0.1f)
+                {
+                    ReturnPool();
+                }
             }
-
-            moveDir = (target.position - transform.position).normalized;
-            Move(moveDir);
-
+            else
+            {
+                lastTargetPos = target.position; // 타겟 위치 저장
+                moveDir = (target.position - transform.position).normalized;
+                Move(moveDir);
+            }
         }
     }
 

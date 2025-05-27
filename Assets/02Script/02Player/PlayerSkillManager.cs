@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerSkillManager : MonoBehaviour
 {
-    private List<ISkill> skillList = new List<ISkill>();
+    //private List<ISkill> skillList = new List<ISkill>();
 
     private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
     private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
@@ -21,15 +21,18 @@ public class PlayerSkillManager : MonoBehaviour
 
     private void Awake()
     {        
-        skillModel = new SkillModel();        
+        skillModel = new SkillModel();
+        EventBus.Subscribe<SkillPreparedEvent>(PreparedSkill);
+        EventBus.Subscribe<SkillActivatedEvent>(UseSkill);
+
         PCInputManager.OnSkillAvailablity += IsSkillUse;
-        PCInputManager.OnSkillActive += HandleSkillUseRequested;
+        //PCInputManager.OnSkillActive += HandleSkillUseRequested;
     }
 
     private void OnDisable()
     {
         PCInputManager.OnSkillAvailablity -= IsSkillUse;
-        PCInputManager.OnSkillActive -= HandleSkillUseRequested;
+        //PCInputManager.OnSkillActive -= HandleSkillUseRequested;
     }
 
     public void InitStatus(PlayerStatus status)
@@ -62,41 +65,44 @@ public class PlayerSkillManager : MonoBehaviour
         skillModel.CoolTimeUpdate(Time.deltaTime);
     }
 
-    public void PreparedSkill(SkillType useSkillType)
+    public void PreparedSkill(SkillPreparedEvent preparedSkill)
     {        
-        if(!IsSkillUse(useSkillType))
+        if(!IsSkillUse(preparedSkill.SkillType))
         {
             return;
         }
 
-        if(useSkillType == SkillType.E_Skill)
+        if(preparedSkill.SkillType == SkillType.E_Skill)
         {
-            UseSkill(useSkillType);
+            //UseSkill(preparedSkill.SkillType);
+            UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
             preparedSkillType = null;
         }
         else
         {
-            preparedSkillType = useSkillType;
+            preparedSkillType = preparedSkill.SkillType;
         }
     }
 
-    private void HandleSkillUseRequested()
-    {
-        if(preparedSkillType.HasValue)
-        {
-            UseSkill(preparedSkillType.Value);
-            preparedSkillType = null;
-        }
-    }
+    //private void HandleSkillUseRequested()
+    //{
+    //    if(preparedSkillType.HasValue)
+    //    {
+    //        UseSkill(preparedSkillType.Value);
+    //        preparedSkillType = null;
+    //    }
+    //}
 
-    public void UseSkill(SkillType useSkillType)
+    public void UseSkill(SkillActivatedEvent skillActivatedEvent)
     {
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {            
-            OnChangeState?.Invoke(skills[useSkillType].myState);
-            skillModel.UseSkill(useSkillType, skills[useSkillType].coolTime);
-            playerStatus.CurMp -= skills[useSkillType].mpCost;         
+            OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
+            // 쿨타임모델 호출
+            skillModel.UseSkill(skillActivatedEvent.SkillType, skills[skillActivatedEvent.SkillType].coolTime);
+            // mp소모
+            playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;         
         }
     }
 

@@ -67,15 +67,5 @@ public class SkillModel
     }
 }
 
-public struct SkillConsumeResource
-{
-    public SkillType Type;
-    public float MpCost;
 
-    public SkillConsumeResource(SkillType type, float mpCost)
-    {
-        Type = type;
-        MpCost = mpCost;
-    }
-}
 

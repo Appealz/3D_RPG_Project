@@ -20,8 +20,8 @@ public class PCInputManager : ManagerBase, IInputHandler
 
     public static event Func<SkillType, bool> OnSkillAvailablity;
 
-    public event Action<SkillType> OnSkillButtonInput;
-    public static event Action OnSkillActive;
+    //public event Action<SkillType> OnSkillButtonInput;
+    //public static event Action OnSkillActive;
         
     // CursorManager
     public static event Action<bool> OnReadyToAttackCursor;
@@ -31,7 +31,7 @@ public class PCInputManager : ManagerBase, IInputHandler
     private Dictionary<KeyCode, SkillType> keySkillBindings = new Dictionary<KeyCode, SkillType>();
 
     private bool isAttackOn;
-    private bool isSkillReady;
+    //private bool isSkillReady;
 
     private SkillType? currentReadySkill = null;
 
@@ -44,10 +44,22 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             GetInputClick();
             OnReadyToAttackCursor?.Invoke(false);
-            if(currentReadySkill.HasValue)
+            if (currentReadySkill.HasValue)
             {
                 currentReadySkill = null;
             }
+        }
+
+        // 마우스 좌클릭
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(currentReadySkill.HasValue)
+            {
+                //OnSkillActive?.Invoke();
+                EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                currentReadySkill = null;
+                OnReadyToAttackCursor?.Invoke(false);
+            }            
         }
 
         // 스킬 키 입력
@@ -64,17 +76,13 @@ public class PCInputManager : ManagerBase, IInputHandler
                 {
                     OnReadyToAttackCursor?.Invoke(true);
                 }                
-                OnSkillButtonInput?.Invoke(binding.Value);
-
-
+                //OnSkillButtonInput?.Invoke(binding.Value);
+                currentReadySkill = binding.Value;
+                EventBus.Publish(new SkillPreparedEvent(currentReadySkill.Value));
             }
         }
 
-        if(Input.GetMouseButtonDown(0))
-        {
-            OnSkillActive?.Invoke();
-            OnReadyToAttackCursor?.Invoke(false);
-        }
+
 
         // 공격(A)키 입력
         if (Input.GetKeyDown(KeyCode.A))
