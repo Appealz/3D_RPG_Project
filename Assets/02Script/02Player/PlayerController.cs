@@ -94,6 +94,8 @@ public class PlayerController : ManagerBase
         playerAttack.OnChangeState += playerState.ChangeState;
 
         PCInputManager.OnStop += playerState.ChangeState;
+
+        playerSkillManager.InitSkillAnimMap(playerAnims);
     }
 
     private void OnDisable()
@@ -111,7 +113,7 @@ public class PlayerController : ManagerBase
         playerMovement.OnChangeState -= playerState.ChangeState;
         playerAttack.OnChangeState -= playerState.ChangeState;
 
-        inputHandler.OnSkillInput -= playerSkillManager.UseSkill;
+        inputHandler.OnSkillButtonInput -= playerSkillManager.UseSkill;
 
         PCInputManager.OnStop -= playerState.ChangeState;
     }
@@ -119,9 +121,7 @@ public class PlayerController : ManagerBase
     public void CurrentInputHandler(IInputHandler curHandler)
     {
         inputHandler = curHandler;
-        inputHandler.OnSkillInput += playerSkillManager.PreparedSkill;
-        
-        
+        inputHandler.OnSkillButtonInput += playerSkillManager.PreparedSkill;
     }
 
     public override void StartGame()

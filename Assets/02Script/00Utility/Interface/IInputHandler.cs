@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IInputHandler
 {
-    event Action<SkillType> OnSkillInput;
+    event Action<SkillType> OnSkillButtonInput;
     void GetInputClick();
     void CustomUpdate();
     void BindKeyToSkill(KeyCode key, SkillType skillType);

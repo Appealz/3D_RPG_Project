@@ -20,7 +20,7 @@ public class PCInputManager : ManagerBase, IInputHandler
 
     public static event Func<SkillType, bool> OnSkillAvailablity;
 
-    public event Action<SkillType> OnSkillInput;
+    public event Action<SkillType> OnSkillButtonInput;
     public static event Action OnSkillActive;
         
     // CursorManager
@@ -60,54 +60,15 @@ public class PCInputManager : ManagerBase, IInputHandler
                     Debug.Log("스킬 사용 불가");
                     return;
                 }
-                OnReadyToAttackCursor?.Invoke(true);
-                OnSkillInput?.Invoke(binding.Value);
+                if(binding.Value != SkillType.E_Skill)
+                {
+                    OnReadyToAttackCursor?.Invoke(true);
+                }                
+                OnSkillButtonInput?.Invoke(binding.Value);
 
-                //OnStop?.Invoke(StateType.Idle);
-                //Debug.Log($"{binding.Key}눌림, 스킬 입력");
 
-                //currentReadySkill = binding.Value;
-                //if (currentReadySkill == SkillType.E_Skill)
-                //{
-                //    OnSkillInput?.Invoke(currentReadySkill.Value);
-                //    OnReadyToAttackCursor?.Invoke(false);
-                //    currentReadySkill = null;
-                //}
             }
         }
-
-        // 스킬 준비 후 조건에 만족하면 발동.
-        //if (Input.GetMouseButtonDown(0) && currentReadySkill.HasValue)
-        //{
-        //    RaycastHit hit;
-        //    if (currentReadySkill == SkillType.Q_Skill)
-        //    {                
-        //        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-        //        {
-        //            OnReadyToAttackCursor?.Invoke(false);
-        //            OnSkillInput?.Invoke(currentReadySkill.Value);
-        //            currentReadySkill = null;
-        //        }
-        //    }            
-        //    else if(currentReadySkill == SkillType.W_Skill)
-        //    {                
-        //        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-        //        {
-        //            Vector3 dir;
-        //            dir = (hit.point- transform.position).normalized;                    
-        //            OnSkillInput?.Invoke(currentReadySkill.Value);
-        //            OnReadyToAttackCursor?.Invoke(false);
-        //        }
-        //    }
-        //    else if(currentReadySkill == SkillType.R_Skill)
-        //    {
-        //        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-        //        {
-        //            OnSkillInput?.Invoke(currentReadySkill.Value);
-        //            OnReadyToAttackCursor?.Invoke(false);
-        //        }
-        //    }
-        //}
 
         if(Input.GetMouseButtonDown(0))
         {

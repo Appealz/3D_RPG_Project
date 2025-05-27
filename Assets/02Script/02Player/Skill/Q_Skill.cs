@@ -6,7 +6,7 @@ public class Q_Skill : SkillBase
     public override event Action OnSkillActivated;        
     public override event Action<StateType> OnStateChange;
 
-    private bool isAttack = true;
+    //private bool isAttack = true;
 
     public override void Activate()
     {
@@ -23,7 +23,7 @@ public class Q_Skill : SkillBase
 
     public override void TriggerEvent()
     {
-        isAttack = true;
+        //isAttack = true;
     }
 
 

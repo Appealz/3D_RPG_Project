@@ -10,8 +10,7 @@ public class PlayerSkillManager : MonoBehaviour
 
     private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
     private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
-
-    PlayerAnims playerAnims;
+        
 
     private PlayerStatus playerStatus;
 
@@ -21,9 +20,7 @@ public class PlayerSkillManager : MonoBehaviour
     private SkillType? preparedSkillType = null;
 
     private void Awake()
-    {
-        TryGetComponent<PlayerAnims>(out playerAnims);
-        InitSkillAnimMap();
+    {        
         skillModel = new SkillModel();        
         PCInputManager.OnSkillAvailablity += IsSkillUse;
         PCInputManager.OnSkillActive += HandleSkillUseRequested;
@@ -32,6 +29,7 @@ public class PlayerSkillManager : MonoBehaviour
     private void OnDisable()
     {
         PCInputManager.OnSkillAvailablity -= IsSkillUse;
+        PCInputManager.OnSkillActive -= HandleSkillUseRequested;
     }
 
     public void InitStatus(PlayerStatus status)
@@ -40,12 +38,12 @@ public class PlayerSkillManager : MonoBehaviour
         Debug.Log($"플레이어 스킬 매니저 status 장착, 현재 mp{playerStatus.CurMp}");
     }
 
-    private void InitSkillAnimMap()
-    {
-        skillAnimMap[SkillType.Q_Skill] = playerAnims.QSkillAnims;
-        skillAnimMap[SkillType.W_Skill] = playerAnims.WSkillAnims;
-        skillAnimMap[SkillType.E_Skill] = playerAnims.ESkillAnims;
-        skillAnimMap[SkillType.R_Skill] = playerAnims.RSkillAnims;
+    public void InitSkillAnimMap(PlayerAnims newAnims)
+    {        
+        skillAnimMap[SkillType.Q_Skill] = newAnims.QSkillAnims;
+        skillAnimMap[SkillType.W_Skill] = newAnims.WSkillAnims;
+        skillAnimMap[SkillType.E_Skill] = newAnims.ESkillAnims;
+        skillAnimMap[SkillType.R_Skill] = newAnims.RSkillAnims;
     }
 
     public void AddSkill(KeyCode keyType, ISkill skill)
@@ -74,6 +72,7 @@ public class PlayerSkillManager : MonoBehaviour
         if(useSkillType == SkillType.E_Skill)
         {
             UseSkill(useSkillType);
+            preparedSkillType = null;
         }
         else
         {
@@ -94,12 +93,10 @@ public class PlayerSkillManager : MonoBehaviour
     {
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
-        {
-            //skills[useSkillType].Activate();
+        {            
             OnChangeState?.Invoke(skills[useSkillType].myState);
             skillModel.UseSkill(useSkillType, skills[useSkillType].coolTime);
-            playerStatus.CurMp -= skills[useSkillType].mpCost;
-            //OnChangeState?.Invoke(StateType.SkillReady);
+            playerStatus.CurMp -= skills[useSkillType].mpCost;         
         }
     }
 

@@ -33,14 +33,12 @@ public class PlayerAttack : MonoBehaviour, IAttack
         }
         attackRate = 1f;
         attackRange = 25f;
-        attackDamage = 10f;
-        //PCInputManager.OnMouseTargetClick += TargetSetting;
+        attackDamage = 10f;        
         EventBus.Subscribe<TargetSelectEvent>(TargetSetting);
     }
 
     private void OnDisable()
-    {
-        //PCInputManager.OnMouseTargetClick -= TargetSetting;
+    {        
         EventBus.UnSubscribe<TargetSelectEvent>(TargetSetting);
     }
 
@@ -51,9 +49,14 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     public void Attack()
     {
-        RotateTowardsTarget(target);
+        if (target != null)
+        {
+            RotateTowardsTarget(target);
+        }        
+
         if (!isAttacking && target)
-        {   
+        {
+            
             isAttacking = true;            
             OnAttackAnims?.Invoke();
         }
@@ -73,12 +76,6 @@ public class PlayerAttack : MonoBehaviour, IAttack
     {   
         obj = ObjectPoolManager.Instance.pool[0].PopObj();
         obj.transform.position = firePoint.position;
-        //if (obj.TryGetComponent<Projectile>(out Projectile proj))
-        //{
-        //    proj.TargetSetting(target);
-        //    proj.SetOwner(gameObject);
-        //    proj.SetEnable(true);
-        //}
         Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(target, gameObject, attackDamage, ProjectileType.Normal));
 
         yield return new WaitForSeconds(1f/attackRate);
@@ -89,7 +86,6 @@ public class PlayerAttack : MonoBehaviour, IAttack
             ActionQueue.Instance.EnqueueAction(StateType.Attack);
             //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
         }
-
 
         if (target == null)
         {

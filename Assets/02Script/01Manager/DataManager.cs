@@ -7,12 +7,26 @@ public class DataManager : MonoBehaviour
     [SerializeField] private SkillData Eskill;
     [SerializeField] private SkillData Rskill;
 
+  
+
     PlayerController playerController;
     private void Awake()
     {
         playerController = FindAnyObjectByType<PlayerController>();
-    }
+
         
+    }
+    //public GameObject LoadSkillPrefab()
+    //{
+    //    GameObject prefab = Resources.Load<GameObject>(prefabPath);
+    //    if (prefab == null)
+    //    {
+    //        Debug.LogError($"Skill prefab not found at path: {prefabPath}");
+    //    }
+    //    return prefab;
+    //}
+
+
     void Start()
     {
         SkillInit(Qskill.GetInterface(), Qskill);

@@ -9,6 +9,8 @@ public class MoveTest : MonoBehaviour
     float randomPosZ;
 
     Vector3 destPos;
+
+    float hp;
     private void Awake()
     {
         TryGetComponent<NavMeshAgent>(out agent);
@@ -18,11 +20,18 @@ public class MoveTest : MonoBehaviour
         randomPosZ = Random.Range(20f, 30f);
         destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
         SetDest(destPos);
+
+        hp = 100f;
     }
 
     private void OnEnable()
     {
         Damage_Event.OnDamageChange += Handle_TakeDamaged;
+    }
+
+    private void OnDisable()
+    {
+        Damage_Event.OnDamageChange -= Handle_TakeDamaged;
     }
 
     private void Update()
@@ -46,6 +55,12 @@ public class MoveTest : MonoBehaviour
         if(damageInfo.defender == gameObject)
         {
             Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
+            hp -= damageInfo.damage;
+        }
+
+        if(hp <0f)
+        {
+            Destroy(gameObject);
         }
     }
 

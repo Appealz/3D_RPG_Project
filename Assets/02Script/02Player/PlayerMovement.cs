@@ -157,6 +157,10 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            StopMove();
+        }
     }
     public void ManualRotate(Vector3 direction)
     {

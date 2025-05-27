@@ -33,8 +33,14 @@ public class Projectile : PoolLabel
     {        
         if(isMove)
         {
+            if (target == null)
+            {
+                ReturnPool();
+            }
+
             moveDir = (target.position - transform.position).normalized;
             Move(moveDir);
+
         }
     }
 
