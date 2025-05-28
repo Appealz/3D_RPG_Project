@@ -71,7 +71,7 @@ public class PCInputManager : ManagerBase, IInputHandler
                 EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                 currentReadySkill = null;
                 //OnReadyToAttackCursor?.Invoke(false);
-                EventBus.Publish(new CursorEventData(cursorType.Idle));
+                //EventBus.Publish(new CursorEventData(cursorType.Idle));
             }
         }
 

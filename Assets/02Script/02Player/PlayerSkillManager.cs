@@ -84,8 +84,7 @@ public class PlayerSkillManager : MonoBehaviour
         {
             if (preparedSkill.SkillType == SkillType.E_Skill)
             {
-                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
-                EventBus.Publish(new CursorEventData(cursorType.Idle)); 
+                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));                
                 preparedSkillType = null;
             }
             else
@@ -110,7 +109,8 @@ public class PlayerSkillManager : MonoBehaviour
             // ÄðÅ¸ÀÓ¸ðµ¨ È£Ãâ
             skillModel.UseSkill(skillActivatedEvent.SkillType, skills[skillActivatedEvent.SkillType].coolTime);
             // mp¼Ò¸ð
-            playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;         
+            playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
         }
     }
 
