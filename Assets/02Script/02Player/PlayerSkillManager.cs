@@ -84,7 +84,7 @@ public class PlayerSkillManager : MonoBehaviour
         {
             if (preparedSkill.SkillType == SkillType.E_Skill)
             {
-                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));                
+                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
                 preparedSkillType = null;
             }
             else

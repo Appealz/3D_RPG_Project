@@ -84,7 +84,7 @@ public class Projectile : PoolLabel
 
     public void Move(Vector3 dir)
     {
-        rb.linearVelocity = dir * 5f;
+        rb.linearVelocity = dir * 10f;
     }
 
     public void SetEnable(bool newEnable)

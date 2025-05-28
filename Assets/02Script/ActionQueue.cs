@@ -37,5 +37,9 @@ public class ActionQueue : Singleton<ActionQueue>
         return stateQueue.Count > 0;
     }
 
+    public void QueueCheck()
+    {
+        Debug.Log($"현재 큐 개수 : {stateQueue.Count}");
+    }
 
 }

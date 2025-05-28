@@ -140,6 +140,11 @@ public class PlayerController : ManagerBase
         playerState.UpdateState();
         playerSkillManager.UpdateSKillCoolTIme();
         playerStatus.RecoverMp(Time.deltaTime);
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            ActionQueue.Instance.QueueCheck();
+        }        
     }
 
     public override void StopGame()

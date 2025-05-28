@@ -131,18 +131,21 @@ public class PCInputManager : ManagerBase, IInputHandler
             Debug.Log("스킬 사용 불가");
             return;
         }
-
-        if (currentReadySkill != SkillType.E_Skill)
+        else
         {
-            //OnReadyToAttackCursor?.Invoke(true);
+            EventBus.Publish(new SkillPreparedEvent(currentReadySkill.Value));
         }
+        //if (currentReadySkill != SkillType.E_Skill)
+        //{
+        //    //OnReadyToAttackCursor?.Invoke(true);
+        //}
 
-        EventBus.Publish(new SkillPreparedEvent(currentReadySkill.Value));
+        
     }
 
-    private void OnSkillPrepared(SkillPreparedEvent e)
+    private void OnSkillPrepared(SkillPreparedEvent preparedSkillType)
     {
-        currentReadySkill = e.SkillType;
+        currentReadySkill = preparedSkillType.SkillType;
 
         // 커서 전환까지 여기서 처리하면 버튼, 키보드 모두 동일 로직
         //OnReadyToAttackCursor?.Invoke(true);
@@ -155,6 +158,8 @@ public class PCInputManager : ManagerBase, IInputHandler
             //Debug.Log("타겟 추적");
             //OnMouseTargetClick?.Invoke(hit.transform);
             EventBus.Publish(new TargetSelectEvent(hit.transform));
+            ActionQueue.Instance.ClearQueue(); // 혹시 모를 꼬임 방지
+            ActionQueue.Instance.EnqueueAction(StateType.Attack); // 명시적으로 Attack 큐잉
         }
         else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {            
