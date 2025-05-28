@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public struct SkillPreparedEvent
@@ -19,8 +20,14 @@ public class SkillActivatedEvent
     }
 }
 
-public class SkillEventData
-{ 
+public class SkillAvailablityEvent
+{
+    public SkillType SkillType;
+    public Action<bool> Callback;  // 답변 콜백
 
-
+    public SkillAvailablityEvent(SkillType skillType, Action<bool> callback)
+    {
+        SkillType = skillType;
+        Callback = callback;
+    }
 }

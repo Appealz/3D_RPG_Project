@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerSkillManager : MonoBehaviour
 {
@@ -25,14 +26,21 @@ public class PlayerSkillManager : MonoBehaviour
         EventBus.Subscribe<SkillPreparedEvent>(PreparedSkill);
         EventBus.Subscribe<SkillActivatedEvent>(UseSkill);
 
-        PCInputManager.OnSkillAvailablity += IsSkillUse;
+        EventBus.Subscribe<SkillAvailablityEvent>(OnSkillUse);
+
+        //PCInputManager.OnSkillAvailablity += IsSkillUse;
         //PCInputManager.OnSkillActive += HandleSkillUseRequested;
     }
 
     private void OnDisable()
     {
-        PCInputManager.OnSkillAvailablity -= IsSkillUse;
+        //PCInputManager.OnSkillAvailablity -= IsSkillUse;
         //PCInputManager.OnSkillActive -= HandleSkillUseRequested;
+
+        EventBus.UnSubscribe<SkillPreparedEvent>(PreparedSkill);
+        EventBus.UnSubscribe<SkillActivatedEvent>(UseSkill);
+
+        EventBus.UnSubscribe<SkillAvailablityEvent>(OnSkillUse);
     }
 
     public void InitStatus(PlayerStatus status)
@@ -66,35 +74,35 @@ public class PlayerSkillManager : MonoBehaviour
     }
 
     public void PreparedSkill(SkillPreparedEvent preparedSkill)
-    {        
+    {
         if(!IsSkillUse(preparedSkill.SkillType))
         {
-            return;
-        }
-
-        if(preparedSkill.SkillType == SkillType.E_Skill)
-        {
-            //UseSkill(preparedSkill.SkillType);
-            UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
             preparedSkillType = null;
+            return;
         }
         else
         {
-            preparedSkillType = preparedSkill.SkillType;
+            if (preparedSkill.SkillType == SkillType.E_Skill)
+            {
+                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
+                EventBus.Publish(new CursorEventData(cursorType.Idle)); 
+                preparedSkillType = null;
+            }
+            else
+            {
+                EventBus.Publish(new CursorEventData(cursorType.Aim));
+                preparedSkillType = preparedSkill.SkillType;
+            }
         }
     }
 
-    //private void HandleSkillUseRequested()
-    //{
-    //    if(preparedSkillType.HasValue)
-    //    {
-    //        UseSkill(preparedSkillType.Value);
-    //        preparedSkillType = null;
-    //    }
-    //}
-
     public void UseSkill(SkillActivatedEvent skillActivatedEvent)
     {
+        if (!IsSkillUse(skillActivatedEvent.SkillType))
+        {
+            preparedSkillType = null;
+            return;
+        }
         Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {            
@@ -104,6 +112,13 @@ public class PlayerSkillManager : MonoBehaviour
             // mp소모
             playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;         
         }
+    }
+
+
+    private void OnSkillUse(SkillAvailablityEvent skillEvent)
+    {
+        bool canUse = (IsSkillUsableCoolTime(skillEvent.SkillType) && IsSkillUsableMp(skillEvent.SkillType));
+        skillEvent.Callback?.Invoke(canUse);
     }
 
     public bool IsSkillUse(SkillType useSkillType)

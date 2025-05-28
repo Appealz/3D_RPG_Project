@@ -18,13 +18,13 @@ public class PCInputManager : ManagerBase, IInputHandler
     //public static event Action<Vector3> OnMouseMoveClick;
     //public static event Action<Transform> OnMouseTargetClick;
 
-    public static event Func<SkillType, bool> OnSkillAvailablity;
+    //public static event Func<SkillType, bool> OnSkillAvailablity;
 
     //public event Action<SkillType> OnSkillButtonInput;
     //public static event Action OnSkillActive;
         
     // CursorManager
-    public static event Action<bool> OnReadyToAttackCursor;
+    //public static event Action<bool> OnReadyToAttackCursor;
     public static event Action<StateType> OnStop;
 
     // SkillManager
@@ -34,6 +34,17 @@ public class PCInputManager : ManagerBase, IInputHandler
     //private bool isSkillReady;
 
     private SkillType? currentReadySkill = null;
+    private void OnEnable()
+    {
+        EventBus.Subscribe<SkillPreparedEvent>(OnSkillPrepared);        
+    }
+
+    private void OnDisable()
+    {
+        EventBus.UnSubscribe<SkillPreparedEvent>(OnSkillPrepared);
+    }
+
+
 
     public override void CustomUpdate()
     {
@@ -43,7 +54,8 @@ public class PCInputManager : ManagerBase, IInputHandler
         if (Input.GetMouseButtonDown(1))
         {
             GetInputClick();
-            OnReadyToAttackCursor?.Invoke(false);
+            //OnReadyToAttackCursor?.Invoke(false);
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
             if (currentReadySkill.HasValue)
             {
                 currentReadySkill = null;
@@ -58,8 +70,9 @@ public class PCInputManager : ManagerBase, IInputHandler
                 //OnSkillActive?.Invoke();
                 EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                 currentReadySkill = null;
-                OnReadyToAttackCursor?.Invoke(false);
-            }            
+                //OnReadyToAttackCursor?.Invoke(false);
+                EventBus.Publish(new CursorEventData(cursorType.Idle));
+            }
         }
 
         // 스킬 키 입력
@@ -67,27 +80,27 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             if (Input.GetKeyDown(binding.Key))
             {
-                if (!OnSkillAvailablity.Invoke(binding.Value))
-                {
-                    Debug.Log("스킬 사용 불가");
-                    return;
-                }
-                if(binding.Value != SkillType.E_Skill)
-                {
-                    OnReadyToAttackCursor?.Invoke(true);
-                }                
+                //if (!OnSkillAvailablity.Invoke(binding.Value))
+                //{
+                //    Debug.Log("스킬 사용 불가");
+                //    return;
+                //}
+                //if(binding.Value != SkillType.E_Skill)
+                //{
+                //    OnReadyToAttackCursor?.Invoke(true);
+                //}
                 //OnSkillButtonInput?.Invoke(binding.Value);
                 currentReadySkill = binding.Value;
-                EventBus.Publish(new SkillPreparedEvent(currentReadySkill.Value));
+                EventBus.Publish(new SkillAvailablityEvent(binding.Value, OnKeySkillAvailablityChecked));
+                //EventBus.Publish(new SkillPreparedEvent(binding.Value));
             }
         }
-
-
 
         // 공격(A)키 입력
         if (Input.GetKeyDown(KeyCode.A))
         {
-            OnReadyToAttackCursor?.Invoke(true);
+            //OnReadyToAttackCursor?.Invoke(true);
+            EventBus.Publish(new CursorEventData(cursorType.Aim));
             isAttackOn = true;
         }
 
@@ -95,7 +108,8 @@ public class PCInputManager : ManagerBase, IInputHandler
         if(Input.GetKeyDown(KeyCode.S))
         {
             OnStop?.Invoke(StateType.Idle);
-            OnReadyToAttackCursor?.Invoke(false);
+            //OnReadyToAttackCursor?.Invoke(false);
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
         }
 
         // 공격키가 입력되어있을때
@@ -104,12 +118,35 @@ public class PCInputManager : ManagerBase, IInputHandler
             if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
             {
                 GetInputClick();
-                OnReadyToAttackCursor?.Invoke(false);
+                //OnReadyToAttackCursor?.Invoke(false);
+                EventBus.Publish(new CursorEventData(cursorType.Idle));
             }
         }
-
     }
 
+    private void OnKeySkillAvailablityChecked(bool canUse)
+    {
+        if (!canUse)
+        {
+            Debug.Log("스킬 사용 불가");
+            return;
+        }
+
+        if (currentReadySkill != SkillType.E_Skill)
+        {
+            //OnReadyToAttackCursor?.Invoke(true);
+        }
+
+        EventBus.Publish(new SkillPreparedEvent(currentReadySkill.Value));
+    }
+
+    private void OnSkillPrepared(SkillPreparedEvent e)
+    {
+        currentReadySkill = e.SkillType;
+
+        // 커서 전환까지 여기서 처리하면 버튼, 키보드 모두 동일 로직
+        //OnReadyToAttackCursor?.Invoke(true);
+    }
     public void GetInputClick()
     {   
         RaycastHit hit;
@@ -124,7 +161,8 @@ public class PCInputManager : ManagerBase, IInputHandler
             GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
             obj.transform.position = hit.point;         
             //OnMouseMoveClick?.Invoke(hit.point);
-            OnReadyToAttackCursor?.Invoke(false);
+            //OnReadyToAttackCursor?.Invoke(false);
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
             EventBus.Publish(new TargetPositionEvent(hit.point));
         }
         isAttackOn = false;
