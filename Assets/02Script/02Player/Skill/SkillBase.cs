@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public abstract class SkillBase : MonoBehaviour,ISkill
+public abstract class SkillBase : ISkill
 {
     protected SkillData skillData;
     protected GameObject fireOwner;
@@ -16,24 +16,32 @@ public abstract class SkillBase : MonoBehaviour,ISkill
     public virtual float mpCost => skillData.mpCost;
     public StateType myState => skillData.stateType;
 
+    /// <summary>
+    /// 오너 설정
+    /// </summary>
+    /// <param name="owner"></param>
     public virtual void SetOwner(GameObject owner)
     {
         fireOwner = owner;
     }
 
-    public virtual void Init(SkillData newData)
+    /// <summary>
+    /// SkillData(Scriptable Object)연결
+    /// </summary>
+    /// <param name="newData"></param>
+    public virtual void SetupData(SkillData newData)
     {
         skillData = newData;
-        Debug.Log($"myType : {myType}");
-        Debug.Log($"skillName : {skillName}");
-        Debug.Log($"coolTime : {coolTime}");
-        Debug.Log($"damage : {damage}");
-        Debug.Log($"mpCost : {mpCost}");
+        //Debug.Log($"myType : {myType}");
+        //Debug.Log($"skillName : {skillName}");
+        //Debug.Log($"coolTime : {coolTime}");
+        //Debug.Log($"damage : {damage}");
+        //Debug.Log($"mpCost : {mpCost}");
     }
 
     public abstract void Activate();
     public abstract void CreateEffect();
     public abstract void Finish();
 
-    public abstract void TargetSetting(TargetSelectEvent targetEvent);    
+    
 }

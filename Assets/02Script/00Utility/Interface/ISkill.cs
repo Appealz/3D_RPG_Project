@@ -12,14 +12,9 @@ public interface ISkill
 
     event Action OnSkillActivated;
     event Action<StateType> OnStateChange;
-    void Init(SkillData newData);
-
+    void SetupData(SkillData newData);
     void SetOwner(GameObject owner);
     void Activate();   
-
     void CreateEffect();
     void Finish();
-
-    void TargetSetting(TargetSelectEvent targetEvent);
-
 }

@@ -65,7 +65,7 @@ public class CursorManager : ManagerBase
     {
         if (currentCursorType != newType)
         {
-            Debug.Log("커서 변경");
+            //Debug.Log("커서 변경");
             Cursor.SetCursor(cursorTypes[newType], Vector2.zero, CursorMode.Auto);            
             currentCursorType = newType; // 현재 커서 상태를 업데이트
         }

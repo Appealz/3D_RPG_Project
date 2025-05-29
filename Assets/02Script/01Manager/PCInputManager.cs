@@ -73,9 +73,19 @@ public class PCInputManager : ManagerBase, IInputHandler
                 {
                     //Debug.Log("타겟 추적");
                     //OnMouseTargetClick?.Invoke(hit.transform);
-                    EventBus.Publish(new TargetSelectEvent(hit.transform));                    
+                    EventBus.Publish(new TargetSelectEvent(hit.transform));
+                    EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                 }
-                EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                {
+                    GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
+                    obj.transform.position = hit.point;
+                    //OnMouseMoveClick?.Invoke(hit.point);
+                    //OnReadyToAttackCursor?.Invoke(false);
+                    EventBus.Publish(new CursorEventData(cursorType.Idle));
+                    EventBus.Publish(new TargetPositionEvent(hit.point));
+                }
+                
                 currentReadySkill = null;
                 //OnReadyToAttackCursor?.Invoke(false);
                 //EventBus.Publish(new CursorEventData(cursorType.Idle));
@@ -183,7 +193,7 @@ public class PCInputManager : ManagerBase, IInputHandler
 
     public void BindKeyToSkill(KeyCode key, SkillType skillType)
     {
-        Debug.Log("인풋 매니저 스킬 바인딩");
+        //Debug.Log("인풋 매니저 스킬 바인딩");
         keySkillBindings[key] = skillType;
     }
 }

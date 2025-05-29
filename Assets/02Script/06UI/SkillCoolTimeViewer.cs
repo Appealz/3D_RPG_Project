@@ -24,7 +24,7 @@ public class SkillCoolTimeViewer : MonoBehaviour
     {
         if(coolDownStruc.Type == skillType)
         {
-            Debug.Log("쿨타임 시작");
+            //Debug.Log("쿨타임 시작");
             StartCoroutine(StartCoolTimeCoroutine(coolDownStruc.CoolDownTime));
         }
     }

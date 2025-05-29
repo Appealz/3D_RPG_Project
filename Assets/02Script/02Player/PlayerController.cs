@@ -67,6 +67,7 @@ public class PlayerController : ManagerBase
     private PlayerAttack playerAttack;
     private PlayerState playerState;
     private PlayerSkillManager playerSkillManager;
+    private PlayerAnimManager playerAnimManager;
 
 
     private void Awake()
@@ -76,6 +77,7 @@ public class PlayerController : ManagerBase
         TryGetComponent<PlayerAttack>(out playerAttack);
         TryGetComponent<PlayerState>(out playerState);
         TryGetComponent<PlayerSkillManager>(out playerSkillManager);       
+        TryGetComponent<PlayerAnimManager>(out playerAnimManager);
     }
 
     private void OnEnable()
@@ -157,29 +159,37 @@ public class PlayerController : ManagerBase
     {
         playerSkillManager.AddSkill(key, skill);
         inputHandler.BindKeyToSkill(key, skill.myType);
+        
 
         switch (skill.myState)
         {
             case StateType.SkillQ:
                 playerState.OnQSkillEvent += skill.Activate;
-                Debug.Log("스킬 Active 등록");
+                //Debug.Log("스킬 Active 등록");
                 skill.OnStateChange += playerState.ChangeState;
-                Debug.Log("ChangeState 등록");
+                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Qskill", skill);
+                //Debug.Log("ChangeState 등록");
                 break;
             case StateType.SkillW:
                 playerState.OnWSkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
+                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Wskill", skill);
                 break;
             case StateType.SkillE:
                 playerState.OnESkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
+                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Eskill", skill);
                 break;
             case StateType.SkillR:
                 playerState.OnRSkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
+                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Rskill", skill);
                 break;
         }
     }
 
-
+    private void Skill_OnSkillActivated()
+    {
+        throw new System.NotImplementedException();
+    }
 }

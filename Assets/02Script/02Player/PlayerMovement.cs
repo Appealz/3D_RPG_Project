@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
         //PCInputManager.OnMouseMoveClick += SetPosition;
         //PCInputManager.OnMouseTargetClick += SetTarget;
-        Debug.Log("OnRotate 연결 완료");
+        //Debug.Log("OnRotate 연결 완료");
         playerStatus = new PlayerStatus();
 
         
@@ -144,16 +144,37 @@ public class PlayerMovement : MonoBehaviour
             RunAnims(OnTarget);
 
             ManualRotate(agent.desiredVelocity);
-            if ((target.transform.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
+ 
+            if(ActionQueue.Instance.PeekNext() == StateType.SkillQ)
             {
-                StopMove();                
-                if(ActionQueue.Instance.HasQueue())
+
+                if ((target.transform.position - transform.position).sqrMagnitude < 100f)
                 {
-                    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                    Debug.Log($"[ChaseMove] distance: {(target.transform.position - transform.position).sqrMagnitude}");
+                    StopMove();
+                    if (ActionQueue.Instance.HasQueue())
+                    {
+                        OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                    }
+                    else
+                    {
+                        OnChangeState?.Invoke(StateType.SkillQ);
+                    }
                 }
-                else
+            }
+            else
+            {
+                if ((target.transform.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
                 {
-                    OnChangeState?.Invoke(StateType.Attack);
+                    StopMove();
+                    if (ActionQueue.Instance.HasQueue())
+                    {
+                        OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                    }
+                    else
+                    {
+                        OnChangeState?.Invoke(StateType.Attack);
+                    }
                 }
             }
         }

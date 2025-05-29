@@ -61,11 +61,18 @@ public class PlayerSkillManager : MonoBehaviour
     {
         skills[skill.myType] = skill;
         skill.SetOwner(gameObject);
-        EventBus.Subscribe<TargetSelectEvent>(skill.TargetSetting);
+                
+        if (skill is TargetSkillBase targetable)
+        {
+            EventBus.Subscribe<TargetSelectEvent>(targetable.TargetSetting);
+        }        
+
         if (skillAnimMap.TryGetValue(skill.myType, out var animAction))
         {
             skill.OnSkillActivated += animAction;
         }
+        skill.OnSkillActivated += () => skillModel.UseSkill(skill.myType, skills[skill.myType].coolTime);
+        skill.OnSkillActivated += () => ConsumeMp(skill.myType);
     }
 
     public void UpdateSKillCoolTIme()
@@ -102,18 +109,22 @@ public class PlayerSkillManager : MonoBehaviour
             preparedSkillType = null;
             return;
         }
-        Debug.Log("스킬 눌림");
+        //Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {            
             OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
             // 쿨타임모델 호출
-            skillModel.UseSkill(skillActivatedEvent.SkillType, skills[skillActivatedEvent.SkillType].coolTime);
+            //skillModel.UseSkill(skillActivatedEvent.SkillType, skills[skillActivatedEvent.SkillType].coolTime);
             // mp소모
-            playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;
+            //playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;
             EventBus.Publish(new CursorEventData(cursorType.Idle));
         }
     }
 
+    public void ConsumeMp(SkillType skilltype)
+    {
+        playerStatus.CurMp -= skills[skilltype].mpCost;
+    }
 
     private void OnSkillUse(SkillAvailablityEvent skillEvent)
     {

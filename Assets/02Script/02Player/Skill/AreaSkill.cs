@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class E_Skill : SkillBase, ISkill
+public class AreaSkill : NonTargetSkillBase
 {
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
@@ -22,8 +22,4 @@ public class E_Skill : SkillBase, ISkill
         
     }
 
-    public override void TargetSetting(TargetSelectEvent targetEvent)
-    {
-        
-    }
 }

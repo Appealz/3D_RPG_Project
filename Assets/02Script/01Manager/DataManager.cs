@@ -7,43 +7,40 @@ public class DataManager : MonoBehaviour
     [SerializeField] private SkillData Eskill;
     [SerializeField] private SkillData Rskill;
 
+    TargetSkill q_Skill;
+    NonTargetSkill w_Skill;
+    BarrierSkill e_Skill;
+    AreaSkill r_Skill;
   
-
     PlayerController playerController;
     private void Awake()
     {
         playerController = FindAnyObjectByType<PlayerController>();
-
-        
+        q_Skill = new TargetSkill();
+        w_Skill = new NonTargetSkill();
+        e_Skill = new BarrierSkill();
+        r_Skill = new AreaSkill();
     }
-    //public GameObject LoadSkillPrefab()
-    //{
-    //    GameObject prefab = Resources.Load<GameObject>(prefabPath);
-    //    if (prefab == null)
-    //    {
-    //        Debug.LogError($"Skill prefab not found at path: {prefabPath}");
-    //    }
-    //    return prefab;
-    //}
-
 
     void Start()
     {
-        SkillInit(Qskill.GetInterface(), Qskill);
-        playerController.RegistSkill(KeyCode.Q, Qskill.GetInterface());
+        q_Skill.SetupData(Qskill);
+        q_Skill.SetOwner(playerController.gameObject);
+        w_Skill.SetupData(Wskill);
+        w_Skill.SetOwner(playerController.gameObject);
+        e_Skill.SetupData(Eskill);
+        e_Skill.SetOwner(playerController.gameObject);
+        r_Skill.SetupData(Rskill);
+        r_Skill.SetOwner(playerController.gameObject);
 
-        SkillInit(Wskill.GetInterface(), Wskill);
-        playerController.RegistSkill(KeyCode.W, Wskill.GetInterface());
-
-        SkillInit(Eskill.GetInterface(), Eskill);
-        playerController.RegistSkill(KeyCode.E, Eskill.GetInterface());
-
-        SkillInit(Rskill.GetInterface(), Rskill);
-        playerController.RegistSkill(KeyCode.R, Rskill.GetInterface());
+        playerController.RegistSkill(KeyCode.Q, q_Skill);        
+        playerController.RegistSkill(KeyCode.W, w_Skill);
+        playerController.RegistSkill(KeyCode.E, e_Skill);
+        playerController.RegistSkill(KeyCode.R, r_Skill);
     }
 
-    private void SkillInit(ISkill skill, SkillData skillData)
-    {
-        skill.Init(skillData);
-    }
+    //private void SkillInit(ISkill skill, SkillData skillData)
+    //{
+    //    skill.Init(skillData);
+    //}
 }

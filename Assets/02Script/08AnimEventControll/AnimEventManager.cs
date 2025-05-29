@@ -18,4 +18,11 @@ public class AnimEventManager : MonoBehaviour
             events[item.animationName] = item;
         }
     }
+    public List<TimeEvent> GetEventsForAnimation(string animationName)
+    {
+        if (events.TryGetValue(animationName, out var data))
+            return data.animEventTimer;
+
+        return null;
+    }
 }
