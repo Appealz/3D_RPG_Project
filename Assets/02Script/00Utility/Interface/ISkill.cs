@@ -15,6 +15,11 @@ public interface ISkill
     void Init(SkillData newData);
 
     void SetOwner(GameObject owner);
-    void Activate();
-    void TriggerEvent();
+    void Activate();   
+
+    void CreateEffect();
+    void Finish();
+
+    void TargetSetting(TargetSelectEvent targetEvent);
+
 }

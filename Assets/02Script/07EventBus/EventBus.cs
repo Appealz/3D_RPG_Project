@@ -37,6 +37,9 @@ public enum ProjectileType
     Rskill,
 }
 
+/// <summary>
+/// 타겟, 발사주체, 데미지, 프로젝타일 타입을 정해주는 구조체
+/// </summary>
 public struct ProjectileInfo
 {
     public Transform target;
@@ -44,6 +47,9 @@ public struct ProjectileInfo
     public float damage;
     public ProjectileType myType;
 
+    /// <summary>
+    /// 타겟(transform), 발사주체(Gameobject), 데미지(float), 프로젝타일 타입(ProjectileType)
+    /// </summary>
     public ProjectileInfo(Transform newTarget, GameObject newOwner, float newDamage, ProjectileType newType)
     {
         target = newTarget;

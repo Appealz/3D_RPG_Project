@@ -12,10 +12,18 @@ public class E_Skill : SkillBase, ISkill
         OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
     }
 
-    public override void TriggerEvent()
+    public override void CreateEffect()
     {
         
     }
 
+    public override void Finish()
+    {
+        
+    }
 
+    public override void TargetSetting(TargetSelectEvent targetEvent)
+    {
+        
+    }
 }

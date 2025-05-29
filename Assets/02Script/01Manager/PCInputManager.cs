@@ -68,6 +68,13 @@ public class PCInputManager : ManagerBase, IInputHandler
             if(currentReadySkill.HasValue)
             {
                 //OnSkillActive?.Invoke();
+                RaycastHit hit;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+                {
+                    //Debug.Log("Å¸°Ù ÃßÀû");
+                    //OnMouseTargetClick?.Invoke(hit.transform);
+                    EventBus.Publish(new TargetSelectEvent(hit.transform));                    
+                }
                 EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                 currentReadySkill = null;
                 //OnReadyToAttackCursor?.Invoke(false);

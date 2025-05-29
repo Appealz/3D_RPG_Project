@@ -13,7 +13,17 @@ public class W_Skill : SkillBase, ISkill
         Debug.Log("상태 변환 완료");
     }
 
-    public override void TriggerEvent()
+    public override void CreateEffect()
+    {
+
+    }
+
+    public override void Finish()
+    {
+
+    }
+
+    public override void TargetSetting(TargetSelectEvent targetEvent)
     {
         
     }

@@ -61,8 +61,8 @@ public class PlayerSkillManager : MonoBehaviour
     {
         skills[skill.myType] = skill;
         skill.SetOwner(gameObject);
-
-        if(skillAnimMap.TryGetValue(skill.myType, out var animAction))
+        EventBus.Subscribe<TargetSelectEvent>(skill.TargetSetting);
+        if (skillAnimMap.TryGetValue(skill.myType, out var animAction))
         {
             skill.OnSkillActivated += animAction;
         }

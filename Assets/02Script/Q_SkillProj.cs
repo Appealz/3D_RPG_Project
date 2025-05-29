@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Projectile : PoolLabel
+public class Q_SkillProj : PoolLabel
 {
     Rigidbody rb;
     Transform target;
@@ -13,7 +13,7 @@ public class Projectile : PoolLabel
     Vector3 lastTargetPos;
     private void Awake()
     {
-        if(!TryGetComponent<Rigidbody>(out rb))
+        if (!TryGetComponent<Rigidbody>(out rb))
         {
             Debug.Log($"{gameObject.name} : Proejctile.cs - Awake() - rb is not ref");
         }
@@ -32,8 +32,8 @@ public class Projectile : PoolLabel
     }
 
     private void Update()
-    {        
-        if(isMove)
+    {
+        if (isMove)
         {
             if (target == null)
             {
@@ -58,8 +58,8 @@ public class Projectile : PoolLabel
 
     public void SettingInfo(ProjectileInfo projInfo)
     {
-        if(projInfo.myType == ProjectileType.Normal)
-        {            
+        if (projInfo.myType == ProjectileType.Qskill)
+        {
             Owner = projInfo.owner;
             damage = projInfo.damage;
             TargetSetting(projInfo.target);
@@ -86,10 +86,12 @@ public class Projectile : PoolLabel
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Enemy") && other.gameObject == target.gameObject)
-        {            
+        if (other.CompareTag("Enemy") && other.gameObject == target.gameObject)
+        {
             Damage_Event.TakeDamage(new DamageInfo(Owner, target.gameObject, damage));
             ReturnPool();
         }
     }
 }
+
+

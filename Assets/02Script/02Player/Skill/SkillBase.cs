@@ -32,6 +32,8 @@ public abstract class SkillBase : MonoBehaviour,ISkill
     }
 
     public abstract void Activate();
-    public abstract void TriggerEvent();
+    public abstract void CreateEffect();
+    public abstract void Finish();
 
+    public abstract void TargetSetting(TargetSelectEvent targetEvent);    
 }
