@@ -5,23 +5,64 @@ public class NonTargetSkill : NonTargetSkillBase
 {
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
+        
+    public Vector3 targetPos;
 
+    private bool isActive = true;
+    private bool isAttacking = false;
+
+    private GameObject obj;
+
+    private Transform firePoint;
     public override void Activate()
     {
-        OnSkillActivated?.Invoke();
-        OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
-        Debug.Log("상태 변환 완료");
+        Debug.Log($"{targetPos}");
+        EventBus.Publish(new RotateToPosEvent(targetPos));
+
+        if (isActive)
+        {
+            isAttacking = true;
+            firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
+            EventBus.Publish(new PlayerMoveLockEvent(false));
+            OnSkillActivated?.Invoke();
+            //CreateEffect();
+
+            isActive = false;
+        }
+        //OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
+        //Finish();
+
+        
     }
 
     public override void CreateEffect()
     {
-
+        obj = ObjectPoolManager.Instance.pool[3].PopObj();
+        if(obj == null)
+        {
+            Debug.Log("obj 참조안됨");
+            return;
+        }
+        else
+        {
+            obj.transform.position = firePoint.transform.position;
+        }
+        Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(null, fireOwner, damage, ProjectileType.Wskill));
+        Debug.Log("상태 변환 완료");
     }
 
     public override void Finish()
     {
-
+        OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
+        isActive = true;
+        isAttacking = false;
+        EventBus.Publish(new PlayerMoveLockEvent(true));
     }
 
+    public override void TargetPositionSetting(SkillTargetPositionEvent targetEvent)
+    {
+        targetPos = targetEvent.TargetPos;
+    }
 
+    
 }

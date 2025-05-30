@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 public class TargetSkill : TargetSkillBase
 {
@@ -28,7 +29,7 @@ public class TargetSkill : TargetSkillBase
         {
             isAttacking = true;
             firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
-
+            EventBus.Publish(new PlayerMoveLockEvent(false));
             OnSkillActivated?.Invoke();
             //CreateEffect();
 
@@ -36,10 +37,13 @@ public class TargetSkill : TargetSkillBase
         }
         //OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
         //Finish();
+
+        EventBus.Publish(new RotateToTargetEvent(targetPos));
     }
 
     public override void CreateEffect()
     {
+
         obj = ObjectPoolManager.Instance.pool[2].PopObj();
         obj.transform.position = firePoint.transform.position;
         Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(targetPos, fireOwner, damage, ProjectileType.Qskill));
@@ -50,10 +54,11 @@ public class TargetSkill : TargetSkillBase
     {
         OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
         //isActive = true;
-        isAttacking = false;    
+        isAttacking = false;
+        EventBus.Publish(new PlayerMoveLockEvent(true));
     }
 
-    public override void TargetSetting(TargetSelectEvent targetEvent)
+    public override void TargetSetting(SkillTargetSelectedEvent targetEvent)
     {
         targetPos = targetEvent.Target;
     }
@@ -64,8 +69,9 @@ public class TargetSkill : TargetSkillBase
         Debug.Log($"[TargetSkill] distance: {distSqr}");
 
         if (distSqr > 100f)
-        {
-            //ActionQueue.Instance.EnqueueAction(myState);
+        {            
+            ActionQueue.Instance.EnqueueAction(myState);
+            EventBus.Publish(new TargetSelectEvent(targetPos));
             OnStateChange?.Invoke(StateType.Chase);
         }
         else
@@ -73,4 +79,6 @@ public class TargetSkill : TargetSkillBase
             isActive = true;
         }
     }
+
+
 }

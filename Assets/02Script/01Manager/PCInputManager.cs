@@ -73,17 +73,19 @@ public class PCInputManager : ManagerBase, IInputHandler
                 {
                     //Debug.Log("Å¸°Ù ÃßÀû");
                     //OnMouseTargetClick?.Invoke(hit.transform);
-                    EventBus.Publish(new TargetSelectEvent(hit.transform));
-                    EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                    EventBus.Publish(new SkillTargetSelectedEvent(hit.transform));
+                    if(currentReadySkill.Value == SkillType.Q_Skill)
+                    {
+                        EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                    }
                 }
                 else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
                 {
-                    GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
-                    obj.transform.position = hit.point;
-                    //OnMouseMoveClick?.Invoke(hit.point);
-                    //OnReadyToAttackCursor?.Invoke(false);
-                    EventBus.Publish(new CursorEventData(cursorType.Idle));
-                    EventBus.Publish(new TargetPositionEvent(hit.point));
+                    if(currentReadySkill.Value == SkillType.W_Skill)
+                    {
+                        EventBus.Publish(new SkillTargetPositionEvent(hit.point));
+                        EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                    }
                 }
                 
                 currentReadySkill = null;

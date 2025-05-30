@@ -64,8 +64,12 @@ public class PlayerSkillManager : MonoBehaviour
                 
         if (skill is TargetSkillBase targetable)
         {
-            EventBus.Subscribe<TargetSelectEvent>(targetable.TargetSetting);
+            EventBus.Subscribe<SkillTargetSelectedEvent>(targetable.TargetSetting);
         }        
+        if(skill is NonTargetSkillBase nontargetable)
+        {
+            EventBus.Subscribe<SkillTargetPositionEvent>(nontargetable.TargetPositionSetting);
+        }
 
         if (skillAnimMap.TryGetValue(skill.myType, out var animAction))
         {

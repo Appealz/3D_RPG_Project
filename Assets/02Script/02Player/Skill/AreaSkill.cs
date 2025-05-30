@@ -22,4 +22,8 @@ public class AreaSkill : NonTargetSkillBase
         
     }
 
+    public override void TargetPositionSetting(SkillTargetPositionEvent targetEvent)
+    {
+        //throw new NotImplementedException();
+    }
 }

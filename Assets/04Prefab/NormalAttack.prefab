@@ -24298,7 +24298,7 @@ GameObject:
   - component: {fileID: 7252264816352814124}
   - component: {fileID: 1092713372103915791}
   m_Layer: 0
-  m_Name: FX_BulletTrail_Red
+  m_Name: NormalAttack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

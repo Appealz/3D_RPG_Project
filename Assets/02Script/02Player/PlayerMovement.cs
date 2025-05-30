@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Editor;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -50,12 +51,16 @@ public class PlayerMovement : MonoBehaviour
     {
         EventBus.Subscribe<TargetSelectEvent>(SetTarget);
         EventBus.Subscribe<TargetPositionEvent>(SetPosition);
+        EventBus.Subscribe<PlayerMoveLockEvent>(PlayerMoveState);
+        EventBus.Subscribe<RotateToPosEvent>(RotateEvent);
     }
 
     private void OnDisable()
     {
         EventBus.UnSubscribe<TargetSelectEvent>(SetTarget);
         EventBus.UnSubscribe<TargetPositionEvent>(SetPosition);
+        EventBus.UnSubscribe<PlayerMoveLockEvent>(PlayerMoveState);
+        EventBus.UnSubscribe<RotateToPosEvent>(RotateEvent);
     }
     public void InitMove(float newSpeed)
     {
@@ -105,7 +110,8 @@ public class PlayerMovement : MonoBehaviour
         StartMove();        
         target = null;
         OnTarget = false;
-        destination = targetPositionEvent.TargetPos;        
+        destination = targetPositionEvent.TargetPos;
+        ActionQueue.Instance.ClearQueue();
     }
 
     public void Move()
@@ -143,40 +149,21 @@ public class PlayerMovement : MonoBehaviour
             agent.SetDestination(target.transform.position);
             RunAnims(OnTarget);
 
-            ManualRotate(agent.desiredVelocity);
- 
-            if(ActionQueue.Instance.PeekNext() == StateType.SkillQ)
-            {
+            ManualRotate(agent.desiredVelocity); 
 
-                if ((target.transform.position - transform.position).sqrMagnitude < 100f)
-                {
-                    Debug.Log($"[ChaseMove] distance: {(target.transform.position - transform.position).sqrMagnitude}");
-                    StopMove();
-                    if (ActionQueue.Instance.HasQueue())
-                    {
-                        OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
-                    }
-                    else
-                    {
-                        OnChangeState?.Invoke(StateType.SkillQ);
-                    }
-                }
-            }
-            else
+            if ((target.transform.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
-                if ((target.transform.position - transform.position).sqrMagnitude < playerStatus.attackRagne)
+                StopMove();
+                if (ActionQueue.Instance.HasQueue())
                 {
-                    StopMove();
-                    if (ActionQueue.Instance.HasQueue())
-                    {
-                        OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
-                    }
-                    else
-                    {
-                        OnChangeState?.Invoke(StateType.Attack);
-                    }
+                    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                }
+                else
+                {
+                    OnChangeState?.Invoke(StateType.Attack);
                 }
             }
+            
         }
         else
         {
@@ -192,9 +179,30 @@ public class PlayerMovement : MonoBehaviour
                 transform.rotation,
                 targetRot,
                 Time.deltaTime * rotateSpeed // 이 값이 클수록 빠르고 작을수록 부드러움
-            );            
+            );
+            
         }
     }
+
+    public void RotateEvent(RotateToPosEvent rotateToPosEvent)
+    {        
+        Vector3 dir = rotateToPosEvent.Position - transform.position;
+        ManualRotate(dir.normalized);
+        EventBus.Publish(new SkillTargetPositionEvent(dir.normalized));
+    }
+
+    public void PlayerMoveState(PlayerMoveLockEvent playerMoveLockEvent)
+    {
+        if(playerMoveLockEvent.CanMove)
+        {
+            StartMove();
+        }
+        else
+        {
+            StopMove();
+        }
+    }
+
 
     public void ChangeMoveSpeed(float newSpeed)
     {

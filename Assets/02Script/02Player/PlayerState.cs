@@ -36,13 +36,10 @@ public class PlayerState : MonoBehaviour
     public void ChangeState(StateType newState)
     {
         if (curStateType != newState)
-        {            
-            if(newState == StateType.SkillQ || newState == StateType.SkillW || newState == StateType.SkillE || newState == StateType.SkillR)
-            {
-                ActionQueue.Instance.EnqueueAction(curStateType);
-            }
+        {               
             curStateType = newState;
         }
+        Debug.Log($"현재상태 : {curStateType}");
     }
 
     public void UpdateState()

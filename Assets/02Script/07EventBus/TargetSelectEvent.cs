@@ -19,3 +19,24 @@ public struct TargetPositionEvent
         TargetPos = targetPos;
     }
 }
+
+public class SkillTargetSelectedEvent
+{    
+    public Transform Target { get; }
+
+    public SkillTargetSelectedEvent(Transform target)
+    {        
+        Target = target;
+    }
+}
+
+public struct SkillTargetPositionEvent
+{
+    public Vector3 TargetPos { get; private set; }
+
+    public SkillTargetPositionEvent(Vector3 targetPos)
+    {
+        TargetPos = targetPos;
+    }
+}
+

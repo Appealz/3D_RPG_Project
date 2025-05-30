@@ -35,11 +35,13 @@ public class PlayerAttack : MonoBehaviour, IAttack
         attackRange = 25f;
         attackDamage = 10f;        
         EventBus.Subscribe<TargetSelectEvent>(TargetSetting);
+        EventBus.Subscribe<RotateToTargetEvent>(RotateEvent);
     }
 
     private void OnDisable()
     {        
         EventBus.UnSubscribe<TargetSelectEvent>(TargetSetting);
+        EventBus.UnSubscribe<RotateToTargetEvent>(RotateEvent);
     }
 
     public void TargetSetting(TargetSelectEvent targetSelectEvent)
@@ -55,8 +57,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
         }        
 
         if (!isAttacking && target)
-        {
-            
+        {            
             isAttacking = true;            
             OnAttackAnims?.Invoke();
         }
@@ -102,9 +103,16 @@ public class PlayerAttack : MonoBehaviour, IAttack
         if (direction == Vector3.zero) return;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        float rotationSpeed = 360f; // 회전 속도 (조절 가능)
+        float rotationSpeed = 720f; // 회전 속도 (조절 가능)    
+
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
+    public void RotateEvent(RotateToTargetEvent rotateToTargetEvent)
+    {
+        //Debug.Log("RotateEvent 호출됨!");
+        RotateTowardsTarget(rotateToTargetEvent.Target);
+
+    }
 }

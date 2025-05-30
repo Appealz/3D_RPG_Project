@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5390595040139044231}
   - component: {fileID: 7595530956576675650}
   m_Layer: 0
-  m_Name: CFXR Water Ripples
+  m_Name: ClickPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
