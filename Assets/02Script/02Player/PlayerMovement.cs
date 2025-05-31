@@ -187,8 +187,7 @@ public class PlayerMovement : MonoBehaviour
     public void RotateEvent(RotateToPosEvent rotateToPosEvent)
     {        
         Vector3 dir = rotateToPosEvent.Position - transform.position;
-        ManualRotate(dir.normalized);
-        EventBus.Publish(new SkillTargetPositionEvent(dir.normalized));
+        ManualRotate(dir.normalized);        
     }
 
     public void PlayerMoveState(PlayerMoveLockEvent playerMoveLockEvent)

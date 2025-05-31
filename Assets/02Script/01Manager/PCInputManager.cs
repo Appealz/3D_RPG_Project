@@ -78,6 +78,11 @@ public class PCInputManager : ManagerBase, IInputHandler
                     {
                         EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                     }
+                    if (currentReadySkill.Value == SkillType.W_Skill)
+                    {
+                        EventBus.Publish(new SkillTargetPositionEvent(hit.point));
+                        EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
+                    }
                 }
                 else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
                 {
@@ -99,19 +104,8 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             if (Input.GetKeyDown(binding.Key))
             {
-                //if (!OnSkillAvailablity.Invoke(binding.Value))
-                //{
-                //    Debug.Log("스킬 사용 불가");
-                //    return;
-                //}
-                //if(binding.Value != SkillType.E_Skill)
-                //{
-                //    OnReadyToAttackCursor?.Invoke(true);
-                //}
-                //OnSkillButtonInput?.Invoke(binding.Value);
                 currentReadySkill = binding.Value;
-                EventBus.Publish(new SkillAvailablityEvent(binding.Value, OnKeySkillAvailablityChecked));
-                //EventBus.Publish(new SkillPreparedEvent(binding.Value));
+                EventBus.Publish(new SkillAvailablityEvent(binding.Value, OnKeySkillAvailablityChecked));        
             }
         }
 

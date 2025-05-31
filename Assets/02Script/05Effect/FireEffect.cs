@@ -1,49 +1,95 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.UI.GridLayoutGroup;
 
 public class FireEffect : PoolLabel
 {
-    Vector3 dir;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    Rigidbody rb;
+    Transform target;
+    Vector3 moveDir;
+    GameObject Owner;
+    float damage;
+
+    [SerializeField] private float range = 5f;
+    [SerializeField] private float angle = 60f;
+    [SerializeField] private Transform firePoint; 
+    [SerializeField] private LayerMask targetMask;
 
     private void OnEnable()
     {
         StartCoroutine(ReturnTime());
-        EventBus.Subscribe<SkillTargetPositionEvent>(TargetPos);
+        Skill_Event.NonTargetSkillSpawned += SettingInfo;
     }
     private void OnDisable()
     {
         StopAllCoroutines();
-        EventBus.UnSubscribe<SkillTargetPositionEvent>(TargetPos);
+        Skill_Event.NonTargetSkillSpawned -= SettingInfo;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SettingInfo(NonTargetSkillInfo projInfo)
     {
-        transform.rotation = Quaternion.LookRotation(dir);
+        if (projInfo.myType == ProjectileType.Wskill)
+        {
+            Owner = projInfo.owner;
+            damage = projInfo.damage;
+        }
+        firePoint = FindObjectTransform.FindChildTransform(Owner.transform, "FirePoint");
+        UseWSkill();
     }
-    private void TargetPos(SkillTargetPositionEvent targetPos)
-    {
-        dir = targetPos.TargetPos;
-    }
+
+    
 
     IEnumerator ReturnTime()
-    {
-        yield return new WaitForSeconds(1f);
+    {        
+        yield return new WaitForSeconds(0.5f);
         ReturnPool();
     }
-    private void OnTriggerEnter(Collider other)
+
+
+    public void UseWSkill()
+    {        
+        // Step 2: 타겟 판정
+        Collider[] candidates = Physics.OverlapSphere(firePoint.position, range, targetMask);
+
+        List<Transform> validTargets = new List<Transform>();
+
+        foreach (Collider col in candidates)
+        {
+            Vector3 dirToTarget = (col.transform.position - firePoint.position).normalized;
+            float angleToTarget = Vector3.Angle(firePoint.forward, dirToTarget);
+
+            if (angleToTarget <= angle / 2f)
+            {
+                validTargets.Add(col.transform);
+
+                // 예시: 데미지 적용
+                Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, 10f));
+            }
+        }
+        Debug.Log($"W에 맞은 대상 수: {validTargets.Count}");
+    }
+
+    private void OnDrawGizmosSelected()
     {
-        //if (other.CompareTag("Enemy") && other.gameObject == target.gameObject)
-        //{
-        //    Damage_Event.TakeDamage(new DamageInfo(Owner, target.gameObject, damage));
-        //    ReturnPool();
-        //}
+        if (firePoint == null) return;
+
+        Gizmos.color = Color.red;
+
+        Vector3 origin = firePoint.position;
+        Vector3 forward = firePoint.forward;
+
+        float step = 5f; // 각도 간격
+        for (float i = -angle / 2f; i <= angle / 2f; i += step)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(i, Vector3.up);
+            Vector3 dir = rotation * forward;
+            Gizmos.DrawRay(origin, dir * range);
+        }
+
+        // 시야의 전체 반지름 표시 (간단한 원)
+        Gizmos.DrawWireSphere(origin, range);
     }
 }

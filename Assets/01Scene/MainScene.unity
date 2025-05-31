@@ -732,7 +732,7 @@ GameObject:
   - component: {fileID: 231994817}
   - component: {fileID: 231994816}
   - component: {fileID: 231994819}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Terrain
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -5077,7 +5077,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9396927
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalRotation.x
@@ -5085,7 +5085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.3420201
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalRotation.z
@@ -5097,7 +5097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

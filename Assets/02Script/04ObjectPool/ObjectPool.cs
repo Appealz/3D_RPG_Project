@@ -21,7 +21,7 @@ public class ObjectPool : MonoBehaviour
     {
         for(int i = 0; i < poolCount; i++)
         {
-            obj = Instantiate(prefabs, transform);            
+            obj = Instantiate(prefabs, transform);
             if(obj.TryGetComponent<PoolLabel>(out objLabel))
             {
                 poolStack.Push(objLabel);

@@ -116,11 +116,10 @@ public class PlayerSkillManager : MonoBehaviour
         //Debug.Log("스킬 눌림");
         if(skills.Count > 0)
         {            
+            // 1. 플레이어 애니메이션 바인딩
+            // 2. 스킬 쿨타임 모델 연결
+            // 3. 스킬 mp 소모 연결
             OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
-            // 쿨타임모델 호출
-            //skillModel.UseSkill(skillActivatedEvent.SkillType, skills[skillActivatedEvent.SkillType].coolTime);
-            // mp소모
-            //playerStatus.CurMp -= skills[skillActivatedEvent.SkillType].mpCost;
             EventBus.Publish(new CursorEventData(cursorType.Idle));
         }
     }

@@ -39,7 +39,7 @@ public class PlayerState : MonoBehaviour
         {               
             curStateType = newState;
         }
-        Debug.Log($"현재상태 : {curStateType}");
+        //Debug.Log($"현재상태 : {curStateType}");
     }
 
     public void UpdateState()

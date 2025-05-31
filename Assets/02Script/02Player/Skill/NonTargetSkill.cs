@@ -13,10 +13,12 @@ public class NonTargetSkill : NonTargetSkillBase
 
     private GameObject obj;
 
+
+
     private Transform firePoint;
     public override void Activate()
     {
-        Debug.Log($"{targetPos}");
+        //Debug.Log($"{targetPos}");
         EventBus.Publish(new RotateToPosEvent(targetPos));
 
         if (isActive)
@@ -45,9 +47,10 @@ public class NonTargetSkill : NonTargetSkillBase
         }
         else
         {
+            obj.transform.rotation = fireOwner.transform.rotation;
             obj.transform.position = firePoint.transform.position;
         }
-        Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(null, fireOwner, damage, ProjectileType.Wskill));
+        Skill_Event.InvokeNonTargetSkillSpawn(new NonTargetSkillInfo(fireOwner, damage, ProjectileType.Wskill));
         Debug.Log("상태 변환 완료");
     }
 
