@@ -15,6 +15,8 @@ public class PlayerSkillManager : MonoBehaviour
 
     private PlayerStatus playerStatus;
 
+    public static event Action indicatorOff;
+
     SkillModel skillModel;
     public event Action<StateType> OnChangeState;
 
@@ -27,16 +29,10 @@ public class PlayerSkillManager : MonoBehaviour
         EventBus.Subscribe<SkillActivatedEvent>(UseSkill);
 
         EventBus.Subscribe<SkillAvailablityEvent>(OnSkillUse);
-
-        //PCInputManager.OnSkillAvailablity += IsSkillUse;
-        //PCInputManager.OnSkillActive += HandleSkillUseRequested;
     }
 
     private void OnDisable()
     {
-        //PCInputManager.OnSkillAvailablity -= IsSkillUse;
-        //PCInputManager.OnSkillActive -= HandleSkillUseRequested;
-
         EventBus.UnSubscribe<SkillPreparedEvent>(PreparedSkill);
         EventBus.UnSubscribe<SkillActivatedEvent>(UseSkill);
 
@@ -62,10 +58,12 @@ public class PlayerSkillManager : MonoBehaviour
         skills[skill.myType] = skill;
         skill.SetOwner(gameObject);
                 
+        // 타겟형 스킬
         if (skill is TargetSkillBase targetable)
         {
             EventBus.Subscribe<SkillTargetSelectedEvent>(targetable.TargetSetting);
         }        
+        // 논타겟형 스킬
         if(skill is NonTargetSkillBase nontargetable)
         {
             EventBus.Subscribe<SkillTargetPositionEvent>(nontargetable.TargetPositionSetting);
@@ -100,6 +98,19 @@ public class PlayerSkillManager : MonoBehaviour
             }
             else
             {
+                switch(preparedSkill.SkillType)
+                {
+                    case SkillType.Q_Skill:
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill.SkillType].range));
+                        break;
+                    case SkillType.R_Skill:
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill.SkillType].range));
+                        break;
+                    case SkillType.W_Skill:
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Fan, transform.position, skills[preparedSkill.SkillType].range));
+                        break;  
+                }
+                
                 EventBus.Publish(new CursorEventData(cursorType.Aim));
                 preparedSkillType = preparedSkill.SkillType;
             }
@@ -121,6 +132,7 @@ public class PlayerSkillManager : MonoBehaviour
             // 3. 스킬 mp 소모 연결
             OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
             EventBus.Publish(new CursorEventData(cursorType.Idle));
+            EventBus.Publish(new HideIndicatorEvent());
         }
     }
 
@@ -131,24 +143,34 @@ public class PlayerSkillManager : MonoBehaviour
 
     private void OnSkillUse(SkillAvailablityEvent skillEvent)
     {
-        bool canUse = (IsSkillUsableCoolTime(skillEvent.SkillType) && IsSkillUsableMp(skillEvent.SkillType));
+        bool canUse = IsSkillUse(skillEvent.SkillType);
         skillEvent.Callback?.Invoke(canUse);
     }
 
     public bool IsSkillUse(SkillType useSkillType)
     {
-        return (IsSkillUsableCoolTime(useSkillType) && IsSkillUsableMp(useSkillType));        
+        // 스킬의 쿨타임 확인후 스킬 사용가능한지 && 스킬의 사용마나가 현재마나와 비교하여 충분한지
+        return skillModel.CanUseSkill(useSkillType) && (skills[useSkillType].mpCost < playerStatus.CurMp);        
     }
 
-    public bool IsSkillUsableCoolTime(SkillType useSkillType)
-    {        
-        return skillModel.CanUseSkill(useSkillType);
-    }
-    public bool IsSkillUsableMp(SkillType useSkillType)
+    // 구독 해제
+    public void ReleaseAllSkills()
     {
-        return skills[useSkillType].mpCost < playerStatus.CurMp;
+        foreach (var skill in skills.Values)
+        {
+            if (skill is IRelease releasable)
+            {
+                releasable.Release();      
+            }            
+            skill.OnSkillActivated -= () => skillModel.UseSkill(skill.myType, skills[skill.myType].coolTime);
+            skill.OnSkillActivated -= () => ConsumeMp(skill.myType);
+        }
     }
 
+
+
+    // 남아있는 스킬의 쿨타임 확인
     public float GetRemainingCoolTime(SkillType useSkillType) => skillModel.GetRemainingCoolTime(useSkillType);
+    // 스킬의 최대 쿨타임 확인.
     public float GetMaxCoolTime(SkillType useSkillType) => skillModel.GetMaxCoolTime(useSkillType);
 }

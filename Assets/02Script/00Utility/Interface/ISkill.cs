@@ -10,6 +10,7 @@ public interface ISkill
     float damage { get; }
     float mpCost { get; }
 
+    float range { get; }
     event Action OnSkillActivated;
     event Action<StateType> OnStateChange;
     void SetupData(SkillData newData);

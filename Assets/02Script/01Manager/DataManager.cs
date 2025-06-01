@@ -39,6 +39,14 @@ public class DataManager : MonoBehaviour
         playerController.RegistSkill(KeyCode.R, r_Skill);
     }
 
+
+    private void OnDisable()
+    {
+        playerController.ReleaseSkill(q_Skill);
+        playerController.ReleaseSkill(w_Skill);
+        playerController.ReleaseSkill(e_Skill);
+        playerController.ReleaseSkill(r_Skill);
+    }
     //private void SkillInit(ISkill skill, SkillData skillData)
     //{
     //    skill.Init(skillData);

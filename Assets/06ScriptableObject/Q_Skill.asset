@@ -18,4 +18,4 @@ MonoBehaviour:
   damage: 10
   coolTime: 5
   mpCost: 20
-  obj: {fileID: 5488602477814172820, guid: 68d59a7eb2f946148943a7808feb1114, type: 3}
+  range: 5

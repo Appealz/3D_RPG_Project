@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         //PCInputManager.OnMouseMoveClick += SetPosition;
         //PCInputManager.OnMouseTargetClick += SetTarget;
         //Debug.Log("OnRotate 연결 완료");
-        playerStatus = new PlayerStatus();
+        playerStatus = new PlayerStatus(gameObject);
 
         
     }

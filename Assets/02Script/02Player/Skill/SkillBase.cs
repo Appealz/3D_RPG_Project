@@ -16,6 +16,8 @@ public abstract class SkillBase : ISkill
     public virtual float mpCost => skillData.mpCost;
     public StateType myState => skillData.stateType;
 
+    public float range => skillData.range;
+
     /// <summary>
     /// 오너 설정
     /// </summary>

@@ -81,11 +81,43 @@ public struct NonTargetSkillInfo
     }
 }
 
+public struct ShieldSkillInfo
+{
+    public GameObject owner;
+    public float shieldAmount;
+    public ProjectileType myType;
+
+    public ShieldSkillInfo(GameObject newOnwer, float newShieldAmount,  ProjectileType newType)
+    {
+        owner = newOnwer;
+        shieldAmount = newShieldAmount;
+        myType = newType;
+    }
+}
+
+public struct NonTargetAreaSkillInfo
+{
+    public GameObject owner;
+    public Vector3 targetPos;
+    public float damage;
+    public ProjectileType myType;
+
+    public NonTargetAreaSkillInfo(GameObject newOwner, Vector3 newPos, float newDamage, ProjectileType newType)
+    {
+        owner = newOwner;
+        targetPos = newPos;
+        damage = newDamage;
+        myType = newType;
+    }
+}
+
 public static class Skill_Event
 {
     // 생성될 스킬 이펙트, 프로젝타일에 참조
     public static event Action<ProjectileInfo> ProjectileSpawned;
     public static event Action<NonTargetSkillInfo> NonTargetSkillSpawned;
+    public static event Action<ShieldSkillInfo> ShieldSkillSpawned;
+    public static event Action<NonTargetAreaSkillInfo> NonTargetAreaSkillSpawned;
 
     public static void InvokeProjectileSpawn(ProjectileInfo info)
     {
@@ -95,6 +127,14 @@ public static class Skill_Event
     public static void InvokeNonTargetSkillSpawn(NonTargetSkillInfo info)
     {
         NonTargetSkillSpawned?.Invoke(info);
+    }
+    public static void InvokeShieldSkillSpawn(ShieldSkillInfo info)
+    {
+        ShieldSkillSpawned?.Invoke(info);
+    }
+    public static void InvokeNonTargetAreaSkillSpawn(NonTargetAreaSkillInfo info)
+    {
+        NonTargetAreaSkillSpawned?.Invoke(info);
     }
 }
 

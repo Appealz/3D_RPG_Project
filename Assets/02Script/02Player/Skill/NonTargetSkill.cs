@@ -1,19 +1,18 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class NonTargetSkill : NonTargetSkillBase
+public class NonTargetSkill : NonTargetSkillBase, IRelease
 {
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
-        
+
     public Vector3 targetPos;
 
     private bool isActive = true;
     private bool isAttacking = false;
 
     private GameObject obj;
-
-
 
     private Transform firePoint;
     public override void Activate()
@@ -67,5 +66,8 @@ public class NonTargetSkill : NonTargetSkillBase
         targetPos = targetEvent.TargetPos;
     }
 
-    
+    public void Release()
+    { 
+        EventBus.UnSubscribe<SkillTargetPositionEvent>(TargetPositionSetting);        
+    }
 }

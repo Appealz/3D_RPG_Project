@@ -10,7 +10,10 @@ public class MoveTest : MonoBehaviour
 
     Vector3 destPos;
 
-    float hp;
+    float maxHp;
+    float curHp;
+
+    GameObject obj;
     private void Awake()
     {
         TryGetComponent<NavMeshAgent>(out agent);
@@ -21,7 +24,10 @@ public class MoveTest : MonoBehaviour
         destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
         SetDest(destPos);
 
-        hp = 100f;
+        maxHp = 100f;
+        curHp = 100f;
+        obj = ObjectPoolManager.Instance.pool[6].PopObj();
+        obj.GetComponent<UnitHUD>().SetTarget(transform);
     }
 
     private void OnEnable()
@@ -32,6 +38,7 @@ public class MoveTest : MonoBehaviour
     private void OnDisable()
     {
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
+        //obj.GetComponent<UnitHUD>().ReturnPool();
     }
 
     private void Update()
@@ -55,11 +62,13 @@ public class MoveTest : MonoBehaviour
         if(damageInfo.defender == gameObject)
         {
             Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
-            hp -= damageInfo.damage;
+            curHp -= damageInfo.damage;
+            EventBus.Publish(new HpChangeEvent(gameObject, curHp, maxHp));
         }
 
-        if(hp <0f)
+        if(curHp <= 0f)
         {
+            obj.GetComponent<UnitHUD>().ReturnPool();
             Destroy(gameObject);
         }
     }

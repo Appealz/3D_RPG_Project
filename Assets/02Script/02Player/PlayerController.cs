@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -5,22 +6,74 @@ public struct MpChangeEvent
 {
     public float CurrentMP;
     public float MaxMp;
+    public GameObject Publisher;
 
-    public MpChangeEvent(float currentMP, float maxMp)
+    public MpChangeEvent(GameObject publisher, float currentMP, float maxMp)
     {
+        Publisher = publisher;
         CurrentMP = currentMP;
         MaxMp = maxMp;
     }
 }
+
+public struct HpChangeEvent
+{
+    public float CurrentHp;
+    public float MaxHp;
+    public GameObject Publisher;
+
+    public HpChangeEvent(GameObject publisher, float currentHp, float maxHp)
+    {
+        Publisher = publisher;
+        CurrentHp = currentHp;
+        MaxHp = maxHp;
+    }
+}
+
 public class PlayerStatus
 {
     public float moveSpeed;
     public float attackRagne = 25f;
     private float maxMp;
     private float curMp;
-    public float maxHp;
-    public float curHp;
+    private float maxHp;
+
+    public float MaxHp
+    {
+        get => maxMp;
+        set
+        {
+            if (value < 0)
+            {
+                Debug.Log("MaxHp는 0 이상이여야 합니다.");
+                return;
+            }
+            maxHp = value;
+
+            if (curHp > maxHp)
+            {
+                curHp = maxHp;
+            }
+        }
+    }
+    private float curHp;
+
+    public float CurHP
+    {
+        get => curMp;
+        set
+        {
+            curHp = Mathf.Clamp(value, 0, maxHp);
+            EventBus.Publish(new MpChangeEvent(Player, curHp, maxHp));
+        }
+    }
     public float attackDamage;
+    public GameObject Player;
+
+    public PlayerStatus(GameObject player)
+    {
+        Player = player;
+    }
 
     public float MaxMp
     {
@@ -47,7 +100,7 @@ public class PlayerStatus
         set
         {
             curMp = Mathf.Clamp(value, 0, maxMp);
-            EventBus.Publish(new MpChangeEvent(curMp, maxMp));
+            EventBus.Publish(new MpChangeEvent(Player, curMp, maxMp));
         }
     }
 
@@ -61,24 +114,31 @@ public class PlayerStatus
 public class PlayerController : ManagerBase
 {
     private PlayerMovement playerMovement;
-    private IInputHandler inputHandler;    
+    private IInputHandler inputHandler;
     private PlayerAnims playerAnims;
-    private PlayerStatus playerStatus = new PlayerStatus();
     private PlayerAttack playerAttack;
+    private PlayerStatus playerStatus;
     private PlayerState playerState;
     private PlayerSkillManager playerSkillManager;
     private PlayerAnimManager playerAnimManager;
 
+    private Action qSkillHandler;
+    private Action wSkillHandler;
+    private Action eSkillHandler;
+    private Action rSkillHandler;
 
     private void Awake()
     {
-        TryGetComponent<PlayerMovement>(out playerMovement);        
+        TryGetComponent<PlayerMovement>(out playerMovement);
         TryGetComponent<PlayerAnims>(out playerAnims);
         TryGetComponent<PlayerAttack>(out playerAttack);
         TryGetComponent<PlayerState>(out playerState);
-        TryGetComponent<PlayerSkillManager>(out playerSkillManager);       
+        TryGetComponent<PlayerSkillManager>(out playerSkillManager);
         TryGetComponent<PlayerAnimManager>(out playerAnimManager);
+        playerStatus = new PlayerStatus(gameObject);
     }
+
+
 
     private void OnEnable()
     {
@@ -153,6 +213,7 @@ public class PlayerController : ManagerBase
     {
         base.StopGame();
         playerMovement?.StopMove();
+        playerSkillManager?.ReleaseAllSkills();        
     }
 
     public void RegistSkill(KeyCode key, ISkill skill)
@@ -164,32 +225,58 @@ public class PlayerController : ManagerBase
         switch (skill.myState)
         {
             case StateType.SkillQ:
-                playerState.OnQSkillEvent += skill.Activate;
-                //Debug.Log("스킬 Active 등록");
+                playerState.OnQSkillEvent += skill.Activate;                
                 skill.OnStateChange += playerState.ChangeState;
-                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Qskill", skill);
-                //Debug.Log("ChangeState 등록");
+                qSkillHandler = () => playerAnimManager.PlayAnimation("Qskill", skill);
+                skill.OnSkillActivated += qSkillHandler;
                 break;
             case StateType.SkillW:
                 playerState.OnWSkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
-                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Wskill", skill);
+                wSkillHandler = () => playerAnimManager.PlayAnimation("Wskill", skill);
+                skill.OnSkillActivated += wSkillHandler;
                 break;
             case StateType.SkillE:
                 playerState.OnESkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
-                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Eskill", skill);
+                eSkillHandler = () => playerAnimManager.PlayAnimation("Eskill", skill);
+                skill.OnSkillActivated += eSkillHandler;
                 break;
             case StateType.SkillR:
                 playerState.OnRSkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
-                skill.OnSkillActivated += () => playerAnimManager.PlayAnimation("Rskill", skill);
+                rSkillHandler = () => playerAnimManager.PlayAnimation("Rskill", skill);
+                skill.OnSkillActivated += rSkillHandler;
                 break;
         }
     }
 
-    private void Skill_OnSkillActivated()
+    public void ReleaseSkill(ISkill skill)
     {
-        throw new System.NotImplementedException();
+        switch (skill.myState)
+        {
+            case StateType.SkillQ:
+                playerState.OnQSkillEvent -= skill.Activate;                
+                skill.OnStateChange -= playerState.ChangeState;
+                skill.OnSkillActivated -= qSkillHandler;
+                break;
+            case StateType.SkillW:
+                playerState.OnWSkillEvent -= skill.Activate;    
+                skill.OnStateChange -= playerState.ChangeState;
+                skill.OnSkillActivated -= wSkillHandler;
+                break;
+            case StateType.SkillE:
+                playerState.OnESkillEvent -= skill.Activate;
+                skill.OnStateChange -= playerState.ChangeState;
+                skill.OnSkillActivated -= eSkillHandler;
+                break;
+            case StateType.SkillR:
+                playerState.OnRSkillEvent -= skill.Activate;
+                skill.OnStateChange -= playerState.ChangeState;
+                skill.OnSkillActivated -= rSkillHandler;
+                break;
+        }
     }
+
+
 }

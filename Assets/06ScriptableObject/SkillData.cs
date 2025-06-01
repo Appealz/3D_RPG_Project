@@ -9,6 +9,7 @@ public class SkillData : ScriptableObject
     public float damage;
     public float coolTime;
     public float mpCost;
+    public float range;
 
 
 

@@ -1,9 +1,11 @@
 using System;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.Playables;
 
-public class TargetSkill : TargetSkillBase
+public class TargetSkill : TargetSkillBase, IRelease
 {
     public override event Action OnSkillActivated;        
     public override event Action<StateType> OnStateChange;
@@ -80,5 +82,9 @@ public class TargetSkill : TargetSkillBase
         }
     }
 
-
+    public void Release()
+    {
+        EventBus.UnSubscribe<SkillTargetSelectedEvent>(TargetSetting);
+        
+    }
 }
