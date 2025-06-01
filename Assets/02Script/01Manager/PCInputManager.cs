@@ -44,9 +44,9 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             GetInputClick();            
             EventBus.Publish(new CursorEventData(cursorType.Idle));
+            EventBus.Publish(new HideIndicatorEvent());
             if (currentReadySkill.HasValue)
-            {
-                EventBus.Publish(new HideIndicatorEvent());
+            {                
                 currentReadySkill = null;
             }
         }
@@ -106,6 +106,7 @@ public class PCInputManager : ManagerBase, IInputHandler
         if (Input.GetKeyDown(KeyCode.A))
         {            
             EventBus.Publish(new CursorEventData(cursorType.Aim));
+            EventBus.Publish(new indicatorEvent(IndicatorType.Circle, Vector3.zero, 5f));
             isAttackOn = true;
         }
 
@@ -121,10 +122,18 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
             {
-                GetInputClick();                
+                GetInputClick();
+                EventBus.Publish(new HideIndicatorEvent());
+                EventBus.Publish(new CursorEventData(cursorType.Idle));
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EventBus.Publish(new HideIndicatorEvent());
                 EventBus.Publish(new CursorEventData(cursorType.Idle));
             }
         }
+
+        
     }
 
     private void OnKeySkillAvailablityChecked(bool canUse)

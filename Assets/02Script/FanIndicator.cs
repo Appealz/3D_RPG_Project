@@ -22,6 +22,8 @@ public class FanIndicator : MonoBehaviour, IIndicator
         transform.position = origin;
         mf.mesh = FanMeshGenerator.CreateFanMesh(range, angle > 0 ? angle : this.angle, segments);
         mr.material = indicatorMaterial;
+
+        transform.localScale = Vector3.one * range;
         isActive = true;
     }
 

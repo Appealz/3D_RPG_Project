@@ -5852,6 +5852,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1897179160387809973, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: indicatorMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cd76103e437c75c42a84b330c21cf510, type: 2}
     - target: {fileID: 1979414510825062966, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalPosition.x
       value: 60.5
@@ -5892,6 +5896,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4185492458164166106, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: indicatorMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: cd76103e437c75c42a84b330c21cf510, type: 2}
     - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5902,12 +5910,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5153601259207265645, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5264268365591485935, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: animEventManager
       value: 
       objectReference: {fileID: 689469226}
+    - target: {fileID: 5650294600205087705, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -5918,6 +5946,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
       propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7658896699046831609, guid: cabe501816d986d4fb3269b888519238, type: 3}
+      propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9094860961011923210, guid: cabe501816d986d4fb3269b888519238, type: 3}

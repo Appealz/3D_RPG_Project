@@ -5,6 +5,7 @@ public static class CircleMeshGenerator
     public static Mesh CreateCircleMesh(float radius = 1f, int segments = 64)
     {
         Mesh mesh = new Mesh();
+
         Vector3[] vertices = new Vector3[segments + 1];
         int[] triangles = new int[segments * 3];
 
@@ -14,7 +15,7 @@ public static class CircleMeshGenerator
 
         for (int i = 1; i <= segments; i++)
         {
-            float angle = Mathf.Deg2Rad * angleStep * i;
+            float angle = Mathf.Deg2Rad * angleStep * i;            
             vertices[i] = new Vector3(Mathf.Cos(angle) * radius, 0f, Mathf.Sin(angle) * radius);
         }
 
@@ -28,6 +29,7 @@ public static class CircleMeshGenerator
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+
         return mesh;
     }
 }

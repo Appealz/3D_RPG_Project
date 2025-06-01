@@ -42,6 +42,10 @@ public class IndicatorManager : MonoBehaviour
 
     public void ShowIndiCatorEvent(indicatorEvent indicator)
     {
+        if(indicator.OriginPos == Vector3.zero)
+        {
+            indicator.OriginPos = transform.position;
+        }
         indicators[indicator.IndicatorType].Show(indicator.OriginPos, Vector3.zero, indicator.range);
     }
 
