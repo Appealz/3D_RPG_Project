@@ -8,12 +8,17 @@ public class AreaSkill : NonTargetSkillBase, IRelease
 
     public Vector3 targetPos;
 
-    bool isActive = true;
+    bool isActive = false;
+    bool isAttacking = false;
 
     private Transform firePoint;
     private GameObject obj;
     public override void Activate()
     {        
+        if(!isAttacking)
+        {
+            TargetDistanceCheck();
+        }
         if (isActive)
         {   
             EventBus.Publish(new PlayerMoveLockEvent(false));
@@ -21,6 +26,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
             //CreateEffect();
 
             isActive = false;
+            isAttacking = true;
         }
     }
 
@@ -69,7 +75,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
         }
         else
         {
-            isActive = true;
+            isActive = true;            
         }
     }
 }

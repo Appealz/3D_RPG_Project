@@ -72,6 +72,7 @@ public class PCInputManager : ManagerBase, IInputHandler
                     if (currentReadySkill.Value == SkillType.R_Skill)
                     {
                         EventBus.Publish(new SkillTargetPositionEvent(hit.point));
+                        EventBus.Publish(new TargetPositionEvent(hit.point));
                         EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                     }
                 }
@@ -85,6 +86,7 @@ public class PCInputManager : ManagerBase, IInputHandler
                     if (currentReadySkill.Value == SkillType.R_Skill)
                     {
                         EventBus.Publish(new SkillTargetPositionEvent(hit.point));
+                        EventBus.Publish(new TargetPositionEvent(hit.point));
                         EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                     }
                 }

@@ -162,14 +162,14 @@ public class PlayerMovement : MonoBehaviour
                 {
                     OnChangeState?.Invoke(StateType.Attack);
                 }
-            }
-            
+            }            
         }
         else
         {
             StopMove();
         }
     }
+
     public void ManualRotate(Vector3 direction)
     {
         if (direction.sqrMagnitude > 0.01f)
