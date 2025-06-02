@@ -160,8 +160,12 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    OnChangeState?.Invoke(StateType.Attack);
+                    OnChangeState?.Invoke(StateType.Idle);
                 }
+                //else
+                //{
+                //    OnChangeState?.Invoke(StateType.Attack);
+                //}
             }            
         }
         else

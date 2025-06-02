@@ -10,42 +10,45 @@ public class TargetSkill : TargetSkillBase, IRelease
     public override event Action OnSkillActivated;        
     public override event Action<StateType> OnStateChange;
 
-    //private bool isAttack = true;
+    
 
     public Transform targetPos;
-
-    private bool isActive = false;
+        
     private bool isAttacking = false;
 
     private GameObject obj;
 
     private Transform firePoint;
 
+    private bool firstActivated = false;    
+    
     public override void Activate()
     {
-        if(!isAttacking)
+        // 처음 스킬에 입장했을 때 한번만 실행
+        if(!firstActivated)
         {
+            firstActivated = true;
             TargetDistanceCheck();
-        }        
-        if (isActive)
-        {
-            isAttacking = true;
-            firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
-            EventBus.Publish(new PlayerMoveLockEvent(false));
-            OnSkillActivated?.Invoke();
-            //CreateEffect();
-
-            isActive = false;
+            return;
         }
-        //OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
-        //Finish();
+
+        // 공격중이라면 해당 메소드 탈출
+        if (isAttacking)
+        {
+            return;
+        }
+
+        isAttacking = true;
+        firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
+        EventBus.Publish(new PlayerMoveLockEvent(false));
+        OnSkillActivated?.Invoke();
+
 
         EventBus.Publish(new RotateToTargetEvent(targetPos));
     }
 
     public override void CreateEffect()
     {
-
         obj = ObjectPoolManager.Instance.pool[2].PopObj();
         obj.transform.position = firePoint.transform.position;
         Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(targetPos, fireOwner, damage, ProjectileType.Qskill));
@@ -54,10 +57,12 @@ public class TargetSkill : TargetSkillBase, IRelease
 
     public override void Finish()
     {
-        OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
-        //isActive = true;
-        isAttacking = false;
+        Debug.Log(" 스킬 종료");        
+        isAttacking = false;        
+        firstActivated = false;
+
         EventBus.Publish(new PlayerMoveLockEvent(true));
+        OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
     }
 
     public override void TargetSetting(SkillTargetSelectedEvent targetEvent)
@@ -65,26 +70,22 @@ public class TargetSkill : TargetSkillBase, IRelease
         targetPos = targetEvent.Target;
     }
 
+
     private void TargetDistanceCheck()
     {
         float distSqr = (fireOwner.transform.position - targetPos.position).sqrMagnitude;
         Debug.Log($"[TargetSkill] distance: {distSqr}");
 
-        if (distSqr > 100f)
+        if (distSqr > (range * range))
         {            
             ActionQueue.Instance.EnqueueAction(myState);
             EventBus.Publish(new TargetSelectEvent(targetPos));
             OnStateChange?.Invoke(StateType.Chase);
         }
-        else
-        {
-            isActive = true;
-        }
     }
 
     public void Release()
     {
-        EventBus.UnSubscribe<SkillTargetSelectedEvent>(TargetSetting);
-        
+        EventBus.UnSubscribe<SkillTargetSelectedEvent>(TargetSetting);        
     }
 }

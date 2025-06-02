@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerAttack : MonoBehaviour, IAttack
 {    
@@ -54,17 +55,38 @@ public class PlayerAttack : MonoBehaviour, IAttack
         if (target != null)
         {
             RotateTowardsTarget(target);
-        }        
+        }
 
         if (!isAttacking && target)
         {            
-            isAttacking = true;            
+            isAttacking = true;
             OnAttackAnims?.Invoke();
         }
     }
 
+    //public void AttackEvent()
+    //{
+    //    StartCoroutine(AttackCoroutine());
+    //}
+
+    //public void Attack()
+    //{
+    //    if (target != null)
+    //    {
+    //        RotateTowardsTarget(target);
+    //    }
+
+    //    if (!isAttacking && target)
+    //    {
+    //        TargetDistanceCheck();
+    //        isAttacking = true;
+    //        OnAttackAnims?.Invoke();
+    //    }
+    //}
+
     public void AttackEvent()
-    {        
+    {
+        if (target == null) return;
         StartCoroutine(AttackCoroutine());
     }
 
@@ -74,18 +96,17 @@ public class PlayerAttack : MonoBehaviour, IAttack
     }
 
     IEnumerator AttackCoroutine()
-    {   
+    {
         obj = ObjectPoolManager.Instance.pool[0].PopObj();
         obj.transform.position = firePoint.position;
         Skill_Event.InvokeProjectileSpawn(new ProjectileInfo(target, gameObject, attackDamage, ProjectileType.Normal));
 
-        yield return new WaitForSeconds(1f/attackRate);
+        yield return new WaitForSeconds(1f / attackRate);
         isAttacking = false;
         if (target && (target.position - transform.position).sqrMagnitude >= attackRange)
         {
             OnChangeState?.Invoke(StateType.Chase);
             ActionQueue.Instance.EnqueueAction(StateType.Attack);
-            //OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
         }
 
         if (target == null)
@@ -94,6 +115,20 @@ public class PlayerAttack : MonoBehaviour, IAttack
         }
     }
 
+    private bool CheckTargetDistance()
+    {
+        if (target == null)
+        {
+            return false;
+        }
+        float distSqr = (target.position - transform.position).sqrMagnitude;
+
+        if(distSqr <= attackRange)
+        {
+            return true;
+        }
+        return false;
+    }
 
     void RotateTowardsTarget(Transform target)
     {
@@ -116,3 +151,6 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     }
 }
+
+
+

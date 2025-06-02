@@ -95,6 +95,9 @@ public struct ShieldSkillInfo
     }
 }
 
+/// <summary>
+/// NonTargetAreaSkillInfo(발사주체, 목표위치, 데미지, 타입)
+/// </summary>
 public struct NonTargetAreaSkillInfo
 {
     public GameObject owner;
@@ -102,6 +105,13 @@ public struct NonTargetAreaSkillInfo
     public float damage;
     public ProjectileType myType;
 
+    /// <summary>
+    /// 발사주체, 목표위치, 데미지, 타입
+    /// </summary>
+    /// <param name="newOwner"></param>
+    /// <param name="newPos"></param>
+    /// <param name="newDamage"></param>
+    /// <param name="newType"></param>
     public NonTargetAreaSkillInfo(GameObject newOwner, Vector3 newPos, float newDamage, ProjectileType newType)
     {
         owner = newOwner;

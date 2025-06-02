@@ -13,17 +13,23 @@ public class AreaSkill : NonTargetSkillBase, IRelease
 
     private Transform firePoint;
     private GameObject obj;
+
+    private bool firstActivated = false;
+
     public override void Activate()
-    {        
-        if(!isAttacking)
+    {
+        EventBus.Publish(new RotateToPosEvent(targetPos));
+        if (!firstActivated)
         {
+            firstActivated = true;
             TargetDistanceCheck();
-        }
+            return;
+        }        
+
         if (isActive)
         {   
             EventBus.Publish(new PlayerMoveLockEvent(false));
-            OnSkillActivated?.Invoke();
-            //CreateEffect();
+            OnSkillActivated?.Invoke();            
 
             isActive = false;
             isAttacking = true;
@@ -50,6 +56,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
     {
         OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
         isActive = true;
+        firstActivated = false;
     }
 
     public void Release()
@@ -67,15 +74,11 @@ public class AreaSkill : NonTargetSkillBase, IRelease
         float distSqr = (fireOwner.transform.position - targetPos).sqrMagnitude;
         Debug.Log($"[TargetSkill] distance: {distSqr}");
 
-        if (distSqr > 100f)
+        if (distSqr > realRange)
         {
             ActionQueue.Instance.EnqueueAction(myState);
             EventBus.Publish(new TargetPositionEvent(targetPos));
             OnStateChange?.Invoke(StateType.Chase);
-        }
-        else
-        {
-            isActive = true;            
         }
     }
 }

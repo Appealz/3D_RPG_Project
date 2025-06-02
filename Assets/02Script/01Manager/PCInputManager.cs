@@ -90,6 +90,7 @@ public class PCInputManager : ManagerBase, IInputHandler
                         EventBus.Publish(new SkillActivatedEvent(currentReadySkill.Value));
                     }
                 }
+
                 currentReadySkill = null;
             }
         }
@@ -135,6 +136,14 @@ public class PCInputManager : ManagerBase, IInputHandler
             }
         }
 
+        if(currentReadySkill.HasValue)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                EventBus.Publish(new HideIndicatorEvent());
+                EventBus.Publish(new CursorEventData(cursorType.Idle));
+            }
+        }
         
     }
 
@@ -163,7 +172,7 @@ public class PCInputManager : ManagerBase, IInputHandler
         {
             EventBus.Publish(new TargetSelectEvent(hit.transform));
             ActionQueue.Instance.ClearQueue(); 
-            ActionQueue.Instance.EnqueueAction(StateType.Attack); // 명시적으로 Attack 큐잉
+            ActionQueue.Instance.EnqueueAction(StateType.Attack);
         }
         else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {            

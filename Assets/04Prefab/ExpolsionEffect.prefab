@@ -10027,6 +10027,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64bc2baefb49e11459fc5a295c865570, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  range: 4
+  angle: 60
+  firePoint: {fileID: 0}
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &2037248110647331761
 GameObject:
   m_ObjectHideFlags: 0

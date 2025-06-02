@@ -16,8 +16,7 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
 
     private Transform firePoint;
     public override void Activate()
-    {
-        //Debug.Log($"{targetPos}");
+    {        
         EventBus.Publish(new RotateToPosEvent(targetPos));
 
         if (isActive)
@@ -25,15 +24,10 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
             isAttacking = true;
             firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
             EventBus.Publish(new PlayerMoveLockEvent(false));
-            OnSkillActivated?.Invoke();
-            //CreateEffect();
+            OnSkillActivated?.Invoke();            
 
             isActive = false;
-        }
-        //OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
-        //Finish();
-
-        
+        }        
     }
 
     public override void CreateEffect()

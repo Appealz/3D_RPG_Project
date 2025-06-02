@@ -105,6 +105,7 @@ public class PlayerSkillManager : MonoBehaviour
                         break;
                     case SkillType.R_Skill:
                         EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill.SkillType].range));
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Area, Vector3.zero, 1f));
                         break;
                     case SkillType.W_Skill:
                         EventBus.Publish(new indicatorEvent(IndicatorType.Fan, transform.position, skills[preparedSkill.SkillType].range));
