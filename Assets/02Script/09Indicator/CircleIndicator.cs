@@ -9,7 +9,7 @@ public class CircleIndicator : MonoBehaviour, IIndicator
     MeshFilter mf;
     MeshRenderer mr;
 
-    bool isActive = false;
+    
     void Awake()
     {
         mf = GetComponent<MeshFilter>();
@@ -20,8 +20,7 @@ public class CircleIndicator : MonoBehaviour, IIndicator
     }
     public void Hide()
     {
-        gameObject.SetActive(false);
-        isActive = false;
+        gameObject.SetActive(false);        
     }
 
     public void Show(Vector3 origin, Vector3 direction, float range, float angle = 0)

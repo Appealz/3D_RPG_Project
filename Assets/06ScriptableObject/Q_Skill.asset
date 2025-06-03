@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: QSkill
   skillType: 0
   stateType: 4
-  damage: 10
+  damage: 20
   coolTime: 5
   mpCost: 20
   range: 5

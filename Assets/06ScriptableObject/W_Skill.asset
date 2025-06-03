@@ -15,7 +15,7 @@ MonoBehaviour:
   skillName: WSkill
   skillType: 1
   stateType: 5
-  damage: 20
+  damage: 30
   coolTime: 2
   mpCost: 30
-  range: 5
+  range: 6

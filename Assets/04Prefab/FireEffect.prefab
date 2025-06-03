@@ -9402,7 +9402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd577c6fdfe839640b126d27b3d29631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 5
+  range: 6
   angle: 60
   firePoint: {fileID: 0}
   targetMask:

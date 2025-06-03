@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Editor;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -27,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private float moveSpeed;
+
+    private bool isOnSkill = false;
 
     private void Awake()
     {
@@ -53,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
         EventBus.Subscribe<TargetPositionEvent>(SetPosition);
         EventBus.Subscribe<PlayerMoveLockEvent>(PlayerMoveState);
         EventBus.Subscribe<RotateToPosEvent>(RotateEvent);
+
+        EventBus.Subscribe<SkillTargetPositionEvent>(SetTargetPosition);
     }
 
     private void OnDisable()
@@ -61,6 +66,8 @@ public class PlayerMovement : MonoBehaviour
         EventBus.UnSubscribe<TargetPositionEvent>(SetPosition);
         EventBus.UnSubscribe<PlayerMoveLockEvent>(PlayerMoveState);
         EventBus.UnSubscribe<RotateToPosEvent>(RotateEvent);
+
+        EventBus.UnSubscribe<SkillTargetPositionEvent>(SetTargetPosition);
     }
     public void InitMove(float newSpeed)
     {
@@ -111,12 +118,25 @@ public class PlayerMovement : MonoBehaviour
         target = null;
         OnTarget = false;
         destination = targetPositionEvent.TargetPos;
-        ActionQueue.Instance.ClearQueue();
+        isOnSkill = false;
+    }
+
+    public void SetTargetPosition(SkillTargetPositionEvent targetPositionEvent)
+    {
+        SetEnable(true);        
+        agent.speed = 5f;        
+        target = null;
+        isOnSkill = true;
+        OnTarget = false;
+        destination = targetPositionEvent.TargetPos;                
+        OnTarget = true;        
+        StartMove();
+        OnChangeState?.Invoke(StateType.Chase);
     }
 
     public void Move()
     {        
-        if (agent.enabled)
+        if (agent.enabled && !isOnSkill)
         {            
             agent.SetDestination(destination);            
             WalkAnims(true);
@@ -162,11 +182,29 @@ public class PlayerMovement : MonoBehaviour
                 {
                     OnChangeState?.Invoke(StateType.Idle);
                 }
-                //else
-                //{
-                //    OnChangeState?.Invoke(StateType.Attack);
-                //}
-            }            
+            }
+            isOnSkill = false;
+        }
+        else if(agent.enabled && isOnSkill)
+        {
+            agent.SetDestination(destination);
+            RunAnims(OnTarget);
+
+            ManualRotate(agent.desiredVelocity);
+
+            if ((destination - transform.position).sqrMagnitude < playerStatus.attackRagne)
+            {
+                StopMove();
+                if (ActionQueue.Instance.HasQueue())
+                {
+                    OnChangeState?.Invoke(ActionQueue.Instance.DequeueAction());
+                }
+                else
+                {
+                    OnChangeState?.Invoke(StateType.Idle);
+                }
+                isOnSkill = false;
+            }
         }
         else
         {

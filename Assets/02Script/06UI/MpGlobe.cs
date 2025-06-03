@@ -1,11 +1,14 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class MpGlobe : MonoBehaviour
 {
     Image manaGlobe;
     TextMeshProUGUI mpText;
+
+    GameObject owner;
 
     [SerializeField] private float minY = 0f;
     [SerializeField] private float maxY = 100f;
@@ -23,6 +26,11 @@ public class MpGlobe : MonoBehaviour
     private void OnDisable()
     {
         EventBus.UnSubscribe<MpChangeEvent>(OnChangeMp);
+    }
+
+    public void SetTarget(GameObject newOnwer)
+    {
+        owner = newOnwer;
     }
 
     private void OnChangeMp(MpChangeEvent changeEvent)

@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.HID;
 
-public class MoveTest : MonoBehaviour
+[RequireComponent(typeof(NavMeshAgent))]
+public class MoveTest : PoolLabel
 {
     NavMeshAgent agent;
     // 60~ 70 , 0.6 , 20 ~ 23
@@ -26,19 +28,22 @@ public class MoveTest : MonoBehaviour
 
         maxHp = 100f;
         curHp = 100f;
-        obj = ObjectPoolManager.Instance.pool[6].PopObj();
-        obj.GetComponent<UnitHUD>().SetTarget(transform);
     }
 
     private void OnEnable()
     {
+        
+        
         Damage_Event.OnDamageChange += Handle_TakeDamaged;
+        obj = ObjectPoolManager.Instance.pool[6].PopObj();
+        obj.GetComponent<UnitHUD>().SetTarget(transform);
     }
 
     private void OnDisable()
     {
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
         //obj.GetComponent<UnitHUD>().ReturnPool();
+
     }
 
     private void Update()
@@ -49,6 +54,12 @@ public class MoveTest : MonoBehaviour
             randomPosZ = Random.Range(20f, 30f);
             destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
             SetDest(destPos);
+        }
+
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+        {
+
         }
     }
 
@@ -69,7 +80,7 @@ public class MoveTest : MonoBehaviour
         if(curHp <= 0f)
         {
             obj.GetComponent<UnitHUD>().ReturnPool();
-            Destroy(gameObject);
+            ReturnPool();
         }
     }
 

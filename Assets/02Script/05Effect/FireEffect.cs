@@ -13,8 +13,8 @@ public class FireEffect : PoolLabel
     GameObject Owner;
     float damage;
 
-    [SerializeField] private float range = 5f;
-    [SerializeField] private float angle = 60f;
+    [SerializeField] private float range = 7f;
+    [SerializeField] private float angle = 70f;
     [SerializeField] private Transform firePoint; 
     [SerializeField] private LayerMask targetMask;
 
@@ -66,7 +66,7 @@ public class FireEffect : PoolLabel
                 validTargets.Add(col.transform);
 
                 // 예시: 데미지 적용
-                Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, 10f));
+                Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage));
             }
         }
         Debug.Log($"W에 맞은 대상 수: {validTargets.Count}");

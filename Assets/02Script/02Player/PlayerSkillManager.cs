@@ -14,8 +14,7 @@ public class PlayerSkillManager : MonoBehaviour
         
 
     private PlayerStatus playerStatus;
-
-    public static event Action indicatorOff;
+        
 
     SkillModel skillModel;
     public event Action<StateType> OnChangeState;
@@ -151,8 +150,10 @@ public class PlayerSkillManager : MonoBehaviour
     public bool IsSkillUse(SkillType useSkillType)
     {
         // 스킬의 쿨타임 확인후 스킬 사용가능한지 && 스킬의 사용마나가 현재마나와 비교하여 충분한지
-        return skillModel.CanUseSkill(useSkillType) && (skills[useSkillType].mpCost < playerStatus.CurMp);        
+        return skillModel.CanUseSkill(useSkillType) && (skills[useSkillType].mpCost < playerStatus.CurMp);
     }
+
+
 
     // 구독 해제
     public void ReleaseAllSkills()

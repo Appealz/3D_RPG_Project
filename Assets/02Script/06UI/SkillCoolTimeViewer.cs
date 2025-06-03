@@ -1,17 +1,27 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SkillCoolTimeViewer : MonoBehaviour
 {
     private Image coolTimeOverlay;
+    private Image coolTimeBackground;
+
+    private TextMeshProUGUI coolTimeText;
     [SerializeField] private SkillType skillType;
 
 
     private void OnEnable()
     {
-        coolTimeOverlay = GetComponent<Image>();
+        coolTimeOverlay = FindObjectTransform.FindChildTransform(transform, "Marker").GetComponent<Image>();
         coolTimeOverlay.fillAmount = 0f;
+
+        coolTimeBackground = FindObjectTransform.FindChildTransform(transform, "CoolTimeBackGround").GetComponent<Image>();
+        coolTimeBackground.gameObject.SetActive(false);
+
+        coolTimeText = GetComponentInChildren<TextMeshProUGUI>();        
+        coolTimeText.enabled = false;
         EventBus.Subscribe<SkillCoolDownEvent>(OnCoolTimeStarted);
     }
 
@@ -25,6 +35,8 @@ public class SkillCoolTimeViewer : MonoBehaviour
         if(coolDownStruc.Type == skillType)
         {
             //Debug.Log("ƒ≈∏¿” Ω√¿€");
+            coolTimeText.enabled = true;
+            coolTimeBackground.gameObject.SetActive(true);
             StartCoroutine(StartCoolTimeCoroutine(coolDownStruc.CoolDownTime));
         }
     }
@@ -35,9 +47,12 @@ public class SkillCoolTimeViewer : MonoBehaviour
         while(time < duration)
         {
             time += Time.deltaTime;
+            coolTimeText.text = $"{Mathf.Round(duration-time)}";
             coolTimeOverlay.fillAmount = 1f - (time/duration);
             yield return null;
         }
+        coolTimeBackground.gameObject.SetActive(false);
+        coolTimeText.enabled = false;
         coolTimeOverlay.fillAmount = 0f;
     }
 }

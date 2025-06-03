@@ -177,7 +177,8 @@ public class PCInputManager : ManagerBase, IInputHandler
         else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
         {            
             GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
-            obj.transform.position = hit.point;   
+            Vector3 setPoint = new Vector3(hit.point.x , hit.point.y + 0.2f, hit.point.z);
+            obj.transform.position = setPoint;
             EventBus.Publish(new CursorEventData(cursorType.Idle));
             EventBus.Publish(new TargetPositionEvent(hit.point));
             ActionQueue.Instance.ClearQueue();

@@ -24,8 +24,9 @@ public class TargetSkill : TargetSkillBase, IRelease
     
     public override void Activate()
     {
+        EventBus.Publish(new RotateToTargetEvent(targetPos));
         // 처음 스킬에 입장했을 때 한번만 실행
-        if(!firstActivated)
+        if (!firstActivated)
         {
             firstActivated = true;
             TargetDistanceCheck();
@@ -42,9 +43,6 @@ public class TargetSkill : TargetSkillBase, IRelease
         firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
         EventBus.Publish(new PlayerMoveLockEvent(false));
         OnSkillActivated?.Invoke();
-
-
-        EventBus.Publish(new RotateToTargetEvent(targetPos));
     }
 
     public override void CreateEffect()

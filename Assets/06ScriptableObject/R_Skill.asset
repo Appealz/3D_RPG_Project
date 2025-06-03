@@ -17,5 +17,5 @@ MonoBehaviour:
   stateType: 7
   damage: 50
   coolTime: 5
-  mpCost: 10
+  mpCost: 50
   range: 7

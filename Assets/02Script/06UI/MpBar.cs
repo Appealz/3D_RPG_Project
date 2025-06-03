@@ -6,8 +6,6 @@ public class MpBar : MonoBehaviour
 {
     Image mpBar;    
 
-    [SerializeField] private float minY = 0f;
-    [SerializeField] private float maxY = 1f;
     private void Awake()
     {
         mpBar = GetComponent<Image>();        

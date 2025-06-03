@@ -25,7 +25,6 @@ public class UnitHUD : PoolLabel
 
     private void OnEnable()
     {
-        transform.SetParent(canvas.transform, false);
         hpBar = GetComponentInChildren<HpBar>();
     }
 
@@ -57,6 +56,7 @@ public class UnitHUD : PoolLabel
         if (hpBar != null)
         {
             hpBar.SetOwner(target.gameObject);
+            transform.SetParent(canvas.transform, false);            
         }
     }
 

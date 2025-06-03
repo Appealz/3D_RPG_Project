@@ -9,8 +9,7 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
 
     public Vector3 targetPos;
 
-    private bool isActive = true;
-    private bool isAttacking = false;
+    private bool isActive = true;    
 
     private GameObject obj;
 
@@ -21,7 +20,7 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
 
         if (isActive)
         {
-            isAttacking = true;
+            
             firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
             EventBus.Publish(new PlayerMoveLockEvent(false));
             OnSkillActivated?.Invoke();            
@@ -51,7 +50,7 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
     {
         OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
         isActive = true;
-        isAttacking = false;
+        
         EventBus.Publish(new PlayerMoveLockEvent(true));
     }
 

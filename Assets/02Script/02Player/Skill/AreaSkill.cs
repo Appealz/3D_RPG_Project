@@ -8,7 +8,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
 
     public Vector3 targetPos;
 
-    bool isActive = false;
+    bool isActive = true;
     bool isAttacking = false;
 
     private Transform firePoint;
@@ -48,7 +48,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
         {            
             obj.transform.position = targetPos;
         }
-        Skill_Event.InvokeNonTargetAreaSkillSpawn(new NonTargetAreaSkillInfo(fireOwner, targetPos, 10f, ProjectileType.Rskill));
+        Skill_Event.InvokeNonTargetAreaSkillSpawn(new NonTargetAreaSkillInfo(fireOwner, targetPos, damage, ProjectileType.Rskill));
         Debug.Log("상태 변환 완료");
     }
 
@@ -69,15 +69,22 @@ public class AreaSkill : NonTargetSkillBase, IRelease
         targetPos = targetEvent.TargetPos;
     }
 
+    public void Cancel()
+    {
+        isActive = true;
+        isAttacking = false;  
+        firstActivated = false;
+    }
+
     private void TargetDistanceCheck()
     {
         float distSqr = (fireOwner.transform.position - targetPos).sqrMagnitude;
         Debug.Log($"[TargetSkill] distance: {distSqr}");
 
         if (distSqr > realRange)
-        {
+        {            
             ActionQueue.Instance.EnqueueAction(myState);
-            EventBus.Publish(new TargetPositionEvent(targetPos));
+            EventBus.Publish(new SkillTargetPositionEvent(targetPos));            
             OnStateChange?.Invoke(StateType.Chase);
         }
     }

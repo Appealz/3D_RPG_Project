@@ -27,7 +27,7 @@ public class IndicatorManager : MonoBehaviour
     {
         EventBus.Subscribe<indicatorEvent>(ShowIndiCatorEvent);
         EventBus.Subscribe<HideIndicatorEvent>(OnHideIndicator);
-        PlayerSkillManager.indicatorOff += HideAllIndicator;
+        
         HideAllIndicator();
     }
 
@@ -35,7 +35,7 @@ public class IndicatorManager : MonoBehaviour
     {
         EventBus.UnSubscribe<indicatorEvent>(ShowIndiCatorEvent);
         EventBus.UnSubscribe<HideIndicatorEvent>(OnHideIndicator);
-        PlayerSkillManager.indicatorOff -= HideAllIndicator;
+        
     }
 
     public void ShowIndiCatorEvent(indicatorEvent indicator)

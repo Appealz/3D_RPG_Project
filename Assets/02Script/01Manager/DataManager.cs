@@ -51,4 +51,9 @@ public class DataManager : MonoBehaviour
     //{
     //    skill.Init(skillData);
     //}
+
+    public (SkillData Q, SkillData W, SkillData E, SkillData R) GetAllSkillData()
+    {
+        return (Qskill, Wskill, Eskill, Rskill);
+    }
 }
