@@ -74,11 +74,15 @@ public class TargetSkill : TargetSkillBase, IRelease
         float distSqr = (fireOwner.transform.position - targetPos.position).sqrMagnitude;
         Debug.Log($"[TargetSkill] distance: {distSqr}");
 
-        if (distSqr > (range * range))
+        if (distSqr > (realRange))
         {            
             ActionQueue.Instance.EnqueueAction(myState);
             EventBus.Publish(new TargetSelectEvent(targetPos));
             OnStateChange?.Invoke(StateType.Chase);
+        }
+        else
+        {
+            Activate();
         }
     }
 

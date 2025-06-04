@@ -988,6 +988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4277ea7242070df4f9f09bcdd3b15631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineMat: {fileID: 2100000, guid: 4e5c7c02aacd35244971ccdb3487f19d, type: 2}
 --- !u!195 &3314764056139127105
 NavMeshAgent:
   m_ObjectHideFlags: 0

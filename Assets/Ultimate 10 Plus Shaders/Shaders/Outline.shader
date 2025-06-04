@@ -33,7 +33,7 @@ Shader "Ultimate 10+ Shaders/Outline"
 {
     Properties
     {
-        _Color ("Color", Color) = (1,1,1,0)
+        _Color ("Color", Color) = (1,1,1,1)
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
 
         _OutlineColor ("Outline Color", Color) = (1,1,1,1)

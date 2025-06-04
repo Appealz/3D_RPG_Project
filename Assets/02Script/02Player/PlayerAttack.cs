@@ -52,6 +52,12 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     public void Attack()
     {
+        if(target == null || target.gameObject.activeSelf == false)
+        {
+            OnChangeState(StateType.Idle);
+            return;
+        }
+
         if (target != null)
         {
             RotateTowardsTarget(target);
@@ -109,7 +115,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
             ActionQueue.Instance.EnqueueAction(StateType.Attack);
         }
 
-        if (target == null)
+        if (target == null || target.gameObject.activeSelf == false)
         {
             OnChangeState?.Invoke(StateType.Idle);
         }

@@ -137,8 +137,8 @@ public class PlayerMovement : MonoBehaviour
     public void Move()
     {        
         if (agent.enabled && !isOnSkill)
-        {            
-            agent.SetDestination(destination);            
+        {
+            agent.SetDestination(destination);
             WalkAnims(true);
             RunAnims(false);
 
@@ -148,7 +148,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 WalkAnims(false);
             }
-        }    
+        }
     }
 
     public void SetTarget(TargetSelectEvent targetSelectEvent)
@@ -222,7 +222,6 @@ public class PlayerMovement : MonoBehaviour
                 targetRot,
                 Time.deltaTime * rotateSpeed // 이 값이 클수록 빠르고 작을수록 부드러움
             );
-            
         }
     }
 

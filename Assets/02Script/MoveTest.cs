@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.HID;
@@ -16,6 +17,14 @@ public class MoveTest : PoolLabel
     float curHp;
 
     GameObject obj;
+
+    [SerializeField]
+    private Material outlineMat;
+    private Material originMat;
+
+    private SkinnedMeshRenderer meshRenderer;
+
+    private UnitHUD hud;
     private void Awake()
     {
         TryGetComponent<NavMeshAgent>(out agent);
@@ -28,22 +37,24 @@ public class MoveTest : PoolLabel
 
         maxHp = 100f;
         curHp = 100f;
+
+        meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        originMat = meshRenderer.material;
+
     }
 
     private void OnEnable()
-    {
-        
-        
+    {        
         Damage_Event.OnDamageChange += Handle_TakeDamaged;
         obj = ObjectPoolManager.Instance.pool[6].PopObj();
-        obj.GetComponent<UnitHUD>().SetTarget(transform);
+        obj.TryGetComponent<UnitHUD>(out hud);
+        hud.SetTarget(transform);
     }
 
     private void OnDisable()
     {
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
-        //obj.GetComponent<UnitHUD>().ReturnPool();
-
+        hud.ReturnPool();
     }
 
     private void Update()
@@ -59,8 +70,26 @@ public class MoveTest : PoolLabel
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
         {
-
+            if(hit.transform == transform)
+            {
+                OnEnableOutline();
+            }
+            
         }
+        else
+        {
+            DisableOutline();
+        }
+    }
+
+    private void OnEnableOutline()
+    {
+        meshRenderer.material = outlineMat;
+    }
+
+    private void DisableOutline()
+    {
+        meshRenderer.material = originMat;
     }
 
     private void SetDest(Vector3 dest)
@@ -79,10 +108,19 @@ public class MoveTest : PoolLabel
 
         if(curHp <= 0f)
         {
-            obj.GetComponent<UnitHUD>().ReturnPool();
-            ReturnPool();
+            //obj.GetComponent<UnitHUD>().ReturnPool();
+            //ReturnPool();
+            //Destroy(gameObject);
+            StartCoroutine(ReturnPoolCor());
         }
     }
 
+    IEnumerator ReturnPoolCor()
+    {
+        yield return null;
+        
+        yield return new WaitForSeconds(0.5f);
+        ReturnPool();
+    }
     
 }

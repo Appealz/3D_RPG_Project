@@ -53,8 +53,7 @@ public class ExplosionEffect : PoolLabel
             validTargets.Add(col.transform);
 
             // 예시: 데미지 적용
-            Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage));
-            
+            Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage));            
         }
         Debug.Log($"R에 맞은 대상 수: {validTargets.Count}");
     }

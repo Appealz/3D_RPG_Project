@@ -87,5 +87,9 @@ public class AreaSkill : NonTargetSkillBase, IRelease
             EventBus.Publish(new SkillTargetPositionEvent(targetPos));            
             OnStateChange?.Invoke(StateType.Chase);
         }
+        else
+        {
+            Activate();
+        }
     }
 }
