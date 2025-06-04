@@ -1,19 +1,18 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.HID;
 
-public enum EnemyStateType
+public enum EnemyType
 {
-    Idle,
-    Patrol,
-    Chase,
-    Attack,
-    Die
+    Melee,
+    Range,
 }
 
 public class EnemyStatus
 {
+    public EnemyType Type;
     public float maxHP = 100f;
     public float curHP = 100f;
     public float moveSpeed;
@@ -34,15 +33,25 @@ public class Enemy : PoolLabel
     public EnemyStatus EnemyStatus => enemyStatus;
     public Transform SpawnPoint => spawnPoint;
 
-    UnitHUD hud;    
+    UnitHUD hud;
 
-    
+    [SerializeField]
+    private EnemyType myType;
 
+    public EnemyType MyType => myType;
 
+    private float attackRange = 1f;
+    public float AttackRange => attackRange;
+
+    private float detectRange = 7f;
+    public float DetectRange => detectRange;
+
+    public event Action OnDieEvent;
     private void Awake()
     {
         // ½ºÅÈ
         enemyStatus = new EnemyStatus();
+        enemyStatus.Type = myType;
 
         // Å¸°Ù
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -70,11 +79,16 @@ public class Enemy : PoolLabel
 
         // ½ºÆùÀ§Ä¡
         spawnPoint = transform;
+        agent.speed = enemyStatus.moveSpeed = 3f;
+        enemyAI.currentState = enemyAI.idleState;
+        enemyAI.ChangeState(enemyAI.patrolState);
+        OnDieEvent += enemyAI.Handle_OnDie;
     }
 
     private void OnDisable()
     {
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
+        OnDieEvent -= enemyAI.Handle_OnDie;
         hud.ReturnPool();
     }
 
@@ -82,8 +96,6 @@ public class Enemy : PoolLabel
     {
         enemyAI.currentState?.StateUpdate();
     }
-
-
 
     public void Handle_TakeDamaged(DamageInfo damageInfo)
     {
@@ -94,20 +106,24 @@ public class Enemy : PoolLabel
             EventBus.Publish(new HpChangeEvent(gameObject, enemyStatus.curHP, enemyStatus.maxHP));
         }
 
-        if (enemyStatus.curHP <= 0f)
+        if (enemyStatus.curHP <= 0f && enemyAI.currentState != enemyAI.dieState)
         {
             //obj.GetComponent<UnitHUD>().ReturnPool();
             //ReturnPool();
             //Destroy(gameObject);
-            StartCoroutine(ReturnPoolCor());
+            //StartCoroutine(ReturnPoolCor());
+            OnDieEvent?.Invoke();
+            
         }
     }
 
-    IEnumerator ReturnPoolCor()
-    {
-        yield return null;
+    
 
-        yield return new WaitForSeconds(0.5f);
-        ReturnPool();
-    }
+    //IEnumerator ReturnPoolCor()
+    //{
+    //    yield return null;
+
+    //    yield return new WaitForSeconds(0.5f);
+    //    ReturnPool();
+    //}
 }

@@ -10,7 +10,8 @@ public class EnemyDieState : EnemyState
 
     public override void StateEnter()
     {
-        
+
+        Enemy.StartCoroutine(ReturnPoolCoroutine());
     }
 
     public override void StateExit()
@@ -23,5 +24,10 @@ public class EnemyDieState : EnemyState
         
     }
 
+    IEnumerator ReturnPoolCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Enemy.ReturnPool();
+    }
 
 }

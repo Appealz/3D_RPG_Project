@@ -9,6 +9,7 @@ public class EnemyAI
     public EnemyPatrolState patrolState;
     public EnemyChaseState chaseState;
     public EnemyDieState dieState;
+    public EnemyReturnState returnState;
         
 
     public EnemyAI(Enemy enemy)
@@ -20,6 +21,7 @@ public class EnemyAI
         patrolState = new EnemyPatrolState(Enemy, this);
         chaseState = new EnemyChaseState(Enemy, this);
         dieState = new EnemyDieState(Enemy, this);
+        returnState = new EnemyReturnState(Enemy, this);
     }
 
 
@@ -38,5 +40,11 @@ public class EnemyAI
         {
             currentState.StateEnter();
         }
+    }
+
+    public void Handle_OnDie()
+    {
+        Debug.Log("dieState ÀüÈ¯");
+        ChangeState(dieState);
     }
 }

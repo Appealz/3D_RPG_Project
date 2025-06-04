@@ -927,9 +927,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7012532165502016104}
   - component: {fileID: 5771990958948136339}
-  - component: {fileID: 5747871156735063319}
   - component: {fileID: 3314764056139127105}
   - component: {fileID: 7571347896203774934}
+  - component: {fileID: 4777298563297355304}
   m_Layer: 6
   m_Name: TurtleShellPBR
   m_TagString: Enemy
@@ -976,19 +976,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5747871156735063319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8012025999361487504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4277ea7242070df4f9f09bcdd3b15631, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMat: {fileID: 2100000, guid: 4e5c7c02aacd35244971ccdb3487f19d, type: 2}
 --- !u!195 &3314764056139127105
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1034,6 +1021,19 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.46, z: 0}
+--- !u!114 &4777298563297355304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012025999361487504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eecde51f9b6d22a41aa0fd8d63bd0b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myType: 0
 --- !u!1 &8102979634073996624
 GameObject:
   m_ObjectHideFlags: 0

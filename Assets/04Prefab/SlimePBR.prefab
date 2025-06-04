@@ -232,9 +232,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1445773708870360769}
   - component: {fileID: 5088538318349774274}
-  - component: {fileID: 9000636754133356858}
   - component: {fileID: 4308431284117420351}
   - component: {fileID: 2692375281024089867}
+  - component: {fileID: 8822414779530880479}
   m_Layer: 6
   m_Name: SlimePBR
   m_TagString: Enemy
@@ -281,19 +281,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9000636754133356858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5564110485891900313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4277ea7242070df4f9f09bcdd3b15631, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMat: {fileID: 2100000, guid: 4e5c7c02aacd35244971ccdb3487f19d, type: 2}
 --- !u!195 &4308431284117420351
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -339,6 +326,19 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.46, z: 0}
+--- !u!114 &8822414779530880479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5564110485891900313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eecde51f9b6d22a41aa0fd8d63bd0b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myType: 0
 --- !u!1 &5919204402595630531
 GameObject:
   m_ObjectHideFlags: 0

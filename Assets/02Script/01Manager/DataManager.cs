@@ -33,7 +33,7 @@ public class DataManager : MonoBehaviour
         r_Skill.SetupData(Rskill);
         r_Skill.SetOwner(playerController.gameObject);
 
-        playerController.RegistSkill(KeyCode.Q, q_Skill);        
+        playerController.RegistSkill(KeyCode.Q, q_Skill);
         playerController.RegistSkill(KeyCode.W, w_Skill);
         playerController.RegistSkill(KeyCode.E, e_Skill);
         playerController.RegistSkill(KeyCode.R, r_Skill);

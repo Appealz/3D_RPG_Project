@@ -20,8 +20,8 @@ public class SpawnManager : MonoBehaviour
             int index = i;
             for(int j=0; j <  spawnPoint[i].childCount; j++)
             {
-                int cur = j;
-                GameObject obj = ObjectPoolManager.Instance.pool[7+ cur].PopObj();
+                int cur = Random.Range(0, 2);
+                GameObject obj = ObjectPoolManager.Instance.pool[7 + cur].PopObj();
                 obj.TryGetComponent<NavMeshAgent>(out NavMeshAgent agent);
                 agent.Warp(spawnPoint[index].GetChild(cur).position);
                 //agent.enabled = false;
