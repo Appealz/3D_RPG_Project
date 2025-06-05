@@ -15,6 +15,7 @@ public class EnemyChaseState : EnemyState
         
     public override void StateUpdate()
     {
+        Enemy.Agent.SetDestination(Enemy.Target.position);
         if (Vector3.Distance(Enemy.transform.position, Enemy.Target.position) < Enemy.AttackRange)
         {
             EnemyAI.ChangeState(EnemyAI.attackState);

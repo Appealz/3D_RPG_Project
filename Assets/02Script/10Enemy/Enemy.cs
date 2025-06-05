@@ -40,7 +40,7 @@ public class Enemy : PoolLabel
 
     public EnemyType MyType => myType;
 
-    private float attackRange = 1f;
+    private float attackRange = 1.5f;
     public float AttackRange => attackRange;
 
     private float detectRange = 7f;
@@ -108,22 +108,9 @@ public class Enemy : PoolLabel
 
         if (enemyStatus.curHP <= 0f && enemyAI.currentState != enemyAI.dieState)
         {
-            //obj.GetComponent<UnitHUD>().ReturnPool();
-            //ReturnPool();
-            //Destroy(gameObject);
-            //StartCoroutine(ReturnPoolCor());
-            OnDieEvent?.Invoke();
-            
+            OnDieEvent?.Invoke();            
         }
     }
+       
 
-    
-
-    //IEnumerator ReturnPoolCor()
-    //{
-    //    yield return null;
-
-    //    yield return new WaitForSeconds(0.5f);
-    //    ReturnPool();
-    //}
 }

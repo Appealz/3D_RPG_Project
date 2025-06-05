@@ -5,7 +5,7 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class HpGlobe : MonoBehaviour
 {
-    Image manaGlobe;
+    Image hpGlobe;
     TextMeshProUGUI hpText;
 
     [SerializeField] private float minY = 0f;
@@ -14,7 +14,7 @@ public class HpGlobe : MonoBehaviour
     GameObject owner;
     private void Awake()
     {
-        manaGlobe = GetComponent<Image>();
+        hpGlobe = GetComponent<Image>();
         GameObject.Find("HpText").TryGetComponent<TextMeshProUGUI>(out hpText);
     }
 
@@ -41,7 +41,7 @@ public class HpGlobe : MonoBehaviour
         // 위치 보간
         float yPos = Mathf.Lerp(minY, maxY, ratio);
 
-        manaGlobe.rectTransform.localPosition = new Vector3(0f, yPos, 0f);
+        hpGlobe.rectTransform.localPosition = new Vector3(0f, yPos, 0f);
 
         if (yPos < 50f)
         {

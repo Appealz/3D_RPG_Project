@@ -14,7 +14,7 @@ public class EnemyPatrolState : EnemyState
     
     public override void StateEnter()
     {
-        Debug.Log("패트롤 시작");
+        //Debug.Log("패트롤 시작");
         SetRandomDestination();
     }
 

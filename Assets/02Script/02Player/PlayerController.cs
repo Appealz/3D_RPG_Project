@@ -60,11 +60,11 @@ public class PlayerStatus
 
     public float CurHP
     {
-        get => curMp;
+        get => curHp;
         set
         {
             curHp = Mathf.Clamp(value, 0, maxHp);
-            EventBus.Publish(new MpChangeEvent(Player, curHp, maxHp));
+            EventBus.Publish(new HpChangeEvent(Player, curHp, maxHp));
         }
     }
     public float attackDamage;
@@ -121,6 +121,7 @@ public class PlayerController : ManagerBase
     private PlayerState playerState;
     private PlayerSkillManager playerSkillManager;
     private PlayerAnimManager playerAnimManager;
+    private PlayerHitbox playerHitbox;
 
     private Action qSkillHandler;
     private Action wSkillHandler;
@@ -135,6 +136,7 @@ public class PlayerController : ManagerBase
         TryGetComponent<PlayerState>(out playerState);
         TryGetComponent<PlayerSkillManager>(out playerSkillManager);
         TryGetComponent<PlayerAnimManager>(out playerAnimManager);
+        TryGetComponent<PlayerHitbox>(out playerHitbox);
         playerStatus = new PlayerStatus(gameObject);
     }
 
@@ -191,9 +193,11 @@ public class PlayerController : ManagerBase
         base.StartGame();
         playerStatus.moveSpeed = 3f;
         playerStatus.CurMp = playerStatus.MaxMp = 100f;
+        playerStatus.CurHP = playerStatus.MaxHp = 100f;
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
         playerSkillManager.InitStatus(playerStatus);
+        playerHitbox.InitStatus(playerStatus);
     }
 
     public override void CustomUpdate()
