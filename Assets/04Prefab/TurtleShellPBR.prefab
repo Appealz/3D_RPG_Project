@@ -930,6 +930,7 @@ GameObject:
   - component: {fileID: 3314764056139127105}
   - component: {fileID: 7571347896203774934}
   - component: {fileID: 4777298563297355304}
+  - component: {fileID: 458652399240796913}
   m_Layer: 6
   m_Name: TurtleShellPBR
   m_TagString: Enemy
@@ -964,7 +965,7 @@ Animator:
   m_GameObject: {fileID: 8012025999361487504}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 599b2dc9e6c44a8ebc02ddea1f18d215, type: 3}
-  m_Controller: {fileID: 9100000, guid: 1f68948a5bb74f2fa9e9087a872750e9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0bbee9dcf74acf84e89d2fe59cd55a00, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1033,7 +1034,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eecde51f9b6d22a41aa0fd8d63bd0b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyData: {fileID: 11400000, guid: 2c5239e74de0c2e478db0dfcd084da35, type: 2}
   myType: 0
+--- !u!114 &458652399240796913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012025999361487504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fce0432bb5d5b4849b73d2b3da4a97f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8102979634073996624
 GameObject:
   m_ObjectHideFlags: 0

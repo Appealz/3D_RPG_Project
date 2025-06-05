@@ -35,7 +35,7 @@ public class Projectile : PoolLabel
     {        
         if(isMove)
         {
-            if (target == null)
+            if (target == null || target.gameObject.activeSelf == false)
             {
                 // 타겟이 없으면 마지막 위치까지 이동
                 moveDir = (lastTargetPos - transform.position).normalized;

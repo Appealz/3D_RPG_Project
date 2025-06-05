@@ -9,7 +9,7 @@ public class EnemyIdleState : EnemyState
     public override void StateEnter()
     {
         Enemy.Agent.ResetPath();
-        Enemy.Agent.velocity = Vector3.zero;
+        Enemy.Agent.velocity = Vector3.zero;        
     }
 
     public override void StateExit()

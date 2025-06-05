@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   maxHP: 80
-  curHP: 80
-  moveSpeed: 3
+  moveSpeed: 2
+  attackRange: 3
+  detectRange: 8

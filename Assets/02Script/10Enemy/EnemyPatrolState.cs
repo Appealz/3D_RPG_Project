@@ -15,7 +15,9 @@ public class EnemyPatrolState : EnemyState
     public override void StateEnter()
     {
         //Debug.Log("패트롤 시작");
+        Enemy.Agent.speed = 1.5f;
         SetRandomDestination();
+        Enemy.Anims.PlayMove(true);
     }
 
 
@@ -27,7 +29,7 @@ public class EnemyPatrolState : EnemyState
             SetRandomDestination();
         }
 
-        if(Vector3.Distance(Enemy.transform.position, Enemy.Target.position) <= Enemy.DetectRange)
+        if(Vector3.Distance(Enemy.transform.position, Enemy.Target.position) <= Enemy.Status.detectRange)
         {
             EnemyAI.ChangeState(EnemyAI.chaseState);
         }
@@ -38,10 +40,10 @@ public class EnemyPatrolState : EnemyState
         int findDestinationCount = 10;
         for(int i = 0; i < findDestinationCount; i++)
         {
-            randomPosX = Random.Range(-3f, 3f);
-            randomPosZ = Random.Range(-3f, 3f);            
+            randomPosX = Random.Range(-5f, 5f);
+            randomPosZ = Random.Range(-5f, 5f);            
 
-            Vector3 randomPoint = Enemy.SpawnPoint.position + new Vector3(randomPosX, 0f, randomPosZ);
+            Vector3 randomPoint = Enemy.SpawnPoint + new Vector3(randomPosX, 0f, randomPosZ);
             
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 5f, NavMesh.AllAreas))
             {
@@ -61,6 +63,7 @@ public class EnemyPatrolState : EnemyState
     {
         Enemy.Agent.ResetPath();
         Enemy.Agent.velocity = Vector3.zero;
+        Enemy.Anims.PlayMove(false);
     }
 
 }

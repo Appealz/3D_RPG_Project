@@ -8,8 +8,8 @@ public class HpGlobe : MonoBehaviour
     Image hpGlobe;
     TextMeshProUGUI hpText;
 
-    [SerializeField] private float minY = 0f;
-    [SerializeField] private float maxY = 100f;
+    [SerializeField] private float minY = -200f;
+    [SerializeField] private float maxY = 0;
 
     GameObject owner;
     private void Awake()
@@ -40,10 +40,9 @@ public class HpGlobe : MonoBehaviour
         float ratio = Mathf.Clamp01(changeEvent.CurrentHp / changeEvent.MaxHp);
         // 위치 보간
         float yPos = Mathf.Lerp(minY, maxY, ratio);
-
         hpGlobe.rectTransform.localPosition = new Vector3(0f, yPos, 0f);
 
-        if (yPos < 50f)
+        if (yPos < (minY - maxY)/2)
         {
             hpText.color = Color.black;
         }
@@ -52,6 +51,6 @@ public class HpGlobe : MonoBehaviour
             hpText.color = Color.white;
         }
 
-        hpText.text = $"{Mathf.FloorToInt(yPos)} / {100}";
+        hpText.text = $"{Mathf.FloorToInt(changeEvent.CurrentHp)} / 100";
     }
 }

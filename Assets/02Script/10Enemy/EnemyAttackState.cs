@@ -43,13 +43,14 @@ public class EnemyAttackState : EnemyState
             
         }
 
-        if (TargetDistance > Enemy.DetectRange)
+        if (TargetDistance > Enemy.Status.detectRange)
         {
             EnemyAI.ChangeState(EnemyAI.returnState);
         }
 
-        else if (TargetDistance > Enemy.AttackRange)
+        else if (TargetDistance > Enemy.Status.attackRange)
         {
+            Enemy.Status.attackRange = 2f;
             EnemyAI.ChangeState(EnemyAI.chaseState);
         }
 
@@ -76,6 +77,7 @@ public class EnemyAttackState : EnemyState
             Damage_Event.TakeDamage(new DamageInfo(Enemy.gameObject, Enemy.Target.gameObject, 5f));
             attackTime = Time.time + attackRate;
             Debug.Log("애니메이션 시작");
+            Enemy.Anims.PlayAttack();
             animsTIme = Time.time + animsDuration;
         }
     }

@@ -10,8 +10,8 @@ public class MpGlobe : MonoBehaviour
 
     GameObject owner;
 
-    [SerializeField] private float minY = 0f;
-    [SerializeField] private float maxY = 100f;
+    [SerializeField] private float minY = -200f;
+    [SerializeField] private float maxY = 0f;
     private void Awake()
     {
         manaGlobe = GetComponent<Image>();
@@ -38,10 +38,9 @@ public class MpGlobe : MonoBehaviour
         float ratio = Mathf.Clamp01(changeEvent.CurrentMP / changeEvent.MaxMp);
         // 위치 보간
         float yPos = Mathf.Lerp(minY, maxY, ratio);
-
         manaGlobe.rectTransform.localPosition = new Vector3(0f, yPos, 0f);
 
-        if(yPos < 50f)
+        if(yPos < (minY - maxY) / 2f)
         {
             mpText.color = Color.black;
         }
@@ -50,6 +49,6 @@ public class MpGlobe : MonoBehaviour
             mpText.color = Color.white;
         }
 
-        mpText.text = $"{Mathf.FloorToInt(yPos)} / {100}";
+        mpText.text = $"{Mathf.FloorToInt(changeEvent.CurrentMP)} / {100}";
     }
 }

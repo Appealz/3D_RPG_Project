@@ -27,7 +27,7 @@ public class CameraManager : MonoBehaviour
         cameraOffset = 10f;
         cameraOffsetDir = new Vector3(0f, cameraOffset, -cameraOffset * 0.8f);
         transform.position = targetObj.transform.position + cameraOffsetDir;
-        cameraAngle = new Vector3(40f, 0f, 0f);
+        cameraAngle = new Vector3(50f, 0f, 0f);
         
     }
 

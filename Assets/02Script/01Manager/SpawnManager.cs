@@ -22,8 +22,10 @@ public class SpawnManager : MonoBehaviour
             {
                 int cur = Random.Range(0, 2);
                 GameObject obj = ObjectPoolManager.Instance.pool[7 + cur].PopObj();
-                obj.TryGetComponent<NavMeshAgent>(out NavMeshAgent agent);
-                agent.Warp(spawnPoint[index].GetChild(cur).position);
+                obj.TryGetComponent<Enemy>(out Enemy enemy);
+                enemy.Agent.Warp(spawnPoint[index].GetChild(cur).position);
+                enemy.Init(spawnPoint[index].GetChild(cur).position);
+
                 //agent.enabled = false;
                 //obj.transform.position = spawnPoint[index].GetChild(cur).position;
                 //agent.enabled = true;

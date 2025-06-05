@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
+    [SerializeField]
     GameObject owner;
     Image hpBar;
 

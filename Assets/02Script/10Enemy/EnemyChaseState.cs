@@ -6,30 +6,36 @@ public class EnemyChaseState : EnemyState
     {
     }
 
-
     public override void StateEnter()
     {
         Debug.Log($"{Enemy.name}플레이어 추적 시작");
         Enemy.Agent.SetDestination(Enemy.Target.position);
+        Enemy.Agent.speed= 3f;
+        Enemy.Anims.PlayRun(true);
+        Enemy.SetAggresive();
     }
         
     public override void StateUpdate()
     {
         Enemy.Agent.SetDestination(Enemy.Target.position);
-        if (Vector3.Distance(Enemy.transform.position, Enemy.Target.position) < Enemy.AttackRange)
+
+        float TargetDistance = Vector3.Distance(Enemy.transform.position, Enemy.Target.position);
+        float returnDistance = Vector3.Distance(Enemy.SpawnPoint, Enemy.transform.position);
+                
+        if (TargetDistance < Enemy.Status.attackRange)
         {
             EnemyAI.ChangeState(EnemyAI.attackState);
         }
-
-        if(Vector3.Distance(Enemy.transform.position, Enemy.Target.position) > Enemy.DetectRange)
+        else if(!Enemy.IsProvoked && (TargetDistance > Enemy.Status.detectRange || returnDistance > 10f))
         {
-            EnemyAI.ChangeState(EnemyAI.returnState);
+            EnemyAI.ChangeState(EnemyAI.returnState);            
         }
     }
 
     public override void StateExit()
     {
         Enemy.Agent.ResetPath();
+        Enemy.Anims.PlayRun(false);
     }
 
 }

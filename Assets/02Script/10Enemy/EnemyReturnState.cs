@@ -9,13 +9,15 @@ public class EnemyReturnState : EnemyState
         if (Enemy.Agent.isOnNavMesh)
         {
             Debug.Log($"{Enemy.name} 스폰 위치 리턴");
-            Enemy.Agent.SetDestination(Enemy.SpawnPoint.position);
+            Enemy.Agent.speed = 3f;
+            Enemy.Agent.SetDestination(Enemy.SpawnPoint);
+            Enemy.Anims.PlayRun(true);            
         }
     }
 
     public override void StateUpdate()
     {
-        float distance = Vector3.Distance(Enemy.transform.position, Enemy.SpawnPoint.position);
+        float distance = Vector3.Distance(Enemy.transform.position, Enemy.SpawnPoint);
 
         if (distance <= Enemy.Agent.stoppingDistance && !Enemy.Agent.pathPending)
         {
@@ -26,5 +28,6 @@ public class EnemyReturnState : EnemyState
     public override void StateExit()
     {
         Enemy.Agent.ResetPath();
+        Enemy.Anims.PlayRun(false);
     }
 }

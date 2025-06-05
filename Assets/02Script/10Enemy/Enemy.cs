@@ -13,10 +13,25 @@ public enum EnemyType
 public class EnemyStatus
 {
     public EnemyType Type;
-    public float maxHP = 100f;
-    public float curHP = 100f;
+    private float maxHP;
+    public float MaxHP => maxHP;
+        
+    public float curHP;
     public float moveSpeed;
-    
+    public float attackRange;
+    public float detectRange;
+
+    public EnemyStatus(EnemyType type, float maxHP, float curHP, float moveSpeed, float attackRange, float detectRange)
+    {
+        Type = type;
+        this.maxHP = maxHP;
+        this.curHP = curHP;
+        this.moveSpeed = moveSpeed;
+        this.attackRange = attackRange;
+        this.detectRange = detectRange;
+    }
+
+
 }
 
 public class Enemy : PoolLabel
@@ -24,14 +39,20 @@ public class Enemy : PoolLabel
     EnemyAI enemyAI;
     NavMeshAgent agent;
     Transform target;
-    EnemyStatus enemyStatus;
-    Transform spawnPoint;
+    
+    Vector3 spawnPoint;
+    EnemyAnimsController animController;
+
+    [SerializeField]
+    EnemyData enemyData;
 
     public EnemyAI EnemyAI => enemyAI;
     public NavMeshAgent Agent => agent;
     public Transform Target => target;
-    public EnemyStatus EnemyStatus => enemyStatus;
-    public Transform SpawnPoint => spawnPoint;
+    private EnemyStatus enemyStatus;
+    public EnemyStatus Status => enemyStatus;
+    public Vector3 SpawnPoint => spawnPoint;
+    public EnemyAnimsController Anims => animController;
 
     UnitHUD hud;
 
@@ -40,18 +61,15 @@ public class Enemy : PoolLabel
 
     public EnemyType MyType => myType;
 
-    private float attackRange = 1.5f;
-    public float AttackRange => attackRange;
-
-    private float detectRange = 7f;
-    public float DetectRange => detectRange;
-
+    private bool isProvoked;
+    public bool IsProvoked => isProvoked;
     public event Action OnDieEvent;
+
+    private float aggroTime;
+    private float aggroDuration = 5f;
     private void Awake()
     {
         // 스탯
-        enemyStatus = new EnemyStatus();
-        enemyStatus.Type = myType;
 
         // 타겟
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -66,8 +84,14 @@ public class Enemy : PoolLabel
             Debug.Log("agent 참조실패");
         }
 
+        // AI
         enemyAI = new EnemyAI(this);
-            
+
+        // 애니메이션
+        if(!TryGetComponent<EnemyAnimsController>(out animController))
+        {
+            Debug.Log("animController 참조 실패");
+        }            
     }
 
     private void OnEnable()
@@ -76,13 +100,17 @@ public class Enemy : PoolLabel
         GameObject obj = ObjectPoolManager.Instance.pool[6].PopObj();
         obj.TryGetComponent<UnitHUD>(out hud);
         hud.SetTarget(transform);
+        OnDieEvent += enemyAI.Handle_OnDie;    
+    }
 
-        // 스폰위치
-        spawnPoint = transform;
-        agent.speed = enemyStatus.moveSpeed = 3f;
+    public void Init(Vector3 spawnPos)
+    {
+        enemyStatus = new EnemyStatus(enemyData.Type, enemyData.maxHP, enemyData.maxHP, enemyData.moveSpeed, enemyData.attackRange, enemyData.detectRange);
+
+        spawnPoint = spawnPos;
+        agent.speed = enemyStatus.moveSpeed;
         enemyAI.currentState = enemyAI.idleState;
-        enemyAI.ChangeState(enemyAI.patrolState);
-        OnDieEvent += enemyAI.Handle_OnDie;
+        enemyAI.ChangeState(enemyAI.patrolState);        
     }
 
     private void OnDisable()
@@ -90,20 +118,43 @@ public class Enemy : PoolLabel
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
         OnDieEvent -= enemyAI.Handle_OnDie;
         hud.ReturnPool();
+    
     }
 
     void Update()
     {
         enemyAI.currentState?.StateUpdate();
+
+        if(IsProvoked)
+        {
+            if(Time.time > aggroTime)
+            {
+                isProvoked = false;
+            }
+        }
+    }
+
+
+    public void SetAggresive()
+    {
+        aggroTime = Time.time + aggroDuration;
+        isProvoked = true;
+    }
+
+    public void SetSpawnPoint(Vector3 newPoint)
+    {
+        spawnPoint = newPoint;
     }
 
     public void Handle_TakeDamaged(DamageInfo damageInfo)
     {
         if (damageInfo.defender == gameObject)
         {
+            Anims.PlayHit();
             Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
             enemyStatus.curHP -= damageInfo.damage;
-            EventBus.Publish(new HpChangeEvent(gameObject, enemyStatus.curHP, enemyStatus.maxHP));
+            EventBus.Publish(new HpChangeEvent(gameObject, enemyStatus.curHP, enemyStatus.MaxHP));
+            enemyAI.ChangeState(enemyAI.chaseState);
         }
 
         if (enemyStatus.curHP <= 0f && enemyAI.currentState != enemyAI.dieState)

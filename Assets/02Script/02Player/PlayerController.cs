@@ -108,6 +108,11 @@ public class PlayerStatus
     {
         CurMp += 5f * deltaTime;
     }
+
+    public void RecoverHp(float deltaTime)
+    {
+        CurHP += 1f * deltaTime;
+    }
 }
 
 
@@ -191,7 +196,7 @@ public class PlayerController : ManagerBase
     public override void StartGame()
     {
         base.StartGame();
-        playerStatus.moveSpeed = 3f;
+        playerStatus.moveSpeed = 4f;
         playerStatus.CurMp = playerStatus.MaxMp = 100f;
         playerStatus.CurHP = playerStatus.MaxHp = 100f;
         playerMovement.InitMove(playerStatus.moveSpeed);
@@ -206,6 +211,7 @@ public class PlayerController : ManagerBase
         playerState.UpdateState();
         playerSkillManager.UpdateSKillCoolTIme();
         playerStatus.RecoverMp(Time.deltaTime);
+        playerStatus.RecoverHp(Time.deltaTime);
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
