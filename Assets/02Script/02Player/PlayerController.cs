@@ -32,6 +32,11 @@ public struct HpChangeEvent
 
 public class PlayerStatus
 {
+    public PlayerStatus(GameObject player)
+    {
+        Player = player;
+    }
+
     public float moveSpeed;
     public float attackRagne = 25f;
     private float maxMp;
@@ -70,10 +75,7 @@ public class PlayerStatus
     public float attackDamage;
     public GameObject Player;
 
-    public PlayerStatus(GameObject player)
-    {
-        Player = player;
-    }
+
 
     public float MaxMp
     {

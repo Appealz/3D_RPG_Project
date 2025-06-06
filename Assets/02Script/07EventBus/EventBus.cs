@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/// <summary>
+/// 공격자, 피격자, 데미지
+/// </summary>
 public struct DamageInfo
 {
     public GameObject attacker;

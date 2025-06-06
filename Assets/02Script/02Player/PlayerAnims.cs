@@ -14,7 +14,10 @@ public class PlayerAnims : MonoBehaviour
 
     private void Awake()
     {
-        TryGetComponent<Animator>(out anims);
+        if(!TryGetComponent<Animator>(out anims))
+        {
+            Debug.Log("anims is not ref");
+        }
         isMove = Animator.StringToHash("IsMove");
         isRun = Animator.StringToHash("isTargetMove");
         isAttack = Animator.StringToHash("isAttack");

@@ -21,14 +21,14 @@ public class EnemyStatus
     public float attackRange;
     public float detectRange;
 
-    public EnemyStatus(EnemyType type, float maxHP, float curHP, float moveSpeed, float attackRange, float detectRange)
+    public EnemyStatus(EnemyData enemyData)
     {
-        Type = type;
-        this.maxHP = maxHP;
-        this.curHP = curHP;
-        this.moveSpeed = moveSpeed;
-        this.attackRange = attackRange;
-        this.detectRange = detectRange;
+        Type = enemyData.Type;
+        maxHP = enemyData.maxHP;
+        curHP = enemyData.maxHP;
+        moveSpeed = enemyData.moveSpeed;
+        attackRange = enemyData.attackRange;
+        detectRange = enemyData.detectRange;
     }
 
 
@@ -105,7 +105,7 @@ public class Enemy : PoolLabel
 
     public void Init(Vector3 spawnPos)
     {
-        enemyStatus = new EnemyStatus(enemyData.Type, enemyData.maxHP, enemyData.maxHP, enemyData.moveSpeed, enemyData.attackRange, enemyData.detectRange);
+        enemyStatus = new EnemyStatus(enemyData);
 
         spawnPoint = spawnPos;
         agent.speed = enemyStatus.moveSpeed;

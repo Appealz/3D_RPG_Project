@@ -6,6 +6,7 @@ public class ActionQueue : Singleton<ActionQueue>
     Queue<StateType> stateQueue = new Queue<StateType>();
     StateType newState;
     StateType currentState;
+    public bool isEmpty => stateQueue.Count == 0;
     public void EnqueueAction(StateType curState)
     {
         //if(currentState != curState)
