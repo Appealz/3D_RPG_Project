@@ -115,10 +115,11 @@ public class Enemy : PoolLabel
 
     private void OnDisable()
     {
+        if (!Application.isPlaying) return;
+
         Damage_Event.OnDamageChange -= Handle_TakeDamaged;
         OnDieEvent -= enemyAI.Handle_OnDie;
-        hud.ReturnPool();
-    
+        hud.ReturnPool();    
     }
 
     void Update()

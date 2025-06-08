@@ -102,12 +102,20 @@ public class Player : ManagerBase
     private PlayerAnims anims;
     public PlayerAnims Anims => anims;
 
-
     private PlayerFSM playerFSM;
     public Vector3 targetPos { get; private set; }
-
+    public Transform targetTrans { get; private set; }
     private PlayerStatus_Fixed playerStatus;
     public PlayerStatus_Fixed PlayerStatus => playerStatus;
+
+    private PlayerMove movement;
+    public PlayerMove Movement => movement;
+    private PlayerAttackHandle attackHandle;
+    public PlayerAttackHandle AttackHandle => attackHandle;
+
+    private PlayerSkillManager skillManager;
+    public PlayerSkillManager SkillManager => skillManager;
+    
 
     private void Awake()
     {
@@ -115,13 +123,34 @@ public class Player : ManagerBase
         {
             Debug.Log("agent is not ref");
         }
+
+        if(!TryGetComponent<PlayerAnims>(out anims))
+        {
+            Debug.Log("anims is not ref");
+        }
+
+        if(!TryGetComponent<PlayerAttackHandle>(out attackHandle))
+        {
+            Debug.Log("attackHandle is not ref");
+        }
+        if(!TryGetComponent<PlayerMove>(out movement))
+        {
+            Debug.Log("movement is not ref");
+        }
+        
+
         playerFSM = new PlayerFSM(this);
+
         playerStatus = new PlayerStatus_Fixed(playerData);
+
+        movement.InitMove(playerStatus.moveSpeed, anims);
+        attackHandle.InitAttack(playerStatus, anims);
     }
 
     private void OnEnable()
     {
         EventBus.Subscribe<TargetPositionEvent>(SetTargetPos);
+        EventBus.Subscribe<TargetSelectEvent>(SetTargetTrans);
         Damage_Event.OnDamageChange += Handle_OnDamaged;
     }
 
@@ -140,13 +169,30 @@ public class Player : ManagerBase
     public override void CustomUpdate()
     {
         base.CustomUpdate();
+        if (playerFSM == null)
+        {
+            Debug.LogWarning("playerFSM is null in CustomUpdate.");
+            return;
+        }
+
         playerFSM.StateUpdate();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ActionQueue.Instance.QueueCheck();
+        }
     }
 
     public void SetTargetPos(TargetPositionEvent targetPositionEvent)
     {
         targetPos = targetPositionEvent.TargetPos;
     }
+
+    public void SetTargetTrans(TargetSelectEvent targetSelectEvent)
+    {
+        targetTrans = targetSelectEvent.Target;
+    }
+
 
     public void Handle_OnDamaged(DamageInfo damageInfo)
     {

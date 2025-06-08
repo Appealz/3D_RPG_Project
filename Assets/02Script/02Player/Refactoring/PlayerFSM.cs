@@ -13,9 +13,10 @@ public class PlayerFSM
     {
         player = newPlayer;
         stateDictionary[StateType.Idle] = new IdleState(player, this);
-        stateDictionary[StateType.Attack] = new AttackState(player, this);
-        stateDictionary[StateType.Chase] = new ChaseState(player, this);
-        stateDictionary[StateType.Move] = new MoveState(player, this);        
+        stateDictionary[StateType.Attack] = new AttackState(player, this, player.AttackHandle);
+        stateDictionary[StateType.Chase] = new ChaseState(player, this, player.Anims, player.Movement);
+        stateDictionary[StateType.Move] = new MoveState(player, this, player.Movement);
+        stateDictionary[StateType.SkillQ] = new QSkillState(player, this, player.SkillManager.GetSkill(SkillType.Q_Skill));
     }
 
     public void Init()
@@ -28,13 +29,17 @@ public class PlayerFSM
 
     public void ChangeState(StateType newStateType)
     {
+        if (currentState == stateDictionary[newStateType])
+            return; // 상태 전환 필요 없음
+
         if (stateDictionary.TryGetValue(newStateType, out StateBase newState))
         {
             if (currentState != null)
             {
                 currentState.StateExit();
-            }
+            }            
             currentState = newState;
+            Debug.Log($"{currentState}로 상태 변경");
             if (currentState != null)
             {
                 currentState.StateEnter();

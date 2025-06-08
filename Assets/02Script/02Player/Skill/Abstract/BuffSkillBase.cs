@@ -2,15 +2,9 @@ using UnityEngine;
 
 public abstract class BuffSkillBase : SkillBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected BuffSkillBase(SkillData newData) : base(newData)
     {
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

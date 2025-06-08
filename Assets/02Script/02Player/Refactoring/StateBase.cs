@@ -16,4 +16,6 @@ public abstract class StateBase
     public abstract void StateEnter();
     public abstract void StateUpdate();
     public abstract void StateExit();
+    public bool IsDone { get; protected set; }
+    public virtual void Cancel() { IsDone = true; }
 }

@@ -1,24 +1,28 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MoveState : StateBase
 {
-    public MoveState(Player player, PlayerFSM playerFSM) : base(player, playerFSM)
+    private readonly PlayerMove movement;
+    public MoveState(Player player, PlayerFSM playerFSM, PlayerMove newMovement) : base(player, playerFSM)
     {
+        movement = newMovement;        
     }
 
     public override void StateEnter()
     {
+        movement.StartMove(4f);
         isDone = true;
-        player.Agent.speed = 4f;
     }
     public override void StateUpdate()
-    {
-        player.Agent.SetDestination(player.targetPos);
+    {        
+        movement.SettingPoisition(player.targetPos);
+        movement.Move();
     }
 
     public override void StateExit()
     {
-
+        movement.StopMove();
     }
 
 

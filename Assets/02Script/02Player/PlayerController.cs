@@ -201,7 +201,7 @@ public class PlayerController : ManagerBase
         playerStatus.moveSpeed = 4f;
         playerStatus.CurMp = playerStatus.MaxMp = 100f;
         playerStatus.CurHP = playerStatus.MaxHp = 100f;
-        playerMovement.InitMove(playerStatus.moveSpeed);
+        playerMovement.InitMove(playerStatus.moveSpeed, playerAnims);
         playerState.InitState();
         playerSkillManager.InitStatus(playerStatus);
         playerHitbox.InitStatus(playerStatus);

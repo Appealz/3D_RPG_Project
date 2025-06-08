@@ -60,6 +60,9 @@ public class PlayerAnimManager : MonoBehaviour
                 // ¿¹: Instantiate(projectilePrefab, transform.position, Quaternion.identity);
                 currentSkill.CreateEffect();
                 break;
+            case "Cancel":
+                currentSkill.CancelAble();                
+                break;
             case "End":
                 currentSkill.Finish();
                 animRunning = false;

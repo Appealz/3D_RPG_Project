@@ -5,10 +5,16 @@ public class BarrierSkill : BuffSkillBase
 {
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
+    public override event Action OnActionCancel;
+
     Transform shieldPoint;
     GameObject obj;
 
     bool isOn = true;
+
+    public BarrierSkill(SkillData newData) : base(newData)
+    {
+    }
 
     public override void Activate()
     {
@@ -42,5 +48,8 @@ public class BarrierSkill : BuffSkillBase
         isOn = true;
     }
 
-
+    public override void CancelAble()
+    {
+        throw new NotImplementedException();
+    }
 }

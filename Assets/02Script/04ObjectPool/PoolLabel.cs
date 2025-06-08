@@ -11,7 +11,9 @@ public class PoolLabel : MonoBehaviour
     }
 
     public void ReturnPool()
-    {     
+    {
+        if (!Application.isPlaying) return;
+
         myPool.PushObj(this);
     }
 }

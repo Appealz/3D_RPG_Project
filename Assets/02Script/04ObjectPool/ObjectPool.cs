@@ -44,6 +44,8 @@ public class ObjectPool : MonoBehaviour
 
     public void PushObj(PoolLabel returnObj)
     {
+        if (!Application.isPlaying) return;
+
         poolStack.Push(returnObj);
         returnObj.transform.SetParent(transform);
         returnObj.gameObject.SetActive(false);

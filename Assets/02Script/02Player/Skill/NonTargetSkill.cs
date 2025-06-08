@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class NonTargetSkill : NonTargetSkillBase, IRelease
 {
+
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
+    public override event Action OnActionCancel;
 
     public Vector3 targetPos;
 
@@ -14,6 +16,11 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
     private GameObject obj;
 
     private Transform firePoint;
+
+    public NonTargetSkill(SkillData newData) : base(newData)
+    {
+    }
+
     public override void Activate()
     {        
         EventBus.Publish(new RotateToPosEvent(targetPos));
@@ -62,5 +69,10 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
     public void Release()
     { 
         EventBus.UnSubscribe<SkillTargetPositionEvent>(TargetPositionSetting);        
+    }
+
+    public override void CancelAble()
+    {
+        throw new NotImplementedException();
     }
 }

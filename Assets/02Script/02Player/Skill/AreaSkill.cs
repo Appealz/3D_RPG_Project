@@ -5,6 +5,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
 {
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
+    public override event Action OnActionCancel;
 
     public Vector3 targetPos;
 
@@ -15,6 +16,10 @@ public class AreaSkill : NonTargetSkillBase, IRelease
     private GameObject obj;
 
     private bool firstActivated = false;
+
+    public AreaSkill(SkillData newData) : base(newData)
+    {
+    }
 
     public override void Activate()
     {
@@ -91,5 +96,10 @@ public class AreaSkill : NonTargetSkillBase, IRelease
         {
             Activate();
         }
+    }
+
+    public override void CancelAble()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -5,11 +5,17 @@ using UnityEngine.SocialPlatforms;
 public abstract class SkillBase : ISkill
 {
     protected SkillData skillData;
+    public SkillBase(SkillData newData)
+    {
+        skillData = newData;
+    }
+
     protected GameObject fireOwner;
     protected float realRange => skillData.range * skillData.range;
 
     public abstract event Action OnSkillActivated;
     public abstract event Action<StateType> OnStateChange;
+    public abstract event Action OnActionCancel;
 
     public virtual SkillType myType => skillData.skillType;
     public virtual string skillName => skillData.skillName;
@@ -47,6 +53,8 @@ public abstract class SkillBase : ISkill
     public abstract void Activate();
     public abstract void CreateEffect();
     public abstract void Finish();
+    public abstract void CancelAble();
 
-    
+
+
 }

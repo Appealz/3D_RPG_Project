@@ -2,23 +2,77 @@ using UnityEngine;
 
 public class AttackState : StateBase
 {
-    public AttackState(Player player, PlayerFSM playerFSM) : base(player, playerFSM)
+    private readonly PlayerAttackHandle attackHandle;
+    public AttackState(Player player, PlayerFSM playerFSM, PlayerAttackHandle newAttackHandle) : base(player, playerFSM)
     {
+        attackHandle = newAttackHandle;
+        //EventBus.Subscribe<cancleState>(CancelState);
+        
     }
+
+    private bool isAttacking;
+    private float lastAttackTime = 0f;
+    private float attackRate = 1f;
 
     public override void StateEnter()
     {
+        attackHandle.OnActionCancel += Cancel;
         isDone = false;
-    }
-
-    public override void StateExit()
-    {
+        player.Agent.velocity = Vector3.zero;
         
+        attackHandle.TargetSetting(player.targetTrans);
+
+        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        {
+            playerFSM.ChangeState(StateType.Idle);
+        }
+        if (attackHandle.CheckTargetDistance() && !attackHandle.IsAttacking)
+        {
+            attackHandle.Attack();
+        }        
     }
 
     public override void StateUpdate()
     {
-        
+        // 타겟 null check
+        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        {            
+            playerFSM.ChangeState(StateType.Idle);
+        }
+
+        attackHandle.RotateTowardsTarget(player.targetTrans);
+
+        // 거리 체크
+        if (!attackHandle.CheckTargetDistance())
+        {
+            Debug.Log("거리 안됨! 상태 바꾸려고 함.");
+            playerFSM.ChangeState(StateType.Chase);
+            ActionQueue.Instance.EnqueueAction(StateType.Attack);
+            return;
+        }
+
+        if (attackHandle.IsAttacking)
+            return;
+
+
+        attackHandle.Attack();
+        //isDone = true;
     }
 
+    public override void StateExit()
+    {
+        isDone = true;
+        attackHandle.OnActionCancel -= Cancel;
+    }
+
+    public override void Cancel()
+    {
+        base.Cancel();
+        isDone = true;        
+    }
+
+    public void CancelState(cancleState cancleState)
+    {
+        Cancel();
+    }
 }

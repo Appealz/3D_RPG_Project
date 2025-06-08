@@ -8,9 +8,8 @@ using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
-{
-    private Rigidbody rb;
-    private Vector3 destination;
+{    
+    private Vector3 targetPosition;
     [SerializeField]
     private Transform target;
     private NavMeshAgent agent;
@@ -33,10 +32,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        if(!TryGetComponent<Rigidbody>(out rb))
-        {
-            Debug.Log("PlayerMovement.cs - Awake() - rb is not ref");
-        }
         if(!TryGetComponent<NavMeshAgent>(out agent))
         {
             Debug.Log("PlayerMovement.cs - Awake() - agent is not ref");
@@ -45,9 +40,7 @@ public class PlayerMovement : MonoBehaviour
         //PCInputManager.OnMouseMoveClick += SetPosition;
         //PCInputManager.OnMouseTargetClick += SetTarget;
         //Debug.Log("OnRotate 연결 완료");
-        playerStatus = new PlayerStatus(gameObject);
-
-        
+        //playerStatus = new PlayerStatus(gameObject);        
     }
 
     private void OnEnable()
@@ -69,15 +62,20 @@ public class PlayerMovement : MonoBehaviour
 
         EventBus.UnSubscribe<SkillTargetPositionEvent>(SetTargetPosition);
     }
-    public void InitMove(float newSpeed)
+
+    private PlayerAnims anims;
+    public void InitMove(float newSpeed, PlayerAnims newAnims)
     {
+        anims = newAnims;
+
         agent.enabled = true;
-        SetEnable(true);        
-        moveSpeed = newSpeed;
-        agent.speed = moveSpeed;
+        agent.acceleration = 999f;
+        agent.speed = newSpeed;
         agent.updateRotation = false;
         rotateSpeed = 12f;
         agent.autoBraking = false;
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
     }
 
     public void SetEnable(bool newEnable)
@@ -93,31 +91,35 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void StartMove()
-    {        
-        SetEnable(true);        
-        if(target)
-        {
-            OnTarget = true;
-        }
+    public void StartMove(float newSpeed)
+    {
+        agent.speed = newSpeed;
+        agent.isStopped = false;
     }
 
     public void StopMove()
     {
-        SetEnable(false);
-        WalkAnims(false);
-        RunAnims(false);
+        //SetEnable(false);
+        //WalkAnims(false);
+        //RunAnims(false);
+        agent.isStopped = true;
+        agent.ResetPath();
+        agent.velocity = Vector3.zero;
     }
 
+    public void SettingPoisition(Vector3 newTargetPos)
+    {
+        targetPosition = newTargetPos;
+    }
 
     public void SetPosition(TargetPositionEvent targetPositionEvent)
     {        
         OnChangeState?.Invoke(StateType.Move);
         agent.speed = moveSpeed;
-        StartMove();        
+        //StartMove();        
         target = null;
         OnTarget = false;
-        destination = targetPositionEvent.TargetPos;
+        targetPosition = targetPositionEvent.TargetPos;
         isOnSkill = false;
     }
 
@@ -128,9 +130,9 @@ public class PlayerMovement : MonoBehaviour
         target = null;
         isOnSkill = true;
         OnTarget = false;
-        destination = targetPositionEvent.TargetPos;                
+        targetPosition = targetPositionEvent.TargetPos;                
         OnTarget = true;        
-        StartMove();
+        //StartMove();
         OnChangeState?.Invoke(StateType.Chase);
     }
 
@@ -138,7 +140,9 @@ public class PlayerMovement : MonoBehaviour
     {        
         if (agent.enabled && !isOnSkill)
         {
-            agent.SetDestination(destination);
+            anims.RunAnims(false);
+            anims.MoveAnims(true);
+            agent.SetDestination(targetPosition);
             WalkAnims(true);
             RunAnims(false);
 
@@ -146,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (agent.velocity.sqrMagnitude < 0.001f)
             {
-                WalkAnims(false);
+                anims.MoveAnims(false);
             }
         }
     }
@@ -157,13 +161,13 @@ public class PlayerMovement : MonoBehaviour
         target = targetSelectEvent.Target;
         OnTarget = true;
         agent.speed = 5f;
-        StartMove();
+        //StartMove();
         OnChangeState?.Invoke(StateType.Chase);
     }
 
     public void ChaseMove()
     {
-        StartMove();
+        //StartMove();
         if (agent.enabled && target)
         {
             agent.SetDestination(target.transform.position);
@@ -187,12 +191,12 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(agent.enabled && isOnSkill)
         {
-            agent.SetDestination(destination);
+            agent.SetDestination(targetPosition);
             RunAnims(OnTarget);
 
             ManualRotate(agent.desiredVelocity);
 
-            if ((destination - transform.position).sqrMagnitude < playerStatus.attackRagne)
+            if ((targetPosition - transform.position).sqrMagnitude < playerStatus.attackRagne)
             {
                 StopMove();
                 if (ActionQueue.Instance.HasQueue())
@@ -235,7 +239,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(playerMoveLockEvent.CanMove)
         {
-            StartMove();
+            //StartMove();
         }
         else
         {

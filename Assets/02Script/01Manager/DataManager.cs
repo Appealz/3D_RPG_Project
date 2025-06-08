@@ -7,30 +7,26 @@ public class DataManager : MonoBehaviour
     [SerializeField] private SkillData Eskill;
     [SerializeField] private SkillData Rskill;
 
-    TargetSkill q_Skill;
-    NonTargetSkill w_Skill;
-    BarrierSkill e_Skill;
-    AreaSkill r_Skill;
+    public TargetSkill q_Skill;
+    public NonTargetSkill w_Skill;
+    public BarrierSkill e_Skill;
+    public AreaSkill r_Skill;
   
     PlayerController playerController;
     private void Awake()
     {
         playerController = FindAnyObjectByType<PlayerController>();
-        q_Skill = new TargetSkill();
-        w_Skill = new NonTargetSkill();
-        e_Skill = new BarrierSkill();
-        r_Skill = new AreaSkill();
+        q_Skill = new TargetSkill(Qskill);
+        w_Skill = new NonTargetSkill(Wskill);
+        e_Skill = new BarrierSkill(Eskill);
+        r_Skill = new AreaSkill(Rskill);
     }
 
     void Start()
-    {
-        q_Skill.SetupData(Qskill);
-        q_Skill.SetOwner(playerController.gameObject);
-        w_Skill.SetupData(Wskill);
-        w_Skill.SetOwner(playerController.gameObject);
-        e_Skill.SetupData(Eskill);
-        e_Skill.SetOwner(playerController.gameObject);
-        r_Skill.SetupData(Rskill);
+    {        
+        q_Skill.SetOwner(playerController.gameObject);        
+        w_Skill.SetOwner(playerController.gameObject);        
+        e_Skill.SetOwner(playerController.gameObject);        
         r_Skill.SetOwner(playerController.gameObject);
 
         playerController.RegistSkill(KeyCode.Q, q_Skill);

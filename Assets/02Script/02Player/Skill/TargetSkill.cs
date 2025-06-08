@@ -7,10 +7,14 @@ using UnityEngine.Playables;
 
 public class TargetSkill : TargetSkillBase, IRelease
 {
+    public TargetSkill(SkillData newData) : base(newData)
+    {
+    }
+
     public override event Action OnSkillActivated;        
     public override event Action<StateType> OnStateChange;
 
-    
+    public override event Action OnActionCancel;
 
     public Transform targetPos;
         
@@ -20,8 +24,9 @@ public class TargetSkill : TargetSkillBase, IRelease
 
     private Transform firePoint;
 
-    private bool firstActivated = false;    
+    private bool firstActivated = false;
     
+
     public override void Activate()
     {
         EventBus.Publish(new RotateToTargetEvent(targetPos));
@@ -53,6 +58,11 @@ public class TargetSkill : TargetSkillBase, IRelease
         Debug.Log("상태 변환 완료");
     }
 
+    public override void CancelAble()
+    {
+        OnActionCancel?.Invoke();
+    }
+
     public override void Finish()
     {
         Debug.Log(" 스킬 종료");        
@@ -68,6 +78,10 @@ public class TargetSkill : TargetSkillBase, IRelease
         targetPos = targetEvent.Target;
     }
 
+    public void Rotation()
+    {
+        EventBus.Publish(new RotateToTargetEvent(targetPos));
+    }
 
     private void TargetDistanceCheck()
     {
@@ -85,6 +99,7 @@ public class TargetSkill : TargetSkillBase, IRelease
             Activate();
         }
     }
+
 
     public void Release()
     {

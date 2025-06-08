@@ -10,11 +10,9 @@ public class PlayerSkillManager : MonoBehaviour
     //private List<ISkill> skillList = new List<ISkill>();
 
     private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
-    private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
-        
+    private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();        
 
-    private PlayerStatus playerStatus;
-        
+    private PlayerStatus playerStatus;        
 
     SkillModel skillModel;
     public event Action<StateType> OnChangeState;
@@ -72,8 +70,16 @@ public class PlayerSkillManager : MonoBehaviour
         {
             skill.OnSkillActivated += animAction;
         }
-        skill.OnSkillActivated += () => skillModel.UseSkill(skill.myType, skills[skill.myType].coolTime);
+        skill.OnSkillActivated += () => skillModel.UseSkill(skill.myType,skill.coolTime);
         skill.OnSkillActivated += () => ConsumeMp(skill.myType);
+    }
+
+    public ISkill GetSkill(SkillType type)
+    {
+        if (skills.TryGetValue(type, out var skill))
+            return skill;
+        Debug.LogError($"SkillType {type} not found");
+        return null;
     }
 
     public void UpdateSKillCoolTIme()
@@ -117,6 +123,8 @@ public class PlayerSkillManager : MonoBehaviour
         }
     }
 
+
+
     public void UseSkill(SkillActivatedEvent skillActivatedEvent)
     {
         if (!IsSkillUse(skillActivatedEvent.SkillType))
@@ -126,11 +134,12 @@ public class PlayerSkillManager : MonoBehaviour
         }
         //Debug.Log("스킬 눌림");
         if(skills.Count > 0)
-        {            
+        {
             // 1. 플레이어 애니메이션 바인딩
             // 2. 스킬 쿨타임 모델 연결
             // 3. 스킬 mp 소모 연결
             OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
+            ActionQueue.Instance.EnqueueAction(StateType.SkillE);
             EventBus.Publish(new CursorEventData(cursorType.Idle));
             EventBus.Publish(new HideIndicatorEvent());
         }

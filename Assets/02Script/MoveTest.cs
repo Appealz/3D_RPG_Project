@@ -37,10 +37,6 @@ public class MoveTest : PoolLabel
 
         maxHp = 100f;
         curHp = 100f;
-
-        meshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
-        originMat = meshRenderer.material;
-
     }
 
     private void OnEnable()
@@ -67,30 +63,10 @@ public class MoveTest : PoolLabel
             SetDest(destPos);
         }
 
-        RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-        {
-            if(hit.transform == transform)
-            {
-                OnEnableOutline();
-            }
-            
-        }
-        else
-        {
-            DisableOutline();
-        }
+
     }
 
-    private void OnEnableOutline()
-    {
-        meshRenderer.material = outlineMat;
-    }
 
-    private void DisableOutline()
-    {
-        meshRenderer.material = originMat;
-    }
 
     private void SetDest(Vector3 dest)
     {
