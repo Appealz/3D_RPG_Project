@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -32,11 +32,6 @@ public struct HpChangeEvent
 
 public class PlayerStatus
 {
-    public PlayerStatus(GameObject player)
-    {
-        Player = player;
-    }
-
     public float moveSpeed;
     public float attackRagne = 25f;
     private float maxMp;
@@ -50,7 +45,7 @@ public class PlayerStatus
         {
             if (value < 0)
             {
-                Debug.Log("MaxHp´Â 0 ÀÌ»óÀÌ¿©¾ß ÇÕ´Ï´Ù.");
+                Debug.Log("MaxHpï¿½ï¿½ 0 ï¿½Ì»ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.");
                 return;
             }
             maxHp = value;
@@ -75,21 +70,24 @@ public class PlayerStatus
     public float attackDamage;
     public GameObject Player;
 
-
+    public PlayerStatus(GameObject player)
+    {
+        Player = player;
+    }
 
     public float MaxMp
     {
         get => maxMp;
         set
         {
-            if(value < 0)
+            if (value < 0)
             {
-                Debug.Log("MaxMp´Â 0 ÀÌ»óÀÌ¿©¾ß ÇÕ´Ï´Ù.");
+                Debug.Log("MaxMpï¿½ï¿½ 0 ï¿½Ì»ï¿½ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.");
                 return;
             }
             maxMp = value;
 
-            if(curMp > maxMp)
+            if (curMp > maxMp)
             {
                 curMp = maxMp;
             }
@@ -201,7 +199,7 @@ public class PlayerController : ManagerBase
         playerStatus.moveSpeed = 4f;
         playerStatus.CurMp = playerStatus.MaxMp = 100f;
         playerStatus.CurHP = playerStatus.MaxHp = 100f;
-        playerMovement.InitMove(playerStatus.moveSpeed, playerAnims);
+        playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
         playerSkillManager.InitStatus(playerStatus);
         playerHitbox.InitStatus(playerStatus);
@@ -209,35 +207,35 @@ public class PlayerController : ManagerBase
 
     public override void CustomUpdate()
     {
-        base.CustomUpdate();        
+        base.CustomUpdate();
         playerState.UpdateState();
         playerSkillManager.UpdateSKillCoolTIme();
         playerStatus.RecoverMp(Time.deltaTime);
         playerStatus.RecoverHp(Time.deltaTime);
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionQueue.Instance.QueueCheck();
-        }        
+        }
     }
 
     public override void StopGame()
     {
         base.StopGame();
         playerMovement?.StopMove();
-        playerSkillManager?.ReleaseAllSkills();        
+        playerSkillManager?.ReleaseAllSkills();
     }
 
     public void RegistSkill(KeyCode key, ISkill skill)
     {
         playerSkillManager.AddSkill(key, skill);
         inputHandler.BindKeyToSkill(key, skill.myType);
-        
+
 
         switch (skill.myState)
         {
             case StateType.SkillQ:
-                playerState.OnQSkillEvent += skill.Activate;                
+                playerState.OnQSkillEvent += skill.Activate;
                 skill.OnStateChange += playerState.ChangeState;
                 qSkillHandler = () => playerAnimManager.PlayAnimation("Qskill", skill);
                 skill.OnSkillActivated += qSkillHandler;
@@ -268,12 +266,12 @@ public class PlayerController : ManagerBase
         switch (skill.myState)
         {
             case StateType.SkillQ:
-                playerState.OnQSkillEvent -= skill.Activate;                
+                playerState.OnQSkillEvent -= skill.Activate;
                 skill.OnStateChange -= playerState.ChangeState;
                 skill.OnSkillActivated -= qSkillHandler;
                 break;
             case StateType.SkillW:
-                playerState.OnWSkillEvent -= skill.Activate;    
+                playerState.OnWSkillEvent -= skill.Activate;
                 skill.OnStateChange -= playerState.ChangeState;
                 skill.OnSkillActivated -= wSkillHandler;
                 break;

@@ -7,10 +7,9 @@ public class GameManager : DontDestroySingleton<GameManager>
     private IInputHandler curInputHandler;
     private UIManager uiManager;
     private DataManager dataManager;
-    Player player;
+
     private void Awake()
     {
-        player = GameObject.FindAnyObjectByType<Player>();
         playerController = GameObject.FindAnyObjectByType<PlayerController>();
         curInputHandler = GameObject.FindAnyObjectByType<PCInputManager>();
         cursorManager = GameObject.FindAnyObjectByType<CursorManager>();
@@ -18,14 +17,14 @@ public class GameManager : DontDestroySingleton<GameManager>
         uiManager = GameObject.FindAnyObjectByType<UIManager>();
         dataManager = GameObject.FindAnyObjectByType<DataManager>();
 
-        SetupSkills();
+        var (q, w, e, r) = dataManager.GetAllSkillData();
+        uiManager.SetSkillData(q, w, e, r);
     }
 
     private void Start()
     {
         playerController?.StartGame();
         uiManager?.StartGame();
-        player?.StartGame();
     }
 
     private void Update()
@@ -33,24 +32,10 @@ public class GameManager : DontDestroySingleton<GameManager>
         playerController?.CustomUpdate();
         curInputHandler?.CustomUpdate();
         cursorManager?.CustomUpdate();
-        player?.CustomUpdate();
     }
 
     public void StopGame()
     {
         playerController?.StopGame();
     }
-
-    private void SetupSkills()
-    {
-        var (q, w, e, r) = dataManager.GetAllSkillData();
-
-        playerController.RegistSkill(KeyCode.Q, dataManager.q_Skill);
-        playerController.RegistSkill(KeyCode.W, dataManager.w_Skill);
-        playerController.RegistSkill(KeyCode.E, dataManager.e_Skill);
-        playerController.RegistSkill(KeyCode.R, dataManager.r_Skill);
-
-        uiManager.SetSkillData(q, w, e, r);
-    }
-
 }

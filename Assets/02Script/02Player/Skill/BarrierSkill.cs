@@ -12,9 +12,7 @@ public class BarrierSkill : BuffSkillBase
 
     bool isOn = true;
 
-    public BarrierSkill(SkillData newData) : base(newData)
-    {
-    }
+
 
     public override void Activate()
     {

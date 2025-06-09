@@ -1,11 +1,11 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerAttack : MonoBehaviour, IAttack
-{    
-    public event Action OnAttackAnims;    
+{
+    public event Action OnAttackAnims;
     public event Action<StateType> OnChangeState;
 
     private bool isAttack;
@@ -28,19 +28,19 @@ public class PlayerAttack : MonoBehaviour, IAttack
     private void Awake()
     {
         firePoint = FindObjectTransform.FindChildTransform(transform, "FirePoint");
-        if( firePoint == null )
+        if (firePoint == null)
         {
             Debug.Log($"{gameObject.name} : PlayerAttack.cs - Awake() - firePoint is not ref");
         }
         attackRate = 1f;
         attackRange = 25f;
-        attackDamage = 10f;        
+        attackDamage = 10f;
         EventBus.Subscribe<TargetSelectEvent>(TargetSetting);
         EventBus.Subscribe<RotateToTargetEvent>(RotateEvent);
     }
 
     private void OnDisable()
-    {        
+    {
         EventBus.UnSubscribe<TargetSelectEvent>(TargetSetting);
         EventBus.UnSubscribe<RotateToTargetEvent>(RotateEvent);
     }
@@ -52,7 +52,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     public void Attack()
     {
-        if(target == null || target.gameObject.activeSelf == false)
+        if (target == null || target.gameObject.activeSelf == false)
         {
             OnChangeState(StateType.Idle);
             return;
@@ -64,11 +64,31 @@ public class PlayerAttack : MonoBehaviour, IAttack
         }
 
         if (!isAttacking && target)
-        {            
+        {
             isAttacking = true;
             OnAttackAnims?.Invoke();
         }
     }
+
+    //public void AttackEvent()
+    //{
+    //    StartCoroutine(AttackCoroutine());
+    //}
+
+    //public void Attack()
+    //{
+    //    if (target != null)
+    //    {
+    //        RotateTowardsTarget(target);
+    //    }
+
+    //    if (!isAttacking && target)
+    //    {
+    //        TargetDistanceCheck();
+    //        isAttacking = true;
+    //        OnAttackAnims?.Invoke();
+    //    }
+    //}
 
     public void AttackEvent()
     {
@@ -109,7 +129,7 @@ public class PlayerAttack : MonoBehaviour, IAttack
         }
         float distSqr = (target.position - transform.position).sqrMagnitude;
 
-        if(distSqr <= attackRange)
+        if (distSqr <= attackRange)
         {
             return true;
         }
@@ -119,12 +139,12 @@ public class PlayerAttack : MonoBehaviour, IAttack
     void RotateTowardsTarget(Transform target)
     {
         Vector3 direction = target.position - transform.position;
-        direction.y = 0f; // YÃà °íÁ¤ (¼öÆò È¸Àü¸¸ ¿øÇÒ ¶§)
+        direction.y = 0f; // Yï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 
         if (direction == Vector3.zero) return;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
-        float rotationSpeed = 720f; // È¸Àü ¼Óµµ (Á¶Àý °¡´É)    
+        float rotationSpeed = 720f; // È¸ï¿½ï¿½ ï¿½Óµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)    
 
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
@@ -132,11 +152,10 @@ public class PlayerAttack : MonoBehaviour, IAttack
 
     public void RotateEvent(RotateToTargetEvent rotateToTargetEvent)
     {
-        //Debug.Log("RotateEvent È£ÃâµÊ!");
+        //Debug.Log("RotateEvent È£ï¿½ï¿½ï¿½!");
         RotateTowardsTarget(rotateToTargetEvent.Target);
 
     }
 }
-
 
 

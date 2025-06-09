@@ -17,9 +17,7 @@ public class AreaSkill : NonTargetSkillBase, IRelease
 
     private bool firstActivated = false;
 
-    public AreaSkill(SkillData newData) : base(newData)
-    {
-    }
+
 
     public override void Activate()
     {

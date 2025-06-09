@@ -115,7 +115,11 @@ public class Player : ManagerBase
 
     private PlayerSkillManager skillManager;
     public PlayerSkillManager SkillManager => skillManager;
-    
+
+    private bool isAttackReady;
+    public bool IsAttackReady => isAttackReady;
+
+    public SkillType? preparedSkillType;
 
     private void Awake()
     {
@@ -157,6 +161,7 @@ public class Player : ManagerBase
     private void OnDisable()
     {
         EventBus.UnSubscribe<TargetPositionEvent>(SetTargetPos);
+        EventBus.UnSubscribe<TargetSelectEvent>(SetTargetTrans);
         Damage_Event.OnDamageChange -= Handle_OnDamaged;
     }
 
@@ -193,6 +198,25 @@ public class Player : ManagerBase
         targetTrans = targetSelectEvent.Target;
     }
 
+    public void SetTargetPos(Vector3 newTargetPosition)
+    {
+        targetPos = newTargetPosition;
+    }
+
+    public void SetTargetTrans(Transform newTargetTrans)
+    {
+        targetTrans = newTargetTrans;
+    }
+
+    public void ReadyToAttack(bool newIsOn)
+    {
+        isAttackReady = newIsOn;
+    }
+
+    public void ChangeState(StateType newStateType)
+    {
+        playerFSM.ChangeState(newStateType);
+    }
 
     public void Handle_OnDamaged(DamageInfo damageInfo)
     {

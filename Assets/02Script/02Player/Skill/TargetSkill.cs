@@ -7,9 +7,7 @@ using UnityEngine.Playables;
 
 public class TargetSkill : TargetSkillBase, IRelease
 {
-    public TargetSkill(SkillData newData) : base(newData)
-    {
-    }
+
 
     public override event Action OnSkillActivated;        
     public override event Action<StateType> OnStateChange;

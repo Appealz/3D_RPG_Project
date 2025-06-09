@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 
 public enum SkillType
 {
+    None,
     Q_Skill,
     W_Skill,
     E_Skill,
@@ -107,35 +108,36 @@ public class PCInputManager : ManagerBase, IInputHandler
             }
         }
 
-        foreach (var binding in keySkillBindings)
-        {
-            if (Input.GetKeyDown(binding.Key))
-            {
-                isReadySkill = true;
-                EventBus.Publish(new SkillAvailablityEvent(binding.Value, OnKeySkillAvailablityChecked));
-            }
-        }
+        // 리팩토링 인풋핸들러
+        //foreach (var binding in keySkillBindings)
+        //{
+        //    if (Input.GetKeyDown(binding.Key))
+        //    {
+        //        isReadySkill = true;
+        //        EventBus.Publish(new SkillAvailablityEvent(binding.Value, OnKeySkillAvailablityChecked));
+        //    }
+        //}
 
-        // 마우스 좌클릭
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (isReadySkill)
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-                {
-                    EventBus.Publish(new TargetSelectEvent(hit.transform));
-                    EventBus.Publish(new TargetPositionEvent(hit.point));
-                    Debug.Log("SkillManager의 UseSkill 발동");
-                }
-                else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-                {
-                    EventBus.Publish(new TargetPositionEvent(hit.point));
-                    Debug.Log("SkillManager의 UseSkill 발동");
-                }
-                isReadySkill = false;
-            }
-        }
+        //마우스 좌클릭
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    if (isReadySkill)
+        //    {
+        //        RaycastHit hit;
+        //        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+        //        {
+        //            EventBus.Publish(new TargetSelectEvent(hit.transform));
+        //            EventBus.Publish(new TargetPositionEvent(hit.point));
+        //            Debug.Log("SkillManager의 UseSkill 발동");
+        //        }
+        //        else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+        //        {
+        //            EventBus.Publish(new TargetPositionEvent(hit.point));
+        //            Debug.Log("SkillManager의 UseSkill 발동");
+        //        }
+        //        isReadySkill = false;
+        //    }
+        //}
 
 
         // 공격(A)키 입력
@@ -179,8 +181,7 @@ public class PCInputManager : ManagerBase, IInputHandler
                 EventBus.Publish(new HideIndicatorEvent());
                 EventBus.Publish(new CursorEventData(cursorType.Idle));
             }
-        }
-        
+        }        
     }
 
     private void OnKeySkillAvailablityChecked(bool canUse)
@@ -201,29 +202,30 @@ public class PCInputManager : ManagerBase, IInputHandler
         currentReadySkill = preparedSkillType.SkillType;
     }
 
-    //public void GetInputClick()
-    //{   
-    //    RaycastHit hit;
-    //    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-    //    {
-    //        EventBus.Publish(new TargetSelectEvent(hit.transform));
-    //        ActionQueue.Instance.ClearQueue(); 
-    //        ActionQueue.Instance.EnqueueAction(StateType.Attack);
-    //    }
-    //    else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-    //    {            
-    //        GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
-    //        Vector3 setPoint = new Vector3(hit.point.x , hit.point.y + 0.2f, hit.point.z);
-    //        obj.transform.position = setPoint;
-    //        EventBus.Publish(new CursorEventData(cursorType.Idle));
-    //        ActionQueue.Instance.EnqueueAction(StateType.Move);
-    //        EventBus.Publish(new TargetPositionEvent(hit.point));
-    //        ActionQueue.Instance.ClearQueue();
-    //    }
-    //    isAttackOn = false;
-    //}
-
     public void GetInputClick()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+        {
+            EventBus.Publish(new TargetSelectEvent(hit.transform));
+            ActionQueue.Instance.ClearQueue();
+            ActionQueue.Instance.EnqueueAction(StateType.Attack);
+        }
+        else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+        {
+            GameObject obj = ObjectPoolManager.Instance.pool[1].PopObj();
+            Vector3 setPoint = new Vector3(hit.point.x, hit.point.y + 0.2f, hit.point.z);
+            obj.transform.position = setPoint;
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
+            ActionQueue.Instance.EnqueueAction(StateType.Move);
+            EventBus.Publish(new TargetPositionEvent(hit.point));
+            ActionQueue.Instance.ClearQueue();
+        }
+        isAttackOn = false;
+    }
+
+    // 리팩토링 인풋핸들러
+    public void GetInputClick2()
     {
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))

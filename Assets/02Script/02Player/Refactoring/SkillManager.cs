@@ -1,20 +1,17 @@
-ï»¿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
+using System;
 using UnityEngine;
-using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
-public class PlayerSkillManager : MonoBehaviour
+public class SkillManager : MonoBehaviour
 {
     //private List<ISkill> skillList = new List<ISkill>();
 
     private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
     private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
-
+    private Dictionary<SkillType, StateType> skillStates = new Dictionary<SkillType, StateType>();
 
     private PlayerStatus playerStatus;
-
 
     SkillModel skillModel;
     public event Action<StateType> OnChangeState;
@@ -41,7 +38,7 @@ public class PlayerSkillManager : MonoBehaviour
     public void InitStatus(PlayerStatus status)
     {
         playerStatus = status;
-        Debug.Log($"ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Å³ ï¿½Å´ï¿½ï¿½ï¿½ status ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ mp{playerStatus.CurMp}");
+        Debug.Log($"ÇÃ·¹ÀÌ¾î ½ºÅ³ ¸Å´ÏÀú status ÀåÂø, ÇöÀç mp{playerStatus.CurMp}");
     }
 
     public void InitSkillAnimMap(PlayerAnims newAnims)
@@ -55,14 +52,15 @@ public class PlayerSkillManager : MonoBehaviour
     public void AddSkill(KeyCode keyType, ISkill skill)
     {
         skills[skill.myType] = skill;
+        skillStates[skill.myType] = skill.myState;
         skill.SetOwner(gameObject);
 
-        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³
+        // Å¸°ÙÇü ½ºÅ³
         if (skill is TargetSkillBase targetable)
         {
             EventBus.Subscribe<SkillTargetSelectedEvent>(targetable.TargetSetting);
         }
-        // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³
+        // ³íÅ¸°ÙÇü ½ºÅ³
         if (skill is NonTargetSkillBase nontargetable)
         {
             EventBus.Subscribe<SkillTargetPositionEvent>(nontargetable.TargetPositionSetting);
@@ -72,8 +70,16 @@ public class PlayerSkillManager : MonoBehaviour
         {
             skill.OnSkillActivated += animAction;
         }
-        skill.OnSkillActivated += () => skillModel.UseSkill(skill.myType, skills[skill.myType].coolTime);
+        skill.OnSkillActivated += () => skillModel.UseSkill(skill.myType, skill.coolTime);
         skill.OnSkillActivated += () => ConsumeMp(skill.myType);
+    }
+
+    public ISkill GetSkill(SkillType type)
+    {
+        if (skills.TryGetValue(type, out var skill))
+            return skill;
+        Debug.LogError($"SkillType {type} not found");
+        return null;
     }
 
     public void UpdateSKillCoolTIme()
@@ -117,6 +123,7 @@ public class PlayerSkillManager : MonoBehaviour
         }
     }
 
+
     public void UseSkill(SkillActivatedEvent skillActivatedEvent)
     {
         if (!IsSkillUse(skillActivatedEvent.SkillType))
@@ -124,13 +131,33 @@ public class PlayerSkillManager : MonoBehaviour
             preparedSkillType = null;
             return;
         }
-        //Debug.Log("ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½");
+        //Debug.Log("½ºÅ³ ´­¸²");
         if (skills.Count > 0)
         {
-            // 1. ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½Îµï¿½
-            // 2. ï¿½ï¿½Å³ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-            // 3. ï¿½ï¿½Å³ mp ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // 1. ÇÃ·¹ÀÌ¾î ¾Ö´Ï¸ÞÀÌ¼Ç ¹ÙÀÎµù
+            // 2. ½ºÅ³ ÄðÅ¸ÀÓ ¸ðµ¨ ¿¬°á
+            // 3. ½ºÅ³ mp ¼Ò¸ð ¿¬°á
             OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
+            ActionQueue.Instance.EnqueueAction(StateType.SkillE);
+            EventBus.Publish(new CursorEventData(cursorType.Idle));
+            EventBus.Publish(new HideIndicatorEvent());
+        }
+    }
+
+    public void UseSkill()
+    {
+        if (!IsSkillUse(preparedSkillType.Value))
+        {
+            preparedSkillType = null;
+            return;
+        }
+        //Debug.Log("½ºÅ³ ´­¸²");
+        if (skills.Count > 0)
+        {
+            // 1. ÇÃ·¹ÀÌ¾î ¾Ö´Ï¸ÞÀÌ¼Ç ¹ÙÀÎµù
+            // 2. ½ºÅ³ ÄðÅ¸ÀÓ ¸ðµ¨ ¿¬°á
+            // 3. ½ºÅ³ mp ¼Ò¸ð ¿¬°á            
+            ActionQueue.Instance.EnqueueAction(skillStates[preparedSkillType.Value]);
             EventBus.Publish(new CursorEventData(cursorType.Idle));
             EventBus.Publish(new HideIndicatorEvent());
         }
@@ -149,13 +176,13 @@ public class PlayerSkillManager : MonoBehaviour
 
     public bool IsSkillUse(SkillType useSkillType)
     {
-        // ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ë°¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ && ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ë¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ç¸¶ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // ½ºÅ³ÀÇ ÄðÅ¸ÀÓ È®ÀÎÈÄ ½ºÅ³ »ç¿ë°¡´ÉÇÑÁö && ½ºÅ³ÀÇ »ç¿ë¸¶³ª°¡ ÇöÀç¸¶³ª¿Í ºñ±³ÇÏ¿© ÃæºÐÇÑÁö
         return skillModel.CanUseSkill(useSkillType) && (skills[useSkillType].mpCost < playerStatus.CurMp);
     }
 
 
 
-    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // ±¸µ¶ ÇØÁ¦
     public void ReleaseAllSkills()
     {
         foreach (var skill in skills.Values)
@@ -171,8 +198,8 @@ public class PlayerSkillManager : MonoBehaviour
 
 
 
-    // ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ È®ï¿½ï¿½
+    // ³²¾ÆÀÖ´Â ½ºÅ³ÀÇ ÄðÅ¸ÀÓ È®ÀÎ
     public float GetRemainingCoolTime(SkillType useSkillType) => skillModel.GetRemainingCoolTime(useSkillType);
-    // ï¿½ï¿½Å³ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ È®ï¿½ï¿½.
+    // ½ºÅ³ÀÇ ÃÖ´ë ÄðÅ¸ÀÓ È®ÀÎ.
     public float GetMaxCoolTime(SkillType useSkillType) => skillModel.GetMaxCoolTime(useSkillType);
 }

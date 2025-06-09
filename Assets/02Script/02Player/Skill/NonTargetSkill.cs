@@ -17,9 +17,7 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
 
     private Transform firePoint;
 
-    public NonTargetSkill(SkillData newData) : base(newData)
-    {
-    }
+
 
     public override void Activate()
     {        

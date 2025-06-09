@@ -5,10 +5,6 @@ using UnityEngine.SocialPlatforms;
 public abstract class SkillBase : ISkill
 {
     protected SkillData skillData;
-    public SkillBase(SkillData newData)
-    {
-        skillData = newData;
-    }
 
     protected GameObject fireOwner;
     protected float realRange => skillData.range * skillData.range;

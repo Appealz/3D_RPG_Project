@@ -26,8 +26,8 @@ public class UIManager : ManagerBase
     {
         base.StartGame();
                 
-        playerHUD?.SetSkillMpMarkers(Qskill, Wskill, Eskill, Rskill);
-        playerHUD?.SetOwner(owner);
+        //playerHUD?.SetSkillMpMarkers(Qskill, Wskill, Eskill, Rskill);
+        //playerHUD?.SetOwner(owner);
     }
     private void OnEnable()
     {

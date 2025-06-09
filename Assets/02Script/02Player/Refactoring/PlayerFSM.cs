@@ -16,7 +16,7 @@ public class PlayerFSM
         stateDictionary[StateType.Attack] = new AttackState(player, this, player.AttackHandle);
         stateDictionary[StateType.Chase] = new ChaseState(player, this, player.Anims, player.Movement);
         stateDictionary[StateType.Move] = new MoveState(player, this, player.Movement);
-        stateDictionary[StateType.SkillQ] = new QSkillState(player, this, player.SkillManager.GetSkill(SkillType.Q_Skill));
+        //stateDictionary[StateType.SkillQ] = new QSkillState(player, this, player.SkillManager.GetSkill(SkillType.Q_Skill));
     }
 
     public void Init()
