@@ -27,8 +27,14 @@ public class PlayerFSM
 
 
 
-    public void ChangeState(StateType newStateType)
+    public void ChangeState(StateType newStateType, bool force = false)
     {
+        if (!force && !currentState.isDone)
+        {
+            //Debug.LogWarning($"[{currentState.GetType().Name}] 상태가 완료되지 않아 {newStateType}로 전환 거부됨");
+            return;
+        }
+
         if (currentState == stateDictionary[newStateType])
             return; // 상태 전환 필요 없음
 

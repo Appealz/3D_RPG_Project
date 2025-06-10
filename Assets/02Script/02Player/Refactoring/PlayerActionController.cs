@@ -16,21 +16,25 @@ public class PlayerActionController : ManagerBase
         base.CustomUpdate();
 
         // 마우스 우클릭
-        if(inputHandler.TryGetRightClickPosition(out Vector3 targetPos))
+        if(inputHandler.TryGetRightClickTarget(out Transform targetTrans))
+        {
+            Debug.Log($"마우스 우클릭 타겟 설정{targetTrans}");
+            player.SetTargetTrans(targetTrans);
+            player.ChangeState(StateType.Attack);            
+        }
+        else if (inputHandler.TryGetRightClickPosition(out Vector3 targetPos))
         {
             player.SetTargetPos(targetPos);
             player.ReadyToAttack(false);
-            player.preparedSkillType = null;
-            player.ChangeState(StateType.Move);
-        }
-        else if(inputHandler.TryGetRightClickTarget(out Transform targetTrans))
-        {
-            player.SetTargetTrans(targetTrans);
-            player.ChangeState(StateType.Attack);
+            player.preparedSkillType = null;            
+
+            bool allowForceMove = ActionQueue.Instance.HasQueue();
+            player.ChangeState(StateType.Move, force: allowForceMove);
+            ActionQueue.Instance.ClearQueue();
         }
 
         // A클릭
-        if(inputHandler.IsAttackKeyDown())
+        if (inputHandler.IsAttackKeyDown())
         {
             player.ReadyToAttack(true);
         }
@@ -40,15 +44,19 @@ public class PlayerActionController : ManagerBase
         {
             if (inputHandler.TryGetAttackTargetClick(out Transform target))
             {
+                Debug.Log($"A클릭 상태 마우스 우클릭 타겟 설정{target}");
                 player.SetTargetTrans(target);
-                player.ChangeState(StateType.Move);
+                player.ChangeState(StateType.Attack);            
             }
             else if (inputHandler.TryGetAttackGroundClick(out Vector3 movePos))
             {
                 player.SetTargetPos(movePos);
                 player.ReadyToAttack(false);
-                player.preparedSkillType = null;
-                player.ChangeState(StateType.Move);
+                player.preparedSkillType = null;                
+
+                bool allowForceMove = ActionQueue.Instance.HasQueue();
+                player.ChangeState(StateType.Move, force: allowForceMove);
+                ActionQueue.Instance.ClearQueue();
             }
         }
 
@@ -64,9 +72,10 @@ public class PlayerActionController : ManagerBase
         {
             player.ReadyToAttack(false);
             player.preparedSkillType = null;
-            player.ChangeState(StateType.Idle);
+            player.ChangeState(StateType.Idle, force: true);
         }
 
+        // 스킬 키 입력
         if(inputHandler.TryGetSkillKeyInput(out SkillType newSkill))
         {
             player.preparedSkillType = newSkill;

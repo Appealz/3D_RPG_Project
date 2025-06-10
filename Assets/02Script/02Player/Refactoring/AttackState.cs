@@ -37,7 +37,7 @@ public class AttackState : StateBase
         // 타겟 null check
         if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
         {            
-            playerFSM.ChangeState(StateType.Idle);
+            playerFSM.ChangeState(StateType.Idle, force: true);
         }
 
         attackHandle.RotateTowardsTarget(player.targetTrans);
@@ -46,7 +46,7 @@ public class AttackState : StateBase
         if (!attackHandle.CheckTargetDistance())
         {
             Debug.Log("거리 안됨! 상태 바꾸려고 함.");
-            playerFSM.ChangeState(StateType.Chase);
+            playerFSM.ChangeState(StateType.Chase, force: true);
             ActionQueue.Instance.EnqueueAction(StateType.Attack);
             return;
         }

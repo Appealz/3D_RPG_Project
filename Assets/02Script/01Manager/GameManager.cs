@@ -38,4 +38,6 @@ public class GameManager : DontDestroySingleton<GameManager>
     {
         playerController?.StopGame();
     }
+
+
 }

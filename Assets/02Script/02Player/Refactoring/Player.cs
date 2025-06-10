@@ -142,7 +142,6 @@ public class Player : ManagerBase
             Debug.Log("movement is not ref");
         }
         
-
         playerFSM = new PlayerFSM(this);
 
         playerStatus = new PlayerStatus_Fixed(playerData);
@@ -213,9 +212,9 @@ public class Player : ManagerBase
         isAttackReady = newIsOn;
     }
 
-    public void ChangeState(StateType newStateType)
+    public void ChangeState(StateType newStateType, bool force = false)
     {
-        playerFSM.ChangeState(newStateType);
+        playerFSM.ChangeState(newStateType, force);
     }
 
     public void Handle_OnDamaged(DamageInfo damageInfo)

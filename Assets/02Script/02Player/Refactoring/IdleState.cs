@@ -15,7 +15,7 @@ public class IdleState : StateBase
 
     public override void StateExit()
     {
-     
+        isDone = true;
     }
 
     public override void StateUpdate()
