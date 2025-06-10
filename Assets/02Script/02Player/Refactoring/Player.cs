@@ -6,10 +6,13 @@ public class PlayerStatus_Fixed
     public PlayerStatus_Fixed(PlayerData playerData)
     {
         moveSpeed = playerData.moveSpeed;
-        maxHp = playerData.maxHp;
-        maxMp = playerData.maxMp;
+        MaxHp = playerData.maxHp;
+        MaxMp = playerData.maxMp;
         attackDamage = playerData.attackDamage;
         attackRagne = playerData.attackRagne;
+
+        CurHp = MaxHp;
+        CurMp = MaxMp;  
     }
 
     public float moveSpeed;
@@ -38,7 +41,7 @@ public class PlayerStatus_Fixed
     }
     private float curHp;
 
-    public float CurHP
+    public float CurHp
     {
         get => curHp;
         set
@@ -88,7 +91,7 @@ public class PlayerStatus_Fixed
 
     public void RecoverHp(float deltaTime)
     {
-        CurHP += 1f * deltaTime;
+        CurHp += 1f * deltaTime;
     }
 }
 
@@ -122,6 +125,8 @@ public class Player : ManagerBase
     public SkillType? preparedSkillType;
     public bool isSkillPrepared;
 
+    private PlayerAnimManager playerAnimManager;
+
     private void Awake()
     {
         if(!TryGetComponent<NavMeshAgent>(out agent))
@@ -142,13 +147,20 @@ public class Player : ManagerBase
         {
             Debug.Log("movement is not ref");
         }
-        
-        playerFSM = new PlayerFSM(this);
+        if(!TryGetComponent<SkillManager>(out skillManager))
+        {
+            Debug.Log("skillManager is not ref");
+        }
+        if(!TryGetComponent<PlayerAnimManager>(out playerAnimManager))
+        {
+            Debug.Log("playerAnimManager is not ref");
+        }
 
         playerStatus = new PlayerStatus_Fixed(playerData);
 
         movement.InitMove(playerStatus.moveSpeed, anims);
         attackHandle.InitAttack(playerStatus, anims);
+        skillManager.InitStatus(playerStatus);
     }
 
     private void OnEnable()
@@ -164,6 +176,7 @@ public class Player : ManagerBase
     public override void StartGame()
     {
         base.StartGame();
+        playerFSM = new PlayerFSM(this);
         playerFSM.Init();
     }
 
@@ -179,14 +192,12 @@ public class Player : ManagerBase
         // 상태 업데이트용
         playerFSM.StateUpdate();
         // 스킬 쿨타임갱신용
-        //skillManager.UpdateSKillCoolTIme();
+        skillManager.UpdateSKillCoolTIme();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionQueue.Instance.QueueCheck();
         }
-
-        
     }
 
     public void SetTargetPos(Vector3 newTargetPosition)
@@ -202,9 +213,11 @@ public class Player : ManagerBase
     public void ReadyToAttack(bool newIsOn)
     {
         isAttackReady = newIsOn;
+        if(IsAttackReady)
+        {
+            EventBus.Publish(new indicatorEvent(IndicatorType.Circle, Vector3.zero, Mathf.Sqrt(playerStatus.attackRagne)));
+        }        
     }
-
-
 
     public void ChangeState(StateType newStateType, bool force = false)
     {
@@ -215,14 +228,15 @@ public class Player : ManagerBase
     {
         if(damageInfo.defender == gameObject)
         {
-            playerStatus.CurHP -= damageInfo.damage;
+            playerStatus.CurHp -= damageInfo.damage;
         }
     }
 
     public void PrepareToSkill(SkillType newType)
     {
+        //Debug.Log($"{gameObject.name}에서 {newType} 준비 후 skillManager 전달");
         isSkillPrepared = true;
-        skillManager.PrepareSkill(newType);        
+        skillManager.PrepareSkill(newType);
     }
 
     public void UsePreparedSkill()
@@ -233,174 +247,27 @@ public class Player : ManagerBase
         isSkillPrepared = false;
     }
 
-    //private PlayerMovement playerMovement;
-    //private IInputHandler inputHandler;
-    //private PlayerAnims playerAnims;
-    //private PlayerAttack playerAttack;
-    //private PlayerStatus playerStatus;
-    //private PlayerState playerState;
-    //private PlayerSkillManager playerSkillManager;
-    //private PlayerAnimManager playerAnimManager;
-    //private PlayerHitbox playerHitbox;
+    public void RegistSkill(ISkill newSKill)
+    {
+        skillManager.AddSkill(newSKill);
+        newSKill.OnSkillActivated += () => playerAnimManager.PlayAnimation(newSKill.skillName, newSKill);
 
-    //private Action qSkillHandler;
-    //private Action wSkillHandler;
-    //private Action eSkillHandler;
-    //private Action rSkillHandler;
-
-    //private void Awake()
-    //{
-    //    TryGetComponent<PlayerMovement>(out playerMovement);
-    //    TryGetComponent<PlayerAnims>(out playerAnims);
-    //    TryGetComponent<PlayerAttack>(out playerAttack);
-    //    TryGetComponent<PlayerState>(out playerState);
-    //    TryGetComponent<PlayerSkillManager>(out playerSkillManager);
-    //    TryGetComponent<PlayerAnimManager>(out playerAnimManager);
-    //    TryGetComponent<PlayerHitbox>(out playerHitbox);
-    //    playerStatus = new PlayerStatus(gameObject);
-    //}
-
-
-
-    //private void OnEnable()
-    //{
-    //    playerMovement.moveAnims += playerAnims.MoveAnims;
-    //    playerMovement.runAnims += playerAnims.RunAnims;
-
-    //    playerAttack.OnAttackAnims += playerAnims.AttackAnims;
-
-    //    playerState.OnIdleEvent += playerMovement.StopMove;
-    //    playerState.OnMoveEvent += playerMovement.Move;
-    //    playerState.OnChaseEvent += playerMovement.ChaseMove;
-    //    playerState.OnAttackEvent += playerAttack.Attack;
-    //    playerSkillManager.OnChangeState += playerState.ChangeState;
-    //    playerMovement.OnChangeState += playerState.ChangeState;
-    //    playerAttack.OnChangeState += playerState.ChangeState;
-
-    //    PCInputManager.OnStop += playerState.ChangeState;
-
-    //    playerSkillManager.InitSkillAnimMap(playerAnims);
-    //}
-
-    //private void OnDisable()
-    //{
-    //    playerMovement.moveAnims -= playerAnims.MoveAnims;
-    //    playerMovement.runAnims -= playerAnims.RunAnims;
-
-    //    playerAttack.OnAttackAnims -= playerAnims.AttackAnims;
-
-    //    playerState.OnMoveEvent -= playerMovement.Move;
-    //    playerState.OnChaseEvent -= playerMovement.ChaseMove;
-    //    playerState.OnAttackEvent -= playerAttack.Attack;
-
-    //    playerSkillManager.OnChangeState -= playerState.ChangeState;
-    //    playerMovement.OnChangeState -= playerState.ChangeState;
-    //    playerAttack.OnChangeState -= playerState.ChangeState;
-
-    //    //inputHandler.OnSkillButtonInput -= playerSkillManager.UseSkill;
-
-    //    PCInputManager.OnStop -= playerState.ChangeState;
-    //}
-
-    //public void CurrentInputHandler(IInputHandler curHandler)
-    //{
-    //    inputHandler = curHandler;
-    //    //inputHandler.OnSkillButtonInput += playerSkillManager.PreparedSkill;
-    //}
-
-    //public override void StartGame()
-    //{
-    //    base.StartGame();
-    //    playerStatus.moveSpeed = 4f;
-    //    playerStatus.CurMp = playerStatus.MaxMp = 100f;
-    //    playerStatus.CurHP = playerStatus.MaxHp = 100f;
-    //    playerMovement.InitMove(playerStatus.moveSpeed);
-    //    playerState.InitState();
-    //    playerSkillManager.InitStatus(playerStatus);
-    //    playerHitbox.InitStatus(playerStatus);
-    //}
-
-    //public override void CustomUpdate()
-    //{
-    //    base.CustomUpdate();
-    //    playerState.UpdateState();
-    //    playerSkillManager.UpdateSKillCoolTIme();
-    //    playerStatus.RecoverMp(Time.deltaTime);
-    //    playerStatus.RecoverHp(Time.deltaTime);
-
-    //    if (Input.GetKeyDown(KeyCode.Space))
-    //    {
-    //        ActionQueue.Instance.QueueCheck();
-    //    }
-    //}
-
-    //public override void StopGame()
-    //{
-    //    base.StopGame();
-    //    playerMovement?.StopMove();
-    //    playerSkillManager?.ReleaseAllSkills();
-    //}
-
-    //public void RegistSkill(KeyCode key, ISkill skill)
-    //{
-    //    playerSkillManager.AddSkill(key, skill);
-    //    inputHandler.BindKeyToSkill(key, skill.myType);
-
-
-    //    switch (skill.myState)
-    //    {
-    //        case StateType.SkillQ:
-    //            playerState.OnQSkillEvent += skill.Activate;
-    //            skill.OnStateChange += playerState.ChangeState;
-    //            qSkillHandler = () => playerAnimManager.PlayAnimation("Qskill", skill);
-    //            skill.OnSkillActivated += qSkillHandler;
-    //            break;
-    //        case StateType.SkillW:
-    //            playerState.OnWSkillEvent += skill.Activate;
-    //            skill.OnStateChange += playerState.ChangeState;
-    //            wSkillHandler = () => playerAnimManager.PlayAnimation("Wskill", skill);
-    //            skill.OnSkillActivated += wSkillHandler;
-    //            break;
-    //        case StateType.SkillE:
-    //            playerState.OnESkillEvent += skill.Activate;
-    //            skill.OnStateChange += playerState.ChangeState;
-    //            eSkillHandler = () => playerAnimManager.PlayAnimation("Eskill", skill);
-    //            skill.OnSkillActivated += eSkillHandler;
-    //            break;
-    //        case StateType.SkillR:
-    //            playerState.OnRSkillEvent += skill.Activate;
-    //            skill.OnStateChange += playerState.ChangeState;
-    //            rSkillHandler = () => playerAnimManager.PlayAnimation("Rskill", skill);
-    //            skill.OnSkillActivated += rSkillHandler;
-    //            break;
-    //    }
-    //}
-
-    //public void ReleaseSkill(ISkill skill)
-    //{
-    //    switch (skill.myState)
-    //    {
-    //        case StateType.SkillQ:
-    //            playerState.OnQSkillEvent -= skill.Activate;
-    //            skill.OnStateChange -= playerState.ChangeState;
-    //            skill.OnSkillActivated -= qSkillHandler;
-    //            break;
-    //        case StateType.SkillW:
-    //            playerState.OnWSkillEvent -= skill.Activate;
-    //            skill.OnStateChange -= playerState.ChangeState;
-    //            skill.OnSkillActivated -= wSkillHandler;
-    //            break;
-    //        case StateType.SkillE:
-    //            playerState.OnESkillEvent -= skill.Activate;
-    //            skill.OnStateChange -= playerState.ChangeState;
-    //            skill.OnSkillActivated -= eSkillHandler;
-    //            break;
-    //        case StateType.SkillR:
-    //            playerState.OnRSkillEvent -= skill.Activate;
-    //            skill.OnStateChange -= playerState.ChangeState;
-    //            skill.OnSkillActivated -= rSkillHandler;
-    //            break;
-    //    }
-    //}
+        switch(newSKill.myType)
+        {
+            case SkillType.Q_Skill:
+                newSKill.OnSkillActivated += () => anims.QSkillAnims();
+                break;
+            case SkillType.W_Skill:
+                newSKill.OnSkillActivated += () => anims.WSkillAnims();
+                break;
+                case SkillType.E_Skill:
+                newSKill.OnSkillActivated += () => anims.ESkillAnims();
+                break;
+            case SkillType.R_Skill:
+                newSKill.OnSkillActivated += () => anims.RSkillAnims();
+                break;
+        }
+    }
+  
 
 }

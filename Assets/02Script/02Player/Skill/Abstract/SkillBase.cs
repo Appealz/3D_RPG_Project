@@ -7,7 +7,7 @@ public abstract class SkillBase : ISkill
     protected SkillData skillData;
 
     protected GameObject fireOwner;
-    protected float realRange => skillData.range * skillData.range;
+    public float realRange => skillData.range * skillData.range;
 
     public abstract event Action OnSkillActivated;
     public abstract event Action<StateType> OnStateChange;
@@ -51,6 +51,5 @@ public abstract class SkillBase : ISkill
     public abstract void Finish();
     public abstract void CancelAble();
 
-
-
+    public virtual void TakeDamage() { }
 }

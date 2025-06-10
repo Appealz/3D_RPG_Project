@@ -38,4 +38,7 @@ public interface IInputHandle
 
     // 9. 정지(S 키) 입력
     bool IsStopRequested();
+
+    // 10. 스킬 바인딩
+    void BindKeyToSkill(KeyCode key, SkillType skillType);
 }

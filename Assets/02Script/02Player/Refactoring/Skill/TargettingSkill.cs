@@ -19,19 +19,9 @@ public class TargettingSkill : TargetSkillBase, IRelease
 
     private bool firstActivated = false;
 
-
+    
     public override void Activate()
-    {        
-        // 처음 스킬에 입장했을 때 한번만 실행
-        if (!firstActivated)
-        {
-            firstActivated = true;
-            if(!TargetDistanceCheck())
-            {
-                return;
-            }            
-        }
-
+    {
         // 공격중이라면 해당 메소드 탈출
         if (isAttacking)
         {
@@ -39,8 +29,7 @@ public class TargettingSkill : TargetSkillBase, IRelease
         }
 
         isAttacking = true;
-        firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");
-        EventBus.Publish(new PlayerMoveLockEvent(false));
+        firePoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "FirePoint");        
         OnSkillActivated?.Invoke();
     }
 
@@ -62,36 +51,24 @@ public class TargettingSkill : TargetSkillBase, IRelease
         Debug.Log(" 스킬 종료");
         isAttacking = false;
         firstActivated = false;
-
-        EventBus.Publish(new PlayerMoveLockEvent(true));
-        OnStateChange?.Invoke(ActionQueue.Instance.DequeueAction());
     }
 
-    public override void TargetSetting(SkillTargetSelectedEvent targetEvent)
-    {
-        targetTrans = targetEvent.Target;
-    }
+
     public override void TargetSet(Transform target)
     {
         base.TargetSet(target);
         targetTrans = target;
-
-    }
-
-    public void Rotation()
-    {
-        RotateTowardsTarget(targetTrans);
     }
 
     public bool TargetDistanceCheck()
     {
-        float distSqr = (fireOwner.transform.position - targetTrans.position).sqrMagnitude;
-        Debug.Log($"[TargetSkill] distance: {distSqr}");
-
-        if (distSqr > (realRange))
+        if (isAttacking)
         {
-            ActionQueue.Instance.EnqueueAction(myState);            
+            return true;
         }
+        if (targetTrans == null || targetTrans.gameObject.activeSelf == false)
+            return false;
+                
 
         return (targetTrans.position - fireOwner.transform.position).sqrMagnitude <= realRange;
     }
@@ -112,5 +89,10 @@ public class TargettingSkill : TargetSkillBase, IRelease
     public void Release()
     {
         EventBus.UnSubscribe<SkillTargetSelectedEvent>(TargetSetting);
+    }
+
+    public override void TargetSetting(SkillTargetSelectedEvent targetEvent)
+    {
+        targetTrans = targetEvent.Target;
     }
 }

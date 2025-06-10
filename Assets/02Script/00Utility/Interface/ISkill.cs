@@ -20,4 +20,5 @@ public interface ISkill
     void CreateEffect();
     void Finish();
     void CancelAble();
+    void TakeDamage();
 }

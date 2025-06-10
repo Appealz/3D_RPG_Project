@@ -29,7 +29,7 @@ public class AttackState : StateBase
         if (attackHandle.CheckTargetDistance() && !attackHandle.IsAttacking)
         {
             attackHandle.Attack();
-        }        
+        }
     }
 
     public override void StateUpdate()

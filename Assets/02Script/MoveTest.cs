@@ -62,8 +62,6 @@ public class MoveTest : PoolLabel
             destPos = new Vector3(randomPosX, 0.6f, randomPosZ);
             SetDest(destPos);
         }
-
-
     }
 
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFSM
-{    // Start is called once before the first execution of Update after the MonoBehaviour is created
+{ 
     public StateBase currentState;
 
     public Player player;
@@ -17,6 +17,9 @@ public class PlayerFSM
         stateDictionary[StateType.Chase] = new ChaseState(player, this, player.Anims, player.Movement);
         stateDictionary[StateType.Move] = new MoveState(player, this, player.Movement);
         stateDictionary[StateType.SkillQ] = new QSkillState(player, this, player.playerSkillManager.GetSkill(SkillType.Q_Skill));
+        stateDictionary[StateType.SkillW] = new WSkillState(player, this, player.playerSkillManager.GetSkill(SkillType.W_Skill));
+        stateDictionary[StateType.SkillE] = new ESkillState(player, this, player.playerSkillManager.GetSkill(SkillType.E_Skill));
+        stateDictionary[StateType.SkillR] = new RSkillState(player, this, player.playerSkillManager.GetSkill(SkillType.R_Skill));
     }
 
     public void Init()
@@ -27,7 +30,7 @@ public class PlayerFSM
 
 
 
-    public void ChangeState(StateType newStateType, bool force = false)
+    public void ChangeState(StateType newStateType, bool force = false, IStateContext context = null)
     {
         if (!force && !currentState.isDone)
         {
@@ -44,8 +47,9 @@ public class PlayerFSM
             {
                 currentState.StateExit();
             }            
+            newState.InjectContext(context);
             currentState = newState;
-            Debug.Log($"{currentState}로 상태 변경");
+            //Debug.Log($"{currentState}로 상태 변경");
             if (currentState != null)
             {
                 currentState.StateEnter();

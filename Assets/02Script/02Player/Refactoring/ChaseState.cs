@@ -9,17 +9,27 @@ public struct cancleState
     {
         isDone = newDone;
     }
+}
 
+public class ChaseContext : IStateContext
+{
+    public float range;
+    public ChaseContext(float newRange)
+    {
+        range = newRange;
+    }
 }
 
 public class ChaseState : StateBase
 {
     private readonly PlayerMove movement;
     private readonly PlayerAnims anims;
+    private float attackRange;
     public ChaseState(Player player, PlayerFSM playerFSM, PlayerAnims newAnims, PlayerMove newMovement) : base(player, playerFSM)
     {
         movement = newMovement;
         anims = newAnims;
+        attackRange = player.PlayerStatus.attackRagne;
         EventBus.Subscribe<cancleState>(CancelState);        
     }
 
@@ -37,7 +47,7 @@ public class ChaseState : StateBase
             movement.SettingTarget(player.targetTrans);
             movement.Chase();
 
-            if(movement.IsInRange(player.PlayerStatus.attackRagne))
+            if(movement.IsInRange(attackRange))
             {
                 isDone = true;
             }
@@ -61,5 +71,20 @@ public class ChaseState : StateBase
     public void CancelState(cancleState cancleState)
     {
         Cancel();
+    }
+
+    public override void InjectContext(IStateContext context)
+    {
+        base.InjectContext(context);
+        if(context is ChaseContext chaseContext)
+        {
+            attackRange = chaseContext.range;
+            Debug.Log($"사거리 변경 : {attackRange}");
+        }
+        else
+        {
+            attackRange = player.PlayerStatus.attackRagne;
+            Debug.Log($"사거리 변경 : {attackRange}");
+        }
     }
 }

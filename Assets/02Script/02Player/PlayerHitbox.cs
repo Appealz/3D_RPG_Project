@@ -29,9 +29,9 @@ public class PlayerHitbox : MonoBehaviour
             status.CurHP -= damageInfo.damage;
         }
 
-        if (status.CurHP <= 0f)
-        {
-            OnDieEvent?.Invoke();
-        }
+        //if (status.CurHP <= 0f)
+        //{
+        //    OnDieEvent?.Invoke();
+        //}
     }
 }

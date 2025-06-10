@@ -12,7 +12,7 @@ public class ActionQueue : Singleton<ActionQueue>
         //if(currentState != curState)
         //{
         //    currentState = curState;
-        Debug.Log($"{curState} 상태 큐 진입");
+        //Debug.Log($"{curState} 상태 큐 진입");
             stateQueue.Enqueue(curState);            
         //}
     }

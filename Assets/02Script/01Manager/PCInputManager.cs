@@ -7,11 +7,11 @@ using UnityEngine.UIElements;
 
 public enum SkillType
 {
-    None,
     Q_Skill,
     W_Skill,
     E_Skill,
     R_Skill,
+    None,
 }
 
 public class PCInputManager : ManagerBase, IInputHandler

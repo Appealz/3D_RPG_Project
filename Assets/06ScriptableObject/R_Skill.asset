@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef76d54df3bad394aaa36dcbf55328e8, type: 3}
   m_Name: R_Skill
   m_EditorClassIdentifier: 
-  skillName: RSkill
+  skillName: Rskill
   skillType: 3
   stateType: 7
   damage: 50

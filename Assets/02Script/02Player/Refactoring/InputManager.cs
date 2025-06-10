@@ -85,7 +85,7 @@ public class InputManager : ManagerBase, IInputHandle
         if (Input.GetKeyDown(KeyCode.A))
         {
             EventBus.Publish(new CursorEventData(cursorType.Aim));
-            EventBus.Publish(new indicatorEvent(IndicatorType.Circle, Vector3.zero, 5f));
+            //EventBus.Publish(new indicatorEvent(IndicatorType.Circle, Vector3.zero, 5f));
             return true;
         }
         return false;

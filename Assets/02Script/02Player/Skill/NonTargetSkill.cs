@@ -73,4 +73,9 @@ public class NonTargetSkill : NonTargetSkillBase, IRelease
     {
         throw new NotImplementedException();
     }
+
+    public override void TakeDamage()
+    {
+        base.TakeDamage();
+    }
 }

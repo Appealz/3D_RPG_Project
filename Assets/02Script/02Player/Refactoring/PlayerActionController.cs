@@ -78,7 +78,8 @@ public class PlayerActionController : ManagerBase
         // 스킬 키 입력
         if(inputHandler.TryGetSkillKeyInput(out SkillType newSkill))
         {
-            player.preparedSkillType = newSkill;
+            //Debug.Log($"{gameObject.name}에서 {newSkill.ToString()}준비");
+            player.PrepareToSkill(newSkill);
         }
             
         // 스킬 발동

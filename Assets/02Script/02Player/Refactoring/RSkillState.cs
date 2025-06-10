@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class RSkillState : StateBase
 {
-    AreaSkill areaSkill;
+    NonTargetAreaSkill areaSkill;    
 
     public RSkillState(Player player, PlayerFSM playerFSM, ISkill newSkill) : base(player, playerFSM)
     {
-        areaSkill = newSkill as AreaSkill;
+        areaSkill = newSkill as NonTargetAreaSkill;
         if (areaSkill == null)
         {
             throw new ArgumentException("WSkillState NonTargetSkill 타입만 지원합니다.");
@@ -16,17 +16,64 @@ public class RSkillState : StateBase
 
     public override void StateEnter()
     {
-        areaSkill.targetPos = player.targetPos;
+        isDone = false;
+        areaSkill.OnActionCancel += Cancel;
+        areaSkill.TargetPosSetting(player.targetPos);
+        areaSkill.Activate();
+        areaSkill.ManualRotate();
+        
+        player.Agent.velocity = Vector3.zero;        
+
+        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        {
+            if (player.targetPos != Vector3.zero)
+            {
+                playerFSM.ChangeState(StateType.Move, force: true);
+            }
+            else
+            {
+                playerFSM.ChangeState(StateType.Idle);
+            }
+            return;
+        }
+        if (areaSkill.TargetDistanceCheck() && !areaSkill.isAttacking)
+        {
+            areaSkill.Activate();
+        }
+    }
+
+    public override void StateUpdate()
+    {
+        areaSkill.ManualRotate();
+        
+        if (!areaSkill.TargetDistanceCheck())
+        {
+            //Debug.Log("거리 안됨! 상태 바꾸려고 함.");
+            playerFSM.ChangeState(StateType.Chase, force: true, new ChaseContext(areaSkill.realRange));
+            ActionQueue.Instance.EnqueueAction(areaSkill.myState);
+            return;
+        }
+        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        {
+            playerFSM.ChangeState(StateType.Idle, force: true);
+        }
+
+
+        if (areaSkill.isAttacking)
+            return;
+
         areaSkill.Activate();
     }
 
     public override void StateExit()
     {
-        
+        isDone = true;
+        areaSkill.OnActionCancel -= Cancel;
     }
 
-    public override void StateUpdate()
+    public override void Cancel()
     {
-        
+        base.Cancel();
+        isDone = true;
     }
 }
