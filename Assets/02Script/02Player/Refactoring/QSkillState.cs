@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class QSkillState : StateBase
 {
-    TargetSkill targetSkill;
+    TargettingSkill targetSkill;
 
     public QSkillState(Player player, PlayerFSM playerFSM, ISkill newSkill) : base(player, playerFSM)
     {
-        targetSkill = newSkill as TargetSkill;
+        targetSkill = newSkill as TargettingSkill;
         if (targetSkill == null)
         {
             throw new ArgumentException("QSkillState는 TargetSkill 타입만 지원합니다.");
@@ -16,12 +16,24 @@ public class QSkillState : StateBase
     }
 
     public override void StateEnter()
-    {        
-        targetSkill.targetPos = player.targetTrans;
-
-        targetSkill.Activate();
-
+    {
+        targetSkill.OnActionCancel += Cancel;
+        targetSkill.targetTrans = player.targetTrans;
+                
         isDone = false;
+
+        player.Agent.velocity = Vector3.zero;
+
+        targetSkill.TargetSet(player.targetTrans);
+
+        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        {
+            playerFSM.ChangeState(StateType.Idle);
+        }
+        if (targetSkill.TargetDistanceCheck() && !targetSkill.isAttacking)
+        {
+            targetSkill.Activate();
+        }
     }
 
     public override void StateUpdate()
@@ -31,12 +43,13 @@ public class QSkillState : StateBase
     public override void StateExit()
     {
         isDone = true;
+        targetSkill.OnActionCancel -= Cancel;
     }
 
     public override void Cancel()
     {
         base.Cancel();
-        StateExit();
+        isDone = true;
     }
 
 

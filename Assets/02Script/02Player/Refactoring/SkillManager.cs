@@ -7,30 +7,40 @@ public class SkillManager : MonoBehaviour
 {
     //private List<ISkill> skillList = new List<ISkill>();
 
+    // 스킬 타입과 키 바인딩용 Dictionary
     private Dictionary<SkillType, ISkill> skills = new Dictionary<SkillType, ISkill>();
+
+    // 스킬 타입과 애니메이션 바인딩용 Dictionary
     private Dictionary<SkillType, Action> skillAnimMap = new Dictionary<SkillType, Action>();
+
+    // 스킬 타입과 상태 바인딩용 Dictionary
     private Dictionary<SkillType, StateType> skillStates = new Dictionary<SkillType, StateType>();
 
     private PlayerStatus playerStatus;
 
     SkillModel skillModel;
-    public event Action<StateType> OnChangeState;
+    //public event Action<StateType> OnChangeState;
 
     private SkillType? preparedSkillType = null;
+
+    public TargetSkill q_Skill;
+    public NonTargetSkill w_Skill;
+    public BarrierSkill e_Skill;
+    public AreaSkill r_Skill;
 
     private void Awake()
     {
         skillModel = new SkillModel();
-        EventBus.Subscribe<SkillPreparedEvent>(PreparedSkill);
-        EventBus.Subscribe<SkillActivatedEvent>(UseSkill);
+        //EventBus.Subscribe<SkillPreparedEvent>(PreparedSkill);
+        //EventBus.Subscribe<SkillActivatedEvent>(UseSkill);
 
         EventBus.Subscribe<SkillAvailablityEvent>(OnSkillUse);
     }
 
     private void OnDisable()
     {
-        EventBus.UnSubscribe<SkillPreparedEvent>(PreparedSkill);
-        EventBus.UnSubscribe<SkillActivatedEvent>(UseSkill);
+        //EventBus.UnSubscribe<SkillPreparedEvent>(PreparedSkill);
+        //EventBus.UnSubscribe<SkillActivatedEvent>(UseSkill);
 
         EventBus.UnSubscribe<SkillAvailablityEvent>(OnSkillUse);
     }
@@ -87,80 +97,64 @@ public class SkillManager : MonoBehaviour
         skillModel.CoolTimeUpdate(Time.deltaTime);
     }
 
-    public void PreparedSkill(SkillPreparedEvent preparedSkill)
+    public void PrepareSkill(SkillType preparedSkill)
     {
-        if (!IsSkillUse(preparedSkill.SkillType))
+        if (!IsSkillUse(preparedSkill))
         {
             preparedSkillType = null;
             return;
         }
         else
         {
-            if (preparedSkill.SkillType == SkillType.E_Skill)
+            if (preparedSkill == SkillType.E_Skill)
             {
-                UseSkill(new SkillActivatedEvent(preparedSkill.SkillType));
-                preparedSkillType = null;
+                UseSkill();                
             }
             else
             {
-                switch (preparedSkill.SkillType)
+                switch (preparedSkill)
                 {
                     case SkillType.Q_Skill:
-                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill.SkillType].range));
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill].range));
                         break;
                     case SkillType.R_Skill:
-                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill.SkillType].range));
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Circle, transform.position, skills[preparedSkill].range));
                         EventBus.Publish(new indicatorEvent(IndicatorType.Area, Vector3.zero, 1f));
                         break;
                     case SkillType.W_Skill:
-                        EventBus.Publish(new indicatorEvent(IndicatorType.Fan, transform.position, skills[preparedSkill.SkillType].range));
+                        EventBus.Publish(new indicatorEvent(IndicatorType.Fan, transform.position, skills[preparedSkill].range));
                         break;
                 }
 
                 EventBus.Publish(new CursorEventData(cursorType.Aim));
-                preparedSkillType = preparedSkill.SkillType;
+                preparedSkillType = preparedSkill;
             }
         }
     }
 
 
-    public void UseSkill(SkillActivatedEvent skillActivatedEvent)
-    {
-        if (!IsSkillUse(skillActivatedEvent.SkillType))
-        {
-            preparedSkillType = null;
-            return;
-        }
-        //Debug.Log("스킬 눌림");
-        if (skills.Count > 0)
-        {
-            // 1. 플레이어 애니메이션 바인딩
-            // 2. 스킬 쿨타임 모델 연결
-            // 3. 스킬 mp 소모 연결
-            OnChangeState?.Invoke(skills[skillActivatedEvent.SkillType].myState);
-            ActionQueue.Instance.EnqueueAction(StateType.SkillE);
-            EventBus.Publish(new CursorEventData(cursorType.Idle));
-            EventBus.Publish(new HideIndicatorEvent());
-        }
-    }
 
-    public void UseSkill()
+    public StateType UseSkill()
     {
-        if (!IsSkillUse(preparedSkillType.Value))
+        StateType newStateType = StateType.Idle;
+        if (!preparedSkillType.HasValue || !IsSkillUse(preparedSkillType.Value))
         {
             preparedSkillType = null;
-            return;
+            return newStateType;
         }
         //Debug.Log("스킬 눌림");
-        if (skills.Count > 0)
+
+        if (skillStates.TryGetValue(preparedSkillType.Value, out newStateType))
         {
             // 1. 플레이어 애니메이션 바인딩
             // 2. 스킬 쿨타임 모델 연결
-            // 3. 스킬 mp 소모 연결            
-            ActionQueue.Instance.EnqueueAction(skillStates[preparedSkillType.Value]);
+            // 3. 스킬 mp 소모 연결                        
+            //ActionQueue.Instance.EnqueueAction(skillStates[preparedSkillType.Value]);            
             EventBus.Publish(new CursorEventData(cursorType.Idle));
             EventBus.Publish(new HideIndicatorEvent());
+            preparedSkillType = null;
         }
+        return newStateType;
     }
 
     public void ConsumeMp(SkillType skilltype)

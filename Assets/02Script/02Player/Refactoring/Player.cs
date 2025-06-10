@@ -113,13 +113,14 @@ public class Player : ManagerBase
     private PlayerAttackHandle attackHandle;
     public PlayerAttackHandle AttackHandle => attackHandle;
 
-    private PlayerSkillManager skillManager;
-    public PlayerSkillManager SkillManager => skillManager;
+    private SkillManager skillManager;
+    public SkillManager playerSkillManager => skillManager;
 
     private bool isAttackReady;
     public bool IsAttackReady => isAttackReady;
 
     public SkillType? preparedSkillType;
+    public bool isSkillPrepared;
 
     private void Awake()
     {
@@ -152,15 +153,11 @@ public class Player : ManagerBase
 
     private void OnEnable()
     {
-        EventBus.Subscribe<TargetPositionEvent>(SetTargetPos);
-        EventBus.Subscribe<TargetSelectEvent>(SetTargetTrans);
         Damage_Event.OnDamageChange += Handle_OnDamaged;
     }
 
     private void OnDisable()
     {
-        EventBus.UnSubscribe<TargetPositionEvent>(SetTargetPos);
-        EventBus.UnSubscribe<TargetSelectEvent>(SetTargetTrans);
         Damage_Event.OnDamageChange -= Handle_OnDamaged;
     }
 
@@ -179,22 +176,17 @@ public class Player : ManagerBase
             return;
         }
 
+        // 상태 업데이트용
         playerFSM.StateUpdate();
+        // 스킬 쿨타임갱신용
+        //skillManager.UpdateSKillCoolTIme();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             ActionQueue.Instance.QueueCheck();
         }
-    }
 
-    public void SetTargetPos(TargetPositionEvent targetPositionEvent)
-    {
-        targetPos = targetPositionEvent.TargetPos;
-    }
-
-    public void SetTargetTrans(TargetSelectEvent targetSelectEvent)
-    {
-        targetTrans = targetSelectEvent.Target;
+        
     }
 
     public void SetTargetPos(Vector3 newTargetPosition)
@@ -212,6 +204,8 @@ public class Player : ManagerBase
         isAttackReady = newIsOn;
     }
 
+
+
     public void ChangeState(StateType newStateType, bool force = false)
     {
         playerFSM.ChangeState(newStateType, force);
@@ -225,6 +219,19 @@ public class Player : ManagerBase
         }
     }
 
+    public void PrepareToSkill(SkillType newType)
+    {
+        isSkillPrepared = true;
+        skillManager.PrepareSkill(newType);        
+    }
+
+    public void UsePreparedSkill()
+    {
+        StateType changeState;
+        changeState = skillManager.UseSkill();
+        playerFSM.ChangeState(changeState, force: true);
+        isSkillPrepared = false;
+    }
 
     //private PlayerMovement playerMovement;
     //private IInputHandler inputHandler;

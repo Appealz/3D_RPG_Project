@@ -94,6 +94,11 @@ public class PlayerAttackHandle : MonoBehaviour
                
     }
 
+    private void AttackCancel()
+    {
+        OnActionCancel?.Invoke();
+    }
+
     IEnumerator AttackCoroutine()
     {
         if (target == null || !target.gameObject.activeSelf)
@@ -108,8 +113,7 @@ public class PlayerAttackHandle : MonoBehaviour
         yield return new WaitForSeconds(0.1f / attackRate);
         OnActionCancel?.Invoke();
         yield return new WaitForSeconds(1f / attackRate);
-        isAttacking = false;
-        
+        isAttacking = false;        
     }
 
 

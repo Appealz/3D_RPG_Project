@@ -64,14 +64,14 @@ public class PlayerActionController : ManagerBase
         if(inputHandler.IsCancelInput())
         {
             player.ReadyToAttack(false);
-            player.preparedSkillType = null;
+            player.isSkillPrepared = false;
         }
         
         // s 클릭
         if(inputHandler.IsStopRequested())
         {
             player.ReadyToAttack(false);
-            player.preparedSkillType = null;
+            player.isSkillPrepared = false;
             player.ChangeState(StateType.Idle, force: true);
         }
 
@@ -81,19 +81,14 @@ public class PlayerActionController : ManagerBase
             player.preparedSkillType = newSkill;
         }
             
-        if(player.preparedSkillType.HasValue)
+        // 스킬 발동
+        if(player.isSkillPrepared)
         {
-            if(inputHandler.TryGetSkillTarget(out Transform skillTarget))
+            if(inputHandler.TryGetSkillInput(out Transform skillTarget, out Vector3 skillPosition))
             {
                 player.SetTargetTrans(skillTarget);
-            }
-            else if(inputHandler.TryGetSkillPosition(out Vector3 skillPosition))
-            {                
                 player.SetTargetPos(skillPosition);
-            }
-            else if(inputHandler.TryGetSkillDirection(out Vector3 skillDir))
-            {
-                player.SetTargetPos(skillDir);
+                player.UsePreparedSkill();
             }
         }
     }

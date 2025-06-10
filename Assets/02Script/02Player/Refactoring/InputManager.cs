@@ -230,4 +230,34 @@ public class InputManager : ManagerBase, IInputHandle
         }        
         return false;
     }
+
+    public bool TryGetSkillInput(out Transform target, out Vector3 position)
+    {
+        target = null;
+        position = Vector3.zero;
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            {
+                EventBus.Publish(new CursorEventData(cursorType.Idle));
+                EventBus.Publish(new HideIndicatorEvent());
+                position = hit.point;
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    target = hit.transform;
+                }
+                return true;
+            }
+            //if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
+            //{
+            //    EventBus.Publish(new CursorEventData(cursorType.Idle));
+            //    EventBus.Publish(new HideIndicatorEvent());
+            //    target = hit.transform;
+            //    position = hit.point;
+            //    return true;
+            //}
+        }
+        return false;
+    }
 }

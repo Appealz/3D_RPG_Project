@@ -32,6 +32,7 @@ public interface IInputHandle
     // 7-C. R 스킬 (타겟 좌표)
     bool TryGetSkillPosition(out Vector3 position);
 
+    bool TryGetSkillInput(out Transform target, out Vector3 position);
     // 8. 스킬/공격 모드 취소 (Esc 또는 우클릭 등)
     bool IsCancelInput();
 
