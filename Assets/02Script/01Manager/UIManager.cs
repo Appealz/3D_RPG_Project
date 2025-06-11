@@ -47,6 +47,8 @@ public class UIManager : ManagerBase
         Rskill = r;
     }
 
+ 
+
     public override void CustomUpdate()
     {
         base.CustomUpdate();
