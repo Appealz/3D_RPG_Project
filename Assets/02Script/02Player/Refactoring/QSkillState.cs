@@ -18,6 +18,7 @@ public class QSkillState : StateBase
     public override void StateEnter()
     {
         targetSkill.OnActionCancel += Cancel;
+        targetSkill.OnSkillFinish += Finish;
         targetSkill.targetTrans = player.targetTrans;
                 
         isDone = false;
@@ -42,6 +43,8 @@ public class QSkillState : StateBase
         {
             targetSkill.Activate();
         }
+
+
     }
 
     public override void StateUpdate()
@@ -64,12 +67,17 @@ public class QSkillState : StateBase
         if (targetSkill.isAttacking)
             return;
 
+
+
         targetSkill.Activate();
+
+
     }
     public override void StateExit()
     {
         isDone = true;
         targetSkill.OnActionCancel -= Cancel;
+        targetSkill.OnSkillFinish -= Finish;
     }
 
     public override void Cancel()
@@ -79,6 +87,10 @@ public class QSkillState : StateBase
         isDone = true;
     }
 
-
+    public void Finish()
+    {
+        isDone = true;
+        playerFSM.ChangeState(StateType.Idle, force: true);
+    }
 
 }

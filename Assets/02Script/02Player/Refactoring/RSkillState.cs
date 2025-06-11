@@ -15,27 +15,28 @@ public class RSkillState : StateBase
     }
 
     public override void StateEnter()
-    {
+    {        
         isDone = false;
         areaSkill.OnActionCancel += Cancel;
-        areaSkill.TargetPosSetting(player.targetPos);
-        areaSkill.Activate();
+        areaSkill.OnSkillFinish += Finish;
+        areaSkill.TargetPosSetting(player.targetPos);        
         areaSkill.ManualRotate();
         
         player.Agent.velocity = Vector3.zero;        
 
-        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
-        {
-            if (player.targetPos != Vector3.zero)
-            {
-                playerFSM.ChangeState(StateType.Move, force: true);
-            }
-            else
-            {
-                playerFSM.ChangeState(StateType.Idle);
-            }
-            return;
-        }
+        //if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
+        //{
+        //    if (player.targetPos != Vector3.zero)
+        //    {
+        //        playerFSM.ChangeState(StateType.Move, force: true);
+        //    }
+        //    else
+        //    {
+        //        playerFSM.ChangeState(StateType.Idle);
+        //    }
+        //    return;
+        //}
+
         if (areaSkill.TargetDistanceCheck() && !areaSkill.isAttacking)
         {
             areaSkill.Activate();
@@ -53,11 +54,6 @@ public class RSkillState : StateBase
             ActionQueue.Instance.EnqueueAction(areaSkill.myState);
             return;
         }
-        if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
-        {
-            playerFSM.ChangeState(StateType.Idle, force: true);
-        }
-
 
         if (areaSkill.isAttacking)
             return;
@@ -69,11 +65,17 @@ public class RSkillState : StateBase
     {
         isDone = true;
         areaSkill.OnActionCancel -= Cancel;
+        areaSkill.OnSkillFinish -= Finish;
     }
 
     public override void Cancel()
     {
         base.Cancel();
         isDone = true;
+    }
+
+    public override void Finish()
+    {
+        base.Finish();
     }
 }

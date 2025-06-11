@@ -12,6 +12,7 @@ public class MoveState : StateBase
     public override void StateEnter()
     {
         movement.StartMove(4f);
+        movement.isOnSkill = false;
         isDone = true;
     }
     public override void StateUpdate()

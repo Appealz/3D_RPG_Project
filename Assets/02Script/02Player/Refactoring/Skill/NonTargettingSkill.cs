@@ -6,6 +6,7 @@ public class NonTargettingSkill : NonTargetSkillBase
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
     public override event Action OnActionCancel;
+    public override event Action OnSkillFinish;
 
     Transform firePoint;
     public Vector3 targetPos;
@@ -53,6 +54,7 @@ public class NonTargettingSkill : NonTargetSkillBase
     {
         isAttacking = false;
         OnActionCancel?.Invoke();
+        OnSkillFinish?.Invoke();
     }
 
     public void TargetPosSetting(Vector3 newTargetPos)

@@ -14,6 +14,7 @@ public interface ISkill
     event Action OnSkillActivated;
     event Action<StateType> OnStateChange;
     event Action OnActionCancel;
+    event Action OnSkillFinish;
     void SetupData(SkillData newData);
     void SetOwner(GameObject owner);
     void Activate();   

@@ -11,6 +11,7 @@ public class TargetSkill : TargetSkillBase, IRelease
     public override event Action<StateType> OnStateChange;
 
     public override event Action OnActionCancel;
+    public override event Action OnSkillFinish;
 
     public Transform targetPos;
         

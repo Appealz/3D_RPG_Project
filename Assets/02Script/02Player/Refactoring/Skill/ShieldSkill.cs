@@ -6,6 +6,7 @@ public class ShieldSkill : BuffSkillBase
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
     public override event Action OnActionCancel;
+    public override event Action OnSkillFinish;
 
     public override void Activate()
     {

@@ -12,6 +12,7 @@ public abstract class SkillBase : ISkill
     public abstract event Action OnSkillActivated;
     public abstract event Action<StateType> OnStateChange;
     public abstract event Action OnActionCancel;
+    public abstract event Action OnSkillFinish;
 
     public virtual SkillType myType => skillData.skillType;
     public virtual string skillName => skillData.skillName;

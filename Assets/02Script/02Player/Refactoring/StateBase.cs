@@ -17,6 +17,6 @@ public abstract class StateBase
     public abstract void StateUpdate();
     public abstract void StateExit();    
     public virtual void Cancel() { isDone = true; }
-
+    public virtual void Finish() { isDone = true; playerFSM.ChangeState(StateType.Idle, force: true); }
     public virtual void InjectContext(IStateContext context) { }
 }

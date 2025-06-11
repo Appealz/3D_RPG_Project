@@ -5,20 +5,14 @@ using UnityEngine.AI;
 public class PlayerMove : MonoBehaviour
 {
     private Vector3 targetPosition;
-    [SerializeField]
+    
     private Transform targetTrans;
-    private NavMeshAgent agent;
-
-        [SerializeField]
-    private bool OnTarget;
-
-    [SerializeField]
-    private float rotateSpeed;
-
-    [SerializeField]
+    private NavMeshAgent agent;    
+    private bool OnTarget;    
+    private float rotateSpeed;    
     private float moveSpeed;
 
-    private bool isOnSkill = false;
+    public bool isOnSkill;
 
     private void Awake()
     {
@@ -97,6 +91,19 @@ public class PlayerMove : MonoBehaviour
                 anims.MoveAnims(false);
             }
         }
+        else if(isOnSkill)
+        {
+            anims.RunAnims(true);            
+            agent.SetDestination(targetPosition);
+
+
+            ManualRotate(agent.desiredVelocity);
+
+            if (agent.velocity.sqrMagnitude < 0.001f)
+            {
+                anims.MoveAnims(false);
+            }
+        }
     }
 
     public void Chase()
@@ -107,7 +114,7 @@ public class PlayerMove : MonoBehaviour
             agent.SetDestination(targetTrans.position);
 
             ManualRotate(agent.desiredVelocity);
-        }
+        }        
     }
 
     public bool IsInRange(float range)
@@ -115,6 +122,12 @@ public class PlayerMove : MonoBehaviour
         if (targetTrans == null)        
             return false;
         float distSqr = (targetTrans.position - transform.position).sqrMagnitude;
+        return distSqr <= range;
+    }
+
+    public bool IsInRangePosition(float range)
+    {
+        float distSqr = (targetPosition - transform.position).sqrMagnitude;
         return distSqr <= range;
     }
 

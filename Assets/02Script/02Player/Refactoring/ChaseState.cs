@@ -36,7 +36,8 @@ public class ChaseState : StateBase
     public override void StateEnter()
     {
         isDone = false;
-        movement.StartMove(5f);        
+        movement.StartMove(5f);
+        movement.isOnSkill = true;
     }
 
 
@@ -52,6 +53,16 @@ public class ChaseState : StateBase
                 isDone = true;
             }
         }
+        else
+        {
+            movement.SettingPoisition(player.targetPos);
+            movement.Move();
+
+            if (movement.IsInRangePosition(attackRange))
+            {
+                isDone = true;
+            }
+        }
     }
 
     public override void StateExit()
@@ -59,6 +70,7 @@ public class ChaseState : StateBase
         //agent.ResetPath();
         //agent.velocity = Vector3.zero;
         movement.StopMove();
+        movement.isOnSkill = false;
     }
 
     public override void Cancel()

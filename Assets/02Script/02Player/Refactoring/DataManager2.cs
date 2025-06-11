@@ -6,6 +6,7 @@ public class DataManager2 : MonoBehaviour
     [SerializeField] private SkillData Wskill;
     [SerializeField] private SkillData Eskill;
     [SerializeField] private SkillData Rskill;
+    [SerializeField] private PlayerData playerData;
         
     private void Awake()
     {
@@ -45,5 +46,10 @@ public class DataManager2 : MonoBehaviour
     public (SkillData Q, SkillData W, SkillData E, SkillData R) GetAllSkillData()
     {
         return (Qskill, Wskill, Eskill, Rskill);
+    }
+
+    public PlayerData GetPlayerData()
+    {
+        return playerData;
     }
 }

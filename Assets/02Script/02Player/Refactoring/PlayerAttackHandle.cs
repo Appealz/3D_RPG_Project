@@ -6,23 +6,15 @@ public class PlayerAttackHandle : MonoBehaviour
 {
 
     public event Action OnActionCancel;
-
-    private bool isAttack;
+        
     private bool isAttacking;
     public bool IsAttacking => isAttacking;
-
-    [SerializeField]
+        
     private float attackRange;
-
     GameObject obj;
-
-    Transform firePoint;
-    [SerializeField]
-    Transform target;
-
-    [SerializeField]
+    Transform firePoint;    
+    Transform target;        
     private float attackRate;
-
     private float attackDamage;
 
     private void Awake()
@@ -115,8 +107,6 @@ public class PlayerAttackHandle : MonoBehaviour
         yield return new WaitForSeconds(1f / attackRate);
         isAttacking = false;        
     }
-
-
 
     public void RotateTowardsTarget(Transform target)
     {

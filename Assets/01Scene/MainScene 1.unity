@@ -1175,7 +1175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d56d066325e09f64abd74fbbef952ea4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 1802304746}
   offset: {x: 0, y: 2.7, z: 0}
   scaleWithDistance: 1
   scaleFactor: 0.1
@@ -3997,10 +3997,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 884926236}
-  Qskill: {fileID: 0}
-  Wskill: {fileID: 0}
-  Eskill: {fileID: 0}
-  Rskill: {fileID: 0}
+  Qskill: {fileID: 11400000, guid: c7323f15a98a794428f21aa8735535dc, type: 2}
+  Wskill: {fileID: 11400000, guid: f7a8b6b02d93298428847581c4a23167, type: 2}
+  Eskill: {fileID: 11400000, guid: de814a5306675854d8fe9def71453c4b, type: 2}
+  Rskill: {fileID: 11400000, guid: 771dd66cafc764645a2518ccc9426eb8, type: 2}
 --- !u!1 &946901367
 GameObject:
   m_ObjectHideFlags: 0
@@ -5982,6 +5982,7 @@ MonoBehaviour:
   Wskill: {fileID: 11400000, guid: f7a8b6b02d93298428847581c4a23167, type: 2}
   Eskill: {fileID: 11400000, guid: de814a5306675854d8fe9def71453c4b, type: 2}
   Rskill: {fileID: 11400000, guid: 771dd66cafc764645a2518ccc9426eb8, type: 2}
+  playerData: {fileID: 11400000, guid: 5a3ca2bb19a7d214dad4d7907e64e652, type: 2}
 --- !u!4 &1601375265
 Transform:
   m_ObjectHideFlags: 0
@@ -6678,10 +6679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc14206f8db63ca468c099e8747b4083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetTrans: {fileID: 0}
-  OnTarget: 0
-  rotateSpeed: 0
-  moveSpeed: 0
+  isOnSkill: 0
 --- !u!114 &1802304761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6708,9 +6706,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c609c63cdae3bb04e8d674c184f74586, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackRange: 0
-  target: {fileID: 0}
-  attackRate: 0
 --- !u!114 &1802304772
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,6 +20,8 @@ public class PlayerStatus_Fixed
     private float maxMp;
     private float curMp;
     private float maxHp;
+    public float attackDamage;
+    public GameObject Player;
 
     public float MaxHp
     {
@@ -50,9 +52,6 @@ public class PlayerStatus_Fixed
             EventBus.Publish(new HpChangeEvent(Player, curHp, maxHp));
         }
     }
-    public float attackDamage;
-    public GameObject Player;
-
 
 
     public float MaxMp
@@ -97,8 +96,8 @@ public class PlayerStatus_Fixed
 
 public class Player : ManagerBase
 {
-    [SerializeField]
-    private PlayerData playerData; 
+    //[SerializeField]
+    //private PlayerData playerData; 
 
     private NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
@@ -155,12 +154,6 @@ public class Player : ManagerBase
         {
             Debug.Log("playerAnimManager is not ref");
         }
-
-        playerStatus = new PlayerStatus_Fixed(playerData);
-
-        movement.InitMove(playerStatus.moveSpeed, anims);
-        attackHandle.InitAttack(playerStatus, anims);
-        skillManager.InitStatus(playerStatus);
     }
 
     private void OnEnable()
@@ -173,9 +166,17 @@ public class Player : ManagerBase
         Damage_Event.OnDamageChange -= Handle_OnDamaged;
     }
 
+    public void PlayerDataSetting(PlayerData newData)
+    {
+        playerStatus = new PlayerStatus_Fixed(newData);
+    }
+
     public override void StartGame()
     {
         base.StartGame();
+        movement.InitMove(playerStatus.moveSpeed, anims);
+        attackHandle.InitAttack(playerStatus, anims);
+        skillManager.InitStatus(playerStatus);        
         playerFSM = new PlayerFSM(this);
         playerFSM.Init();
     }
@@ -198,6 +199,8 @@ public class Player : ManagerBase
         {
             ActionQueue.Instance.QueueCheck();
         }
+
+        playerStatus.RecoverMp(Time.deltaTime);
     }
 
     public void SetTargetPos(Vector3 newTargetPosition)

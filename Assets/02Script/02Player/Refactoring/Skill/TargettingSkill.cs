@@ -8,6 +8,7 @@ public class TargettingSkill : TargetSkillBase, IRelease
     public override event Action<StateType> OnStateChange;
 
     public override event Action OnActionCancel;
+    public override event Action OnSkillFinish;
 
     public Transform targetTrans;
 
@@ -15,9 +16,7 @@ public class TargettingSkill : TargetSkillBase, IRelease
 
     private GameObject obj;
 
-    private Transform firePoint;
-
-    private bool firstActivated = false;
+    private Transform firePoint;    
 
     
     public override void Activate()
@@ -50,7 +49,9 @@ public class TargettingSkill : TargetSkillBase, IRelease
     {
         Debug.Log(" 스킬 종료");
         isAttacking = false;
-        firstActivated = false;
+        OnSkillFinish?.Invoke();
+
+
     }
 
 

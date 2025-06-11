@@ -18,6 +18,7 @@ public class WSkillState : StateBase
     {
         isDone = false;
         nonTargetSkill.OnActionCancel += Cancel;
+        nonTargetSkill.OnSkillFinish += Finish;
         nonTargetSkill.TargetPosSetting(player.targetPos);
         nonTargetSkill.Activate();
         nonTargetSkill.ManualRotate();
@@ -32,12 +33,18 @@ public class WSkillState : StateBase
     {
         isDone = true;
         nonTargetSkill.OnActionCancel -= Cancel;
+        nonTargetSkill.OnSkillFinish -= Finish;
     }
 
     public override void Cancel()
     {
         base.Cancel();
         isDone = true;
+    }
+
+    public override void Finish()
+    {
+        base.Finish();
     }
 
 }

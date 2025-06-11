@@ -23,11 +23,11 @@ public class PlayerHitbox : MonoBehaviour
 
     public void Handle_TakeDamaged(DamageInfo damageInfo)
     {
-        if (damageInfo.defender == gameObject)
-        {
-            Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
-            status.CurHP -= damageInfo.damage;
-        }
+        //if (damageInfo.defender == gameObject)
+        //{
+        //    Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
+        //    status.CurHP -= damageInfo.damage;
+        //}
 
         //if (status.CurHP <= 0f)
         //{

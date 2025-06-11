@@ -6,6 +6,7 @@ public class NonTargetAreaSkill : NonTargetSkillBase
     public override event Action OnSkillActivated;
     public override event Action<StateType> OnStateChange;
     public override event Action OnActionCancel;
+    public override event Action OnSkillFinish;
 
     public Vector3 targetPos;
 
@@ -19,11 +20,10 @@ public class NonTargetAreaSkill : NonTargetSkillBase
     public override void Activate()
     {
         ManualRotate();
-        if (isActive)
+        if (!isAttacking)
         {            
             OnSkillActivated?.Invoke();
-
-            isActive = false;
+                        
             isAttacking = true;
         }
     }
@@ -52,7 +52,8 @@ public class NonTargetAreaSkill : NonTargetSkillBase
     public override void Finish()
     {
         OnActionCancel?.Invoke();
-        isActive = true;        
+        OnSkillFinish?.Invoke();
+        isAttacking = false;
     }
 
     public void TargetPosSetting(Vector3 newPos)
@@ -65,12 +66,6 @@ public class NonTargetAreaSkill : NonTargetSkillBase
         targetPos = targetEvent.TargetPos;
     }
 
-    public void Cancel()
-    {
-        OnActionCancel?.Invoke();
-        isActive = true;
-        isAttacking = false;        
-    }
 
     public bool TargetDistanceCheck()
     {

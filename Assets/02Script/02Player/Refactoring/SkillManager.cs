@@ -66,15 +66,15 @@ public class SkillManager : MonoBehaviour
         skill.SetOwner(gameObject);
 
         // 타겟형 스킬
-        if (skill is TargetSkillBase targetable)
-        {
-            EventBus.Subscribe<SkillTargetSelectedEvent>(targetable.TargetSetting);
-        }
-        // 논타겟형 스킬
-        if (skill is NonTargetSkillBase nontargetable)
-        {
-            EventBus.Subscribe<SkillTargetPositionEvent>(nontargetable.TargetPositionSetting);
-        }
+        //if (skill is TargetSkillBase targetable)
+        //{
+        //    EventBus.Subscribe<SkillTargetSelectedEvent>(targetable.TargetSetting);
+        //}
+        //// 논타겟형 스킬
+        //if (skill is NonTargetSkillBase nontargetable)
+        //{
+        //    EventBus.Subscribe<SkillTargetPositionEvent>(nontargetable.TargetPositionSetting);
+        //}
 
         //if (skillAnimMap.TryGetValue(skill.myType, out var animAction))
         //{
@@ -177,8 +177,8 @@ public class SkillManager : MonoBehaviour
 
     public bool IsSkillUse(SkillType useSkillType)
     {
-        //Debug.Log($"쿨타임 사용 가능 : {skillModel.CanUseSkill(useSkillType)} 스킬 마나 사용 가능 : {(skills[useSkillType].mpCost < playerStatus.CurMp)}");
-        //Debug.Log($"쿨타임 사용 가능 : {skillModel.CanUseSkill(useSkillType)} 스킬 마나 : {skills[useSkillType].mpCost} 플레이어 마나 : {playerStatus.CurMp}");
+        Debug.Log($"쿨타임 사용 가능 : {skillModel.CanUseSkill(useSkillType)} 스킬 마나 사용 가능 : {(skills[useSkillType].mpCost < playerStatus.CurMp)}");
+        Debug.Log($"쿨타임 사용 가능 : {skillModel.CanUseSkill(useSkillType)} 스킬 마나 : {skills[useSkillType].mpCost} 플레이어 마나 : {playerStatus.CurMp}");
         // 스킬의 쿨타임 확인후 스킬 사용가능한지 && 스킬의 사용마나가 현재마나와 비교하여 충분한지
         return skillModel.CanUseSkill(useSkillType) && (skills[useSkillType].mpCost < playerStatus.CurMp);
     }
