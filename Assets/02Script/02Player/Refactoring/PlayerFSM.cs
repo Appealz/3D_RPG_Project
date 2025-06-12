@@ -67,11 +67,17 @@ public class PlayerFSM
 
         if (!ActionQueue.Instance.isEmpty)
         {
-            if(currentState.isDone)
+            if (currentState.isDone)
             {
                 StateType nextState = ActionQueue.Instance.DequeueAction();
                 ChangeState(nextState);
-            }            
+            }
+            else
+            {
+                ChangeState(StateType.Idle);
+            }
         }
+
+
     }
 }

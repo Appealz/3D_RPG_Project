@@ -73,10 +73,10 @@ public class EnemyAttackState : EnemyState
         if (Time.time >= attackTime)
         {
             isAttacking = true;
-            Debug.Log("플레이어 공격");
+            //Debug.Log("플레이어 공격");
             Damage_Event.TakeDamage(new DamageInfo(Enemy.gameObject, Enemy.Target.gameObject, 5f));
             attackTime = Time.time + attackRate;
-            Debug.Log("애니메이션 시작");
+            //Debug.Log("애니메이션 시작");
             Enemy.Anims.PlayAttack();
             animsTIme = Time.time + animsDuration;
         }

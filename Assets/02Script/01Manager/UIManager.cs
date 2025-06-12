@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class UIManager : ManagerBase
 {
+    #region _Field_
     [SerializeField]
     GameObject owner;
     PlayerHUD playerHUD;
@@ -11,6 +12,7 @@ public class UIManager : ManagerBase
     [SerializeField] private SkillData Wskill;
     [SerializeField] private SkillData Eskill;
     [SerializeField] private SkillData Rskill;
+    #endregion
 
     private void Awake()
     {
@@ -25,10 +27,10 @@ public class UIManager : ManagerBase
     public override void StartGame()
     {
         base.StartGame();
-                
-        //playerHUD?.SetSkillMpMarkers(Qskill, Wskill, Eskill, Rskill);
-        //playerHUD?.SetOwner(owner);
+        playerHUD?.SetSkillMpMarkers(Qskill, Wskill, Eskill, Rskill);
+        playerHUD?.SetOwner(owner);
     }
+
     private void OnEnable()
     {
         

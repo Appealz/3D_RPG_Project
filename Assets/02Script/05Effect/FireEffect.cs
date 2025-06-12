@@ -4,6 +4,7 @@ using System.Globalization;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using static UnityEngine.UI.GridLayoutGroup;
+using static UnityEngine.UI.Image;
 
 public class FireEffect : PoolLabel
 {
@@ -36,7 +37,8 @@ public class FireEffect : PoolLabel
             Owner = projInfo.owner;
             damage = projInfo.damage;
         }
-        firePoint = FindObjectTransform.FindChildTransform(Owner.transform, "FirePoint");
+        //firePoint = FindObjectTransform.FindChildTransform(Owner.transform, "FirePoint");
+        firePoint = Owner.transform;
         UseWSkill();
     }
 
@@ -58,15 +60,19 @@ public class FireEffect : PoolLabel
 
         foreach (Collider col in candidates)
         {
+            Vector3 toTarget = col.bounds.center - firePoint.position;
+            toTarget.y = 0f;
             Vector3 dirToTarget = (col.transform.position - firePoint.position).normalized;
-            float angleToTarget = Vector3.Angle(firePoint.forward, dirToTarget);
+            float angleToTarget = Vector3.Angle(dirToTarget, toTarget);
 
             if (angleToTarget <= angle / 2f)
             {
-                validTargets.Add(col.transform);
-
-                // 예시: 데미지 적용
+                Debug.DrawLine(firePoint.position, col.bounds.center, Color.green); // 디버깅용
                 Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage));
+            }
+            else
+            {
+                Debug.DrawLine(firePoint.position, col.bounds.center, Color.red);
             }
         }
         Debug.Log($"W에 맞은 대상 수: {validTargets.Count}");

@@ -5,6 +5,7 @@ public class SkillMpMarker : MonoBehaviour
 {
     Image mpMarker;
     [SerializeField] private SkillType skillType;
+    [SerializeField]
     private float mpCost;
 
     public void Init(SkillData data)

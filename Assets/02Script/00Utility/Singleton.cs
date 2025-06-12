@@ -34,10 +34,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         DoAwake();
     }
 
-    protected virtual void DoAwake()
-    {
-        
-    }
+    protected virtual void DoAwake() {}
 }
 
 public class DontDestroySingleton<T> : MonoBehaviour where T : MonoBehaviour
@@ -61,7 +58,6 @@ public class DontDestroySingleton<T> : MonoBehaviour where T : MonoBehaviour
             return instance;
         }
     }
-
     private void Awake()
     {
         if (instance == null)
@@ -75,9 +71,5 @@ public class DontDestroySingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
         DoAwake();
     }
-
-    protected virtual void DoAwake()
-    {
-
-    }
+    protected virtual void DoAwake() { }
 }

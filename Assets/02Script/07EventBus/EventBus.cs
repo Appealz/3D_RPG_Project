@@ -154,7 +154,6 @@ public static class Skill_Event
 public static class EventBus
 {
     private static Dictionary<Type, Delegate> eventTable = new Dictionary<Type, Delegate>();
-
     public static void Subscribe<T>(Action<T> newMethod)
     {
         if (eventTable.TryGetValue(typeof(T), out var existMethod))
@@ -166,7 +165,6 @@ public static class EventBus
             eventTable[typeof(T)] = newMethod;
         }
     }
-
     public static void UnSubscribe<T>(Action<T> removeMethod)
     {
         if (eventTable.TryGetValue(typeof(T), out var existMethod))
@@ -182,7 +180,6 @@ public static class EventBus
             }
         }
     }
-
     public static void Publish<T>(T type)
     {
         if (eventTable.TryGetValue(typeof(T), out var method))

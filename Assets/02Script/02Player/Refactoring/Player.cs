@@ -96,9 +96,7 @@ public class PlayerStatus_Fixed
 
 public class Player : ManagerBase
 {
-    //[SerializeField]
-    //private PlayerData playerData; 
-
+    #region _Field_
     private NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
     private PlayerAnims anims;
@@ -126,6 +124,7 @@ public class Player : ManagerBase
 
     private PlayerAnimManager playerAnimManager;
 
+    #endregion
     private void Awake()
     {
         if(!TryGetComponent<NavMeshAgent>(out agent))
@@ -166,11 +165,6 @@ public class Player : ManagerBase
         Damage_Event.OnDamageChange -= Handle_OnDamaged;
     }
 
-    public void PlayerDataSetting(PlayerData newData)
-    {
-        playerStatus = new PlayerStatus_Fixed(newData);
-    }
-
     public override void StartGame()
     {
         base.StartGame();
@@ -192,6 +186,8 @@ public class Player : ManagerBase
 
         // 상태 업데이트용
         playerFSM.StateUpdate();
+
+        
         // 스킬 쿨타임갱신용
         skillManager.UpdateSKillCoolTIme();
 
@@ -203,16 +199,19 @@ public class Player : ManagerBase
         playerStatus.RecoverMp(Time.deltaTime);
     }
 
+    public void PlayerDataSetting(PlayerData newData)
+    {
+        playerStatus = new PlayerStatus_Fixed(newData);
+    }
+
     public void SetTargetPos(Vector3 newTargetPosition)
     {
         targetPos = newTargetPosition;
     }
-
     public void SetTargetTrans(Transform newTargetTrans)
     {
         targetTrans = newTargetTrans;
     }
-
     public void ReadyToAttack(bool newIsOn)
     {
         isAttackReady = newIsOn;
@@ -221,20 +220,10 @@ public class Player : ManagerBase
             EventBus.Publish(new indicatorEvent(IndicatorType.Circle, Vector3.zero, Mathf.Sqrt(playerStatus.attackRagne)));
         }        
     }
-
     public void ChangeState(StateType newStateType, bool force = false)
     {
         playerFSM.ChangeState(newStateType, force);
     }
-
-    public void Handle_OnDamaged(DamageInfo damageInfo)
-    {
-        if(damageInfo.defender == gameObject)
-        {
-            playerStatus.CurHp -= damageInfo.damage;
-        }
-    }
-
     public void PrepareToSkill(SkillType newType)
     {
         //Debug.Log($"{gameObject.name}에서 {newType} 준비 후 skillManager 전달");
@@ -246,7 +235,8 @@ public class Player : ManagerBase
     {
         StateType changeState;
         changeState = skillManager.UseSkill();
-        playerFSM.ChangeState(changeState, force: true);
+        //playerFSM.ChangeState(changeState, force: true);
+        ActionQueue.Instance.EnqueueAction(changeState);
         isSkillPrepared = false;
     }
 
@@ -271,6 +261,12 @@ public class Player : ManagerBase
                 break;
         }
     }
-  
+    public void Handle_OnDamaged(DamageInfo damageInfo)
+    {
+        if (damageInfo.defender == gameObject)
+        {
+            playerStatus.CurHp -= damageInfo.damage;
+        }
+    }
 
 }

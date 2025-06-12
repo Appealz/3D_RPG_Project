@@ -24,19 +24,6 @@ public class RSkillState : StateBase
         
         player.Agent.velocity = Vector3.zero;        
 
-        //if (player.targetTrans == null || !player.targetTrans.gameObject.activeSelf)
-        //{
-        //    if (player.targetPos != Vector3.zero)
-        //    {
-        //        playerFSM.ChangeState(StateType.Move, force: true);
-        //    }
-        //    else
-        //    {
-        //        playerFSM.ChangeState(StateType.Idle);
-        //    }
-        //    return;
-        //}
-
         if (areaSkill.TargetDistanceCheck() && !areaSkill.isAttacking)
         {
             areaSkill.Activate();
@@ -64,6 +51,7 @@ public class RSkillState : StateBase
     public override void StateExit()
     {
         isDone = true;
+        areaSkill.isAttacking = false;
         areaSkill.OnActionCancel -= Cancel;
         areaSkill.OnSkillFinish -= Finish;
     }

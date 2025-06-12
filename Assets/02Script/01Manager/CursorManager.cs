@@ -9,6 +9,7 @@ public enum cursorType
 
 public class CursorManager : ManagerBase
 {
+    #region _Field_
     public Texture2D initCursor;
     public Texture2D attackCursor;
     public Texture2D AclickCursor;
@@ -20,6 +21,7 @@ public class CursorManager : ManagerBase
 
     private Dictionary<cursorType, Texture2D> cursorTypes = new Dictionary<cursorType, Texture2D>();
     private cursorType currentCursorType;
+    #endregion
 
     private void Awake()
     {

@@ -25,15 +25,14 @@ public class HpBar : MonoBehaviour
 
     public void SetOwner(GameObject newOwner)
     {
+        
         owner = newOwner;
     }
 
     public void OnChangeHPEvent(HpChangeEvent hpChangeEvent)
     {
-        if(hpChangeEvent.Publisher != owner)
-        {
+        if (owner == null || hpChangeEvent.Publisher != owner)
             return;
-        }
 
         float ratio = hpChangeEvent.CurrentHp / hpChangeEvent.MaxHp;
 

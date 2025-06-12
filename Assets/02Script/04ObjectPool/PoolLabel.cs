@@ -17,3 +17,4 @@ public class PoolLabel : MonoBehaviour
         myPool.PushObj(this);
     }
 }
+

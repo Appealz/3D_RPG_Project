@@ -2995,23 +2995,26 @@ MonoBehaviour:
   allEventData:
   - animationName: Qskill
     animEventTimer:
-    - time: 0.6
+    - time: 0.5
       eventType: Fire
       param: 1
-    - time: 1
+    - time: 0.6
       eventType: Cancel
       param: 2
-    - time: 1.5
+    - time: 0.8
       eventType: End
       param: 3
   - animationName: Wskill
     animEventTimer:
-    - time: 0.6
+    - time: 0.7
       eventType: Fire
       param: 1
-    - time: 1
+    - time: 0.9
+      eventType: Cancel
+      param: 2
+    - time: 1.2
       eventType: End
-      param: 1
+      param: 3
   - animationName: Eskill
     animEventTimer:
     - time: 0.1
@@ -3022,12 +3025,15 @@ MonoBehaviour:
       param: 1
   - animationName: Rskill
     animEventTimer:
-    - time: 0.6
+    - time: 1
       eventType: Fire
       param: 1
     - time: 1.2
+      eventType: Cancel
+      param: 2
+    - time: 1.5
       eventType: End
-      param: 1
+      param: 3
 --- !u!4 &689469227
 Transform:
   m_ObjectHideFlags: 0

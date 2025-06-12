@@ -9,8 +9,6 @@ public enum IndicatorType
     Area
 }
 
-
-
 public class IndicatorManager : MonoBehaviour
 {
     private Dictionary<IndicatorType, IIndicator> indicators;
@@ -34,8 +32,7 @@ public class IndicatorManager : MonoBehaviour
     private void OnDisable()
     {
         EventBus.UnSubscribe<indicatorEvent>(ShowIndiCatorEvent);
-        EventBus.UnSubscribe<HideIndicatorEvent>(OnHideIndicator);
-        
+        EventBus.UnSubscribe<HideIndicatorEvent>(OnHideIndicator);        
     }
 
     public void ShowIndiCatorEvent(indicatorEvent indicator)
@@ -51,7 +48,6 @@ public class IndicatorManager : MonoBehaviour
     {
         HideAllIndicator();
     }
-
 
     public void HideAllIndicator()
     {

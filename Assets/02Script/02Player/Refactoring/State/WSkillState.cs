@@ -32,6 +32,7 @@ public class WSkillState : StateBase
     public override void StateExit()
     {
         isDone = true;
+        nonTargetSkill.isAttacking = false;
         nonTargetSkill.OnActionCancel -= Cancel;
         nonTargetSkill.OnSkillFinish -= Finish;
     }
@@ -45,6 +46,7 @@ public class WSkillState : StateBase
     public override void Finish()
     {
         base.Finish();
+        
     }
 
 }

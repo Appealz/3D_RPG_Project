@@ -18,4 +18,4 @@ MonoBehaviour:
   damage: 50
   coolTime: 5
   mpCost: 50
-  range: 7
+  range: 10

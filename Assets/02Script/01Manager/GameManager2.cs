@@ -2,15 +2,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager2 : DontDestroySingleton<GameManager>
-{
-    
+{    
     private CursorManager cursorManager;
     private IInputHandle curInputHandler;
     private UIManager uiManager;
     private DataManager2 dataManager;
     private Player player;
     private PlayerActionController playerActionController;
-
     
     private void Awake()
     {

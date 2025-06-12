@@ -5,6 +5,14 @@ public class PlayerActionController : ManagerBase
     private IInputHandle inputHandler;
     private Player player;
 
+    public void OnEnable()
+    {
+        EventBus.Subscribe<SkillPreparedEvent>(OnSkillKeyInputEvent);
+    }
+    public void OnDisable()
+    {
+        EventBus.UnSubscribe<SkillPreparedEvent>(OnSkillKeyInputEvent);
+    }
     public void BindToInputHandler(IInputHandle newInputHandler, Player newPlayer)
     {
         inputHandler = newInputHandler;
@@ -65,6 +73,7 @@ public class PlayerActionController : ManagerBase
         {
             player.ReadyToAttack(false);
             player.isSkillPrepared = false;
+            ActionQueue.Instance.ClearQueue();
         }
         
         // s 클릭
@@ -73,6 +82,7 @@ public class PlayerActionController : ManagerBase
             player.ReadyToAttack(false);
             player.isSkillPrepared = false;
             player.ChangeState(StateType.Idle, force: true);
+            ActionQueue.Instance.ClearQueue();
         }
 
         // 스킬 키 입력
@@ -92,5 +102,10 @@ public class PlayerActionController : ManagerBase
                 player.UsePreparedSkill();
             }
         }
+    }    
+
+    private void OnSkillKeyInputEvent(SkillPreparedEvent e)
+    {
+        player.PrepareToSkill(e.SkillType); // 내부적으로 SkillManager, Player 처리
     }
 }

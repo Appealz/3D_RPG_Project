@@ -29,7 +29,6 @@ public class ObjectPool : MonoBehaviour
             }
         }
     }
-
     public GameObject PopObj()
     {
         if(poolStack.Count < 1)
@@ -41,7 +40,6 @@ public class ObjectPool : MonoBehaviour
 
         return objLabel.gameObject;
     }
-
     public void PushObj(PoolLabel returnObj)
     {
         if (!Application.isPlaying) return;
