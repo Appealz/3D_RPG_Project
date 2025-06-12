@@ -10,14 +10,14 @@ public class EnemyAttackState : EnemyState
     {
 
     }
-
+    #region _Field_
     bool isAttack = false;
     bool isAttacking = false;
     float attackRate = 3f;
     float attackTime = 0f;
-
     float animsTIme = 0f;
     float animsDuration = 2f;
+    #endregion
     public override void StateEnter()
     {
         Enemy.Agent.ResetPath();
@@ -39,21 +39,17 @@ public class EnemyAttackState : EnemyState
             else
             {
                 return;
-            }
-            
+            }            
         }
-
         if (TargetDistance > Enemy.Status.detectRange)
         {
             EnemyAI.ChangeState(EnemyAI.returnState);
         }
-
         else if (TargetDistance > Enemy.Status.attackRange)
         {
             Enemy.Status.attackRange = 2f;
             EnemyAI.ChangeState(EnemyAI.chaseState);
         }
-
         Attack();
     }
 

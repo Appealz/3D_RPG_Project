@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFSM
-{ 
+{
+    #region _Field_
     public StateBase currentState;
-
-    public Player player;
-    
+    public Player player;    
     private Dictionary<StateType, StateBase> stateDictionary = new Dictionary<StateType, StateBase>();
-
+    #endregion
     public PlayerFSM(Player newPlayer)
     {
         player = newPlayer;
@@ -21,39 +20,30 @@ public class PlayerFSM
         stateDictionary[StateType.SkillE] = new ESkillState(player, this, player.playerSkillManager.GetSkill(SkillType.E_Skill));
         stateDictionary[StateType.SkillR] = new RSkillState(player, this, player.playerSkillManager.GetSkill(SkillType.R_Skill));
     }
-
     public void Init()
     {
         currentState = stateDictionary[StateType.Idle];
         currentState.StateEnter();
     }
 
-
-
     public void ChangeState(StateType newStateType, bool force = false, IStateContext context = null)
     {
-        if (!force && !currentState.isDone)
-        {
-            //Debug.LogWarning($"[{currentState.GetType().Name}] 상태가 완료되지 않아 {newStateType}로 전환 거부됨");
+        if (!force && !currentState.isDone)                 
             return;
-        }
-
+        
         if (currentState == stateDictionary[newStateType])
-            return; // 상태 전환 필요 없음
+            return; 
 
         if (stateDictionary.TryGetValue(newStateType, out StateBase newState))
         {
             if (currentState != null)
-            {
                 currentState.StateExit();
-            }            
+            
             newState.InjectContext(context);
-            currentState = newState;
-            //Debug.Log($"{currentState}로 상태 변경");
-            if (currentState != null)
-            {
-                currentState.StateEnter();
-            }
+            currentState = newState;            
+
+            if (currentState != null)            
+                currentState.StateEnter();            
         }
         else
         {
@@ -77,7 +67,7 @@ public class PlayerFSM
                 ChangeState(StateType.Idle);
             }
         }
-
-
     }
 }
+
+

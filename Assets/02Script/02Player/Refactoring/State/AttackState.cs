@@ -8,12 +8,7 @@ public class AttackState : StateBase
         attackHandle = newAttackHandle;
         //EventBus.Subscribe<cancleState>(CancelState);
         
-    }
-
-    private bool isAttacking;
-    private float lastAttackTime = 0f;
-    private float attackRate = 1f;
-
+    } 
     public override void StateEnter()
     {
         attackHandle.OnActionCancel += Cancel;

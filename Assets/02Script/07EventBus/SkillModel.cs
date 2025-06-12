@@ -33,13 +33,10 @@ public class SkillModel
 
         EventBus.Publish(new SkillCoolDownEvent(skillType, coolDown));
     }
-
     public bool CanUseSkill(SkillType type)
-    {
-        // 스킬 쿨타임이 존재하지 않거나(스킬을 사용한 적이 없거나) 남은 스킬 쿨타임이 0보다 작거나 같으면 true 반환.
+    {        
         return !skillCoolDowns.ContainsKey(type) || skillCoolDowns[type] <= 0f;
     }
-
     public void CoolTimeUpdate(float deltaTIme)
     {
         var skillKeys = new List<SkillType>(skillCoolDowns.Keys);

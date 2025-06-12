@@ -5,7 +5,6 @@ public class EnemyChaseState : EnemyState
     public EnemyChaseState(Enemy enemy, EnemyAI enemyAi) : base(enemy, enemyAi)
     {
     }
-
     public override void StateEnter()
     {
         Debug.Log($"{Enemy.name}플레이어 추적 시작");

@@ -1,6 +1,34 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+public struct MpChangeEvent
+{
+    public float CurrentMP;
+    public float MaxMp;
+    public GameObject Publisher;
+
+    public MpChangeEvent(GameObject publisher, float currentMP, float maxMp)
+    {
+        Publisher = publisher;
+        CurrentMP = currentMP;
+        MaxMp = maxMp;
+    }
+}
+
+public struct HpChangeEvent
+{
+    public float CurrentHp;
+    public float MaxHp;
+    public GameObject Publisher;
+
+    public HpChangeEvent(GameObject publisher, float currentHp, float maxHp)
+    {
+        Publisher = publisher;
+        CurrentHp = currentHp;
+        MaxHp = maxHp;
+    }
+}
+
 public class PlayerStatus_Fixed
 {
     public PlayerStatus_Fixed(PlayerData playerData)
@@ -123,6 +151,7 @@ public class Player : ManagerBase
     public bool isSkillPrepared;
 
     private PlayerAnimManager playerAnimManager;
+    private PlayerHitbox playerHitbox;
 
     #endregion
     private void Awake()
@@ -153,6 +182,10 @@ public class Player : ManagerBase
         {
             Debug.Log("playerAnimManager is not ref");
         }
+        if(!TryGetComponent<PlayerHitbox>(out playerHitbox))
+        {
+            Debug.Log("playerHitbox is not ref");
+        }
     }
 
     private void OnEnable()
@@ -173,21 +206,22 @@ public class Player : ManagerBase
         skillManager.InitStatus(playerStatus);        
         playerFSM = new PlayerFSM(this);
         playerFSM.Init();
+        playerHitbox.InitStatus(playerStatus);
     }
 
     public override void CustomUpdate()
     {
         base.CustomUpdate();
+        #region _FSM Null Check_
         if (playerFSM == null)
         {
             Debug.LogWarning("playerFSM is null in CustomUpdate.");
             return;
         }
-
+        #endregion
         // 상태 업데이트용
         playerFSM.StateUpdate();
-
-        
+        #region _SkillCoolTimeUpdate_
         // 스킬 쿨타임갱신용
         skillManager.UpdateSKillCoolTIme();
 
@@ -195,7 +229,7 @@ public class Player : ManagerBase
         {
             ActionQueue.Instance.QueueCheck();
         }
-
+        #endregion
         playerStatus.RecoverMp(Time.deltaTime);
     }
 

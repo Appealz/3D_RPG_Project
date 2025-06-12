@@ -10,7 +10,6 @@ public class EnemyAI
     public EnemyChaseState chaseState;
     public EnemyDieState dieState;
     public EnemyReturnState returnState;
-        
 
     public EnemyAI(Enemy enemy)
     {

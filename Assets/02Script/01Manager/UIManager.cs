@@ -31,6 +31,11 @@ public class UIManager : ManagerBase
         playerHUD?.SetOwner(owner);
     }
 
+    public void SetPlayer(GameObject newPlayer)
+    {
+        owner = newPlayer;
+    }
+
     private void OnEnable()
     {
         

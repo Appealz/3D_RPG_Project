@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ESkillState : StateBase
@@ -16,16 +17,34 @@ public class ESkillState : StateBase
 
     public override void StateEnter()
     {
-        
-    }
-
-    public override void StateExit()
-    {
-        
+        isDone = false;
+        barrierSkill.OnActionCancel += Cancel;
+        barrierSkill.OnSkillFinish += Finish;
+        barrierSkill.Activate();
+        //player.Agent.velocity = Vector3.zero;
     }
 
     public override void StateUpdate()
     {
         
+    }
+
+    public override void StateExit()
+    {
+        isDone = true;
+        barrierSkill.isOn = true;
+        barrierSkill.OnActionCancel -= Cancel;
+        barrierSkill.OnSkillFinish -= Finish;
+    }
+
+    public override void Cancel()
+    {
+        base.Cancel();
+        isDone = true;
+    }
+
+    public override void Finish()
+    {
+        base.Finish();
     }
 }

@@ -20,15 +20,12 @@ public class EnemyPatrolState : EnemyState
         Enemy.Anims.PlayMove(true);
     }
 
-
     public override void StateUpdate()
-    {
-        // 경로 계산이 끝났고, 남은 거리가 도착거리이내 이며, 더이상 갈길이 없거나 이동속도가 0일때
+    {        
         if (!Enemy.Agent.pathPending && Enemy.Agent.remainingDistance <= Enemy.Agent.stoppingDistance && (!Enemy.Agent.hasPath || Enemy.Agent.velocity.sqrMagnitude == 0f))
         {
             SetRandomDestination();
         }
-
         if(Vector3.Distance(Enemy.transform.position, Enemy.Target.position) <= Enemy.Status.detectRange)
         {
             EnemyAI.ChangeState(EnemyAI.chaseState);
@@ -47,8 +44,6 @@ public class EnemyPatrolState : EnemyState
             
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 5f, NavMesh.AllAreas))
             {
-                //Debug.Log($"Agent Setting Destination: {hit.position}");
-                //Debug.Log($"Agent Speed: {Enemy.Agent.speed}, IsOnNavMesh: {Enemy.Agent.isOnNavMesh}, PathPending: {Enemy.Agent.pathPending}");
                 Enemy.Agent.SetDestination(hit.position);
                 return;                
             }

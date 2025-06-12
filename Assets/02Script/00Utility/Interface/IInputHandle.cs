@@ -20,25 +20,15 @@ public interface IInputHandle
     // 5. 스킬 키 바인딩 처리 (QWER 키 입력 확인)
     bool TryGetSkillKeyInput(out SkillType skillType);
 
-    // 6. 스킬 준비 상태인지
-    bool IsSkillReady(out SkillType skillType);
-
-    // 7-A. Q 스킬 (타겟 지정)
-    bool TryGetSkillTarget(out Transform target);
-
-    // 7-B. W 스킬 (방향 정보, 마우스 위치)
-    bool TryGetSkillDirection(out Vector3 direction);
-
-    // 7-C. R 스킬 (타겟 좌표)
-    bool TryGetSkillPosition(out Vector3 position);
-
+    // 6. 스킬 사용시 타겟 및 좌표 정보
     bool TryGetSkillInput(out Transform target, out Vector3 position);
-    // 8. 스킬/공격 모드 취소 (Esc 또는 우클릭 등)
+    // 7. 스킬/공격 모드 취소 (Esc 또는 우클릭 등)
     bool IsCancelInput();
 
-    // 9. 정지(S 키) 입력
+    // 8. 정지(S 키) 입력
     bool IsStopRequested();
 
-    // 10. 스킬 바인딩
+    // 9. 스킬 바인딩
     void BindKeyToSkill(KeyCode key, SkillType skillType);
 }
+

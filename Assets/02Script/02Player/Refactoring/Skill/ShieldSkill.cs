@@ -8,35 +8,49 @@ public class ShieldSkill : BuffSkillBase
     public override event Action OnActionCancel;
     public override event Action OnSkillFinish;
 
+    Transform shieldPoint;
+    GameObject obj;
+
+    public bool isOn = true;
+
     public override void Activate()
     {
-        throw new NotImplementedException();
+        if (isOn)
+        {
+            Debug.Log("E스킬 발동");
+            OnSkillActivated?.Invoke();
+            shieldPoint = FindObjectTransform.FindChildTransform(fireOwner.transform, "ShieldPoint");
+            isOn = false;            
+        }
     }
 
     public override void CancelAble()
     {
-        throw new NotImplementedException();
+        OnActionCancel?.Invoke();
     }
 
     public override void CreateEffect()
     {
-        throw new NotImplementedException();
+        obj = ObjectPoolManager.Instance.pool[4].PopObj();
+        if (obj == null)
+        {
+            Debug.Log("obj 참조안됨");
+            return;
+        }
+        else
+        {
+            obj.transform.position = shieldPoint.position;
+            Skill_Event.InvokeShieldSkillSpawn(new ShieldSkillInfo(fireOwner, 10f, ProjectileType.Eskill));
+        }
+        Debug.Log("상태 변환 완료");
     }
 
     public override void Finish()
     {
-        throw new NotImplementedException();
+        //OnStateChange?.Invoke(StateType.Idle);
+        OnSkillFinish?.Invoke();    
+        isOn = true;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

@@ -2,33 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public struct MpChangeEvent
-{
-    public float CurrentMP;
-    public float MaxMp;
-    public GameObject Publisher;
 
-    public MpChangeEvent(GameObject publisher, float currentMP, float maxMp)
-    {
-        Publisher = publisher;
-        CurrentMP = currentMP;
-        MaxMp = maxMp;
-    }
-}
-
-public struct HpChangeEvent
-{
-    public float CurrentHp;
-    public float MaxHp;
-    public GameObject Publisher;
-
-    public HpChangeEvent(GameObject publisher, float currentHp, float maxHp)
-    {
-        Publisher = publisher;
-        CurrentHp = currentHp;
-        MaxHp = maxHp;
-    }
-}
 
 public class PlayerStatus
 {
@@ -202,7 +176,7 @@ public class PlayerController : ManagerBase
         playerMovement.InitMove(playerStatus.moveSpeed);
         playerState.InitState();
         playerSkillManager.InitStatus(playerStatus);
-        playerHitbox.InitStatus(playerStatus);
+        //playerHitbox.InitStatus(playerStatus);
     }
 
     public override void CustomUpdate()

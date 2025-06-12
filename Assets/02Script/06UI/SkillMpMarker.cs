@@ -32,7 +32,6 @@ public class SkillMpMarker : MonoBehaviour
     private void OnChangeMp(MpChangeEvent changeEvent)
     {
         float curMp = changeEvent.CurrentMP;
-
         bool canUse = curMp >= mpCost;
         mpMarker.enabled = !canUse;
     }

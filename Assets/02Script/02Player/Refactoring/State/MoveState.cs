@@ -25,6 +25,5 @@ public class MoveState : StateBase
     {
         movement.StopMove();
     }
-
-
 }
+

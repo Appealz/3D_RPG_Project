@@ -33,13 +33,27 @@ public class ChaseState : StateBase
         EventBus.Subscribe<cancleState>(CancelState);        
     }
 
+    public override void InjectContext(IStateContext context)
+    {
+        base.InjectContext(context);
+        if (context is ChaseContext chaseContext)
+        {
+            attackRange = chaseContext.range;
+            Debug.Log($"사거리 변경 : {attackRange}");
+        }
+        else
+        {
+            attackRange = player.PlayerStatus.attackRagne;
+            Debug.Log($"사거리 변경 : {attackRange}");
+        }
+    }
+
     public override void StateEnter()
     {
         isDone = false;
         movement.StartMove(5f);
         movement.isOnSkill = true;
     }
-
 
     public override void StateUpdate()
     {
@@ -85,18 +99,5 @@ public class ChaseState : StateBase
         Cancel();
     }
 
-    public override void InjectContext(IStateContext context)
-    {
-        base.InjectContext(context);
-        if(context is ChaseContext chaseContext)
-        {
-            attackRange = chaseContext.range;
-            Debug.Log($"사거리 변경 : {attackRange}");
-        }
-        else
-        {
-            attackRange = player.PlayerStatus.attackRagne;
-            Debug.Log($"사거리 변경 : {attackRange}");
-        }
-    }
+
 }

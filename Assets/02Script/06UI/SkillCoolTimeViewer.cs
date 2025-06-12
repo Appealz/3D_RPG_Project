@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 public class SkillCoolTimeViewer : MonoBehaviour
 {
+    #region _Field_
     private Image coolTimeOverlay;
     private Image coolTimeBackground;
 
     private TextMeshProUGUI coolTimeText;
     [SerializeField] private SkillType skillType;
-
-
+    #endregion
     private void OnEnable()
     {
+        #region _reference_
         coolTimeOverlay = FindObjectTransform.FindChildTransform(transform, "Marker").GetComponent<Image>();
         coolTimeOverlay.fillAmount = 0f;
 
@@ -22,6 +23,7 @@ public class SkillCoolTimeViewer : MonoBehaviour
 
         coolTimeText = GetComponentInChildren<TextMeshProUGUI>();        
         coolTimeText.enabled = false;
+        #endregion
         EventBus.Subscribe<SkillCoolDownEvent>(OnCoolTimeStarted);
     }
 

@@ -15,3 +15,4 @@ public abstract class EnemyState
     public abstract void StateUpdate();
     public abstract void StateExit();
 }
+

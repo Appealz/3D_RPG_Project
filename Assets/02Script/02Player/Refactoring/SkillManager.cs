@@ -110,7 +110,8 @@ public class SkillManager : MonoBehaviour
         {
             if (preparedSkill == SkillType.E_Skill)
             {
-                UseSkill();                
+                ActionQueue.Instance.EnqueueAction(skills[preparedSkill].myState);
+                preparedSkillType = null;
             }
             else
             {

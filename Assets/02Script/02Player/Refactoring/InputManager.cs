@@ -4,29 +4,12 @@ using UnityEngine;
 using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 
-public class InputManager : ManagerBase, IInputHandle
+public class InputManager : MonoBehaviour, IInputHandle
 {
     // CursorManager    
     public static event Action<StateType> OnStop;
-
     // SkillManager
     private Dictionary<KeyCode, SkillType> keySkillBindings = new Dictionary<KeyCode, SkillType>();
-
-    private bool isAttackOn;
-
-    private bool isReadySkill = false;
-
-    private SkillType? currentReadySkill = null;
-    private void OnEnable()
-    {
-        //EventBus.Subscribe<SkillPreparedEvent>(OnSkillPrepared);
-    }
-
-    private void OnDisable()
-    {
-        //EventBus.UnSubscribe<SkillPreparedEvent>(OnSkillPrepared);
-    }
-
 
     // 마우스 이동 인디케이터 표시
     private void CreateMouseIndicator(RaycastHit hit)
@@ -142,68 +125,6 @@ public class InputManager : ManagerBase, IInputHandle
         }
         return false;
     }
-
-    // 스킬이 준비된 상태
-    public bool IsSkillReady(out SkillType skillType)
-    {
-        skillType = SkillType.None;
-        return false;
-    }
-
-    // 타겟 스킬이 입력된 상태에서 타겟 지정
-    public bool TryGetSkillTarget(out Transform target)
-    {
-        target = null;
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-            {                
-                EventBus.Publish(new CursorEventData(cursorType.Idle));
-                EventBus.Publish(new HideIndicatorEvent());
-                target = hit.transform;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 논 타겟 스킬이 입력된 상태에서 마우스의 위치 반환
-    public bool TryGetSkillDirection(out Vector3 direction)
-    {
-        direction = Vector3.zero;
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {                
-                EventBus.Publish(new CursorEventData(cursorType.Idle));
-                EventBus.Publish(new HideIndicatorEvent());
-                direction = hit.point;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // 논 타겟 스킬이 입력된 상태에서 해당 위치 지정
-    public bool TryGetSkillPosition(out Vector3 position)
-    {
-        position = Vector3.zero;
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {                
-                EventBus.Publish(new CursorEventData(cursorType.Idle));
-                EventBus.Publish(new HideIndicatorEvent());
-                position = hit.point;
-                return true;
-            }
-        }
-        return false;
-    }
-
     // 취소(ESC) 키 입력
     public bool IsCancelInput()
     {
@@ -231,6 +152,7 @@ public class InputManager : ManagerBase, IInputHandle
         return false;
     }
 
+    // 스킬 사용시 좌표 또는 타겟 위치 반환
     public bool TryGetSkillInput(out Transform target, out Vector3 position)
     {
         target = null;
@@ -249,14 +171,6 @@ public class InputManager : ManagerBase, IInputHandle
                 }
                 return true;
             }
-            //if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, LayerMask.GetMask("Enemy")))
-            //{
-            //    EventBus.Publish(new CursorEventData(cursorType.Idle));
-            //    EventBus.Publish(new HideIndicatorEvent());
-            //    target = hit.transform;
-            //    position = hit.point;
-            //    return true;
-            //}
         }
         return false;
     }

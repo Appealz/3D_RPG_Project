@@ -21,3 +21,5 @@ public abstract class StateBase
     }
     public virtual void InjectContext(IStateContext context) { }
 }
+
+

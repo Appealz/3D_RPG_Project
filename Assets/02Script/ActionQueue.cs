@@ -9,14 +9,8 @@ public class ActionQueue : Singleton<ActionQueue>
     public bool isEmpty => stateQueue.Count == 0;
     public void EnqueueAction(StateType curState)
     {
-        //if(currentState != curState)
-        //{
-        //    currentState = curState;
-        //Debug.Log($"{curState} 상태 큐 진입");
-            stateQueue.Enqueue(curState);            
-        //}
+        stateQueue.Enqueue(curState);
     }
-
     public StateType DequeueAction()
     {
         if(HasQueue())
@@ -27,17 +21,6 @@ public class ActionQueue : Singleton<ActionQueue>
         }
         Debug.Log("큐 비어있음");
         return StateType.Idle;
-    }
-
-    public StateType PeekNext()
-    {
-        if (stateQueue.Count == 0)
-        {
-            //Debug.LogWarning("ActionQueue가 비어있습니다. 기본 상태를 반환합니다.");
-            return StateType.Idle;
-        }
-
-        return stateQueue.Peek();
     }
     public void ClearQueue()
     {
@@ -63,5 +46,13 @@ public class ActionQueue : Singleton<ActionQueue>
             Debug.Log($"Queued State: {action}");
         }
     }
+    public StateType PeekNext()
+    {
+        if (stateQueue.Count == 0)
+        {
+            return StateType.Idle;
+        }
 
+        return stateQueue.Peek();
+    }
 }

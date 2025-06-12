@@ -30,12 +30,11 @@ public class EnemyStatus
         attackRange = enemyData.attackRange;
         detectRange = enemyData.detectRange;
     }
-
-
 }
 
 public class Enemy : PoolLabel
 {
+    #region _Field_
     EnemyAI enemyAI;
     NavMeshAgent agent;
     Transform target;
@@ -67,6 +66,8 @@ public class Enemy : PoolLabel
 
     private float aggroTime;
     private float aggroDuration = 5f;
+
+    #endregion
     private void Awake()
     {
         // Ω∫≈»

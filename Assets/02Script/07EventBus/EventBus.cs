@@ -30,8 +30,6 @@ public static class Damage_Event
 {
     // 데미지를 받는 오브젝트들에 참조.
     public static event Action<DamageInfo> OnDamageChange;
-
-
     /// <param name="info"></param>
     public static void TakeDamage(DamageInfo info)
     {

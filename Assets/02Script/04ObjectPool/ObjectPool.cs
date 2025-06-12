@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
+    #region _Field_
     [SerializeField]
     private GameObject prefabs;
     private GameObject obj;
     private PoolLabel objLabel;
     private Stack<PoolLabel> poolStack = new Stack<PoolLabel>();
-
     private int poolCount = 10;
-
+    #endregion
     private void Awake()
     {
         Allocate();
     }
-
     private void Allocate()
     {
         for(int i = 0; i < poolCount; i++)

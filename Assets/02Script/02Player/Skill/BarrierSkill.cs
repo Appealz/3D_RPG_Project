@@ -13,8 +13,6 @@ public class BarrierSkill : BuffSkillBase
 
     bool isOn = true;
 
-
-
     public override void Activate()
     {
         if(isOn)
