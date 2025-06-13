@@ -67,6 +67,8 @@ public class Enemy : PoolLabel
     private float aggroTime;
     private float aggroDuration = 5f;
 
+    private bool isDie = false;
+
     SkinnedMeshRenderer render;
 
     [SerializeField]
@@ -111,6 +113,7 @@ public class Enemy : PoolLabel
         obj.TryGetComponent<UnitHUD>(out hud);
         hud.SetTarget(transform);
         OnDieEvent += enemyAI.Handle_OnDie;
+        isDie = false;
     }
 
     public void Init(Vector3 spawnPos)
@@ -147,7 +150,7 @@ public class Enemy : PoolLabel
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out var hit))
         {
-            if(hit.collider.gameObject == gameObject)
+            if(hit.collider.gameObject == gameObject && !isDie)
             {
                 render.material = outlineMat;
             }
@@ -175,6 +178,8 @@ public class Enemy : PoolLabel
         if (damageInfo.defender == gameObject)
         {
             Anims.PlayHit();
+            GameObject obj = ObjectPoolManager.Instance.pool[9+(int)damageInfo.damageType].PopObj();
+            obj.transform.position = damageInfo.hitPoint;
             Debug.Log($"{damageInfo.attacker.name}의 공격, {damageInfo.damage} 피해 입음");
             enemyStatus.curHP -= damageInfo.damage;
             EventBus.Publish(new HpChangeEvent(gameObject, enemyStatus.curHP, enemyStatus.MaxHP));
@@ -183,6 +188,7 @@ public class Enemy : PoolLabel
 
         if (enemyStatus.curHP <= 0f && enemyAI.currentState != enemyAI.dieState)
         {
+            isDie = true;
             OnDieEvent?.Invoke();            
         }
     }

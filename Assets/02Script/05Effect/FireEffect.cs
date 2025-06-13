@@ -68,7 +68,7 @@ public class FireEffect : PoolLabel
             if (angleToTarget <= angle / 2f)
             {
                 Debug.DrawLine(firePoint.position, col.bounds.center, Color.green); // µð¹ö±ë¿ë
-                Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage));
+                Damage_Event.TakeDamage(new DamageInfo(Owner, col.gameObject, damage, col.transform.position, DamageEffectType.Fire));
             }
             else
             {

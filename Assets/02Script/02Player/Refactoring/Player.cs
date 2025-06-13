@@ -38,10 +38,11 @@ public class PlayerStatus_Fixed
         MaxMp = playerData.maxMp;
         attackDamage = playerData.attackDamage;
         attackRagne = playerData.attackRagne;
-
+        runSpeed = playerData.runSpeed;
         CurHp = MaxHp;
         CurMp = MaxMp;
         Player = newPlayer.gameObject;
+        attackRate = playerData.attackRate;
     }
 
     public float moveSpeed;
@@ -51,6 +52,8 @@ public class PlayerStatus_Fixed
     private float maxHp;
     public float attackDamage;
     public GameObject Player;
+    public float runSpeed;
+    public float attackRate;
 
     public float MaxHp
     {
@@ -207,7 +210,7 @@ public class Player : ManagerBase
         skillManager.InitStatus(playerStatus);        
         playerFSM = new PlayerFSM(this);
         playerFSM.Init();
-        playerHitbox.InitStatus(playerStatus);
+        playerHitbox.InitStatus(playerStatus, anims);
     }
 
     public override void CustomUpdate()
@@ -232,6 +235,7 @@ public class Player : ManagerBase
         }
         #endregion
         playerStatus.RecoverMp(Time.deltaTime);
+        playerStatus.RecoverHp(Time.deltaTime);
     }
 
     public void PlayerDataSetting(PlayerData newData)

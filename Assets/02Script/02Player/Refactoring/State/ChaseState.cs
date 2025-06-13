@@ -51,7 +51,7 @@ public class ChaseState : StateBase
     public override void StateEnter()
     {
         isDone = false;
-        movement.StartMove(5f);
+        movement.StartMove(player.PlayerStatus.runSpeed);
         movement.isOnSkill = true;
     }
 

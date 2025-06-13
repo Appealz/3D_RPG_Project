@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum DamageEffectType
+{
+    Normal,    
+    Ice,
+    Fire,
+}
+
 /// <summary>
 /// 공격자, 피격자, 데미지
 /// </summary>
@@ -10,7 +17,9 @@ public struct DamageInfo
 {
     public GameObject attacker;
     public GameObject defender;
+    public Vector3 hitPoint;
     public float damage;
+    public DamageEffectType damageType;
 
     /// <summary>
     /// 공격자, 피격자, 데미지
@@ -18,11 +27,13 @@ public struct DamageInfo
     /// <param name="newAttacker"></param>
     /// <param name="newDefender"></param>
     /// <param name="newDamage"></param>
-    public DamageInfo(GameObject newAttacker, GameObject newDefender, float newDamage)
+    public DamageInfo(GameObject newAttacker, GameObject newDefender, float newDamage, Vector3 newHitPoint, DamageEffectType newEffect)
     {
         attacker = newAttacker;
         defender = newDefender;
         damage = newDamage;
+        hitPoint = newHitPoint;
+        damageType = newEffect;
     }
 }
 

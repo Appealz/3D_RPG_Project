@@ -41,7 +41,7 @@ public class PlayerAttackHandle : MonoBehaviour
     {
         attackRange = newStatus.attackRagne;
         attackDamage = newStatus.attackDamage;
-        attackRate = 1f;
+        attackRate = newStatus.attackRate;
         anims = newAnims;
     }
 

@@ -88,7 +88,7 @@ public class Q_SkillProj : PoolLabel
     {
         if (other.CompareTag("Enemy") && other.gameObject == target.gameObject)
         {
-            Damage_Event.TakeDamage(new DamageInfo(Owner, target.gameObject, damage));
+            Damage_Event.TakeDamage(new DamageInfo(Owner, target.gameObject, damage, target.transform.position, DamageEffectType.Ice));
             ReturnPool();
         }
     }

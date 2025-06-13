@@ -11,6 +11,7 @@ public class PlayerAnims : MonoBehaviour
     private int isWSkill;
     private int isESkill;
     private int isRSkill;
+    private int isHit;
 
     private void Awake()
     {
@@ -25,6 +26,7 @@ public class PlayerAnims : MonoBehaviour
         isWSkill = Animator.StringToHash("isW_Skill");
         isESkill = Animator.StringToHash("isE_Skill");
         isRSkill = Animator.StringToHash("isR_Skill");
+        isHit = Animator.StringToHash("isHit");
     }
 
     public void MoveAnims(bool onAnims)
@@ -57,6 +59,10 @@ public class PlayerAnims : MonoBehaviour
     public void RSkillAnims()
     {
         anims.SetTrigger(isRSkill);
+    }
+    public void HitAnims()
+    {
+        anims.SetTrigger(isHit);
     }
 
 }

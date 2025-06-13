@@ -70,7 +70,7 @@ public class EnemyAttackState : EnemyState
         {
             isAttacking = true;
             //Debug.Log("플레이어 공격");
-            Damage_Event.TakeDamage(new DamageInfo(Enemy.gameObject, Enemy.Target.gameObject, 5f));
+            Damage_Event.TakeDamage(new DamageInfo(Enemy.gameObject, Enemy.Target.gameObject, 5f, Enemy.Target.transform.forward, DamageEffectType.Normal));
             attackTime = Time.time + attackRate;
             //Debug.Log("애니메이션 시작");
             Enemy.Anims.PlayAttack();

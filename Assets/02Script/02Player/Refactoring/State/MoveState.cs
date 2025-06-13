@@ -11,7 +11,7 @@ public class MoveState : StateBase
 
     public override void StateEnter()
     {
-        movement.StartMove(4f);
+        movement.StartMove(player.PlayerStatus.moveSpeed);
         movement.isOnSkill = false;
         isDone = true;
     }
