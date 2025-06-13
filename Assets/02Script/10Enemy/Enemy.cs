@@ -67,6 +67,12 @@ public class Enemy : PoolLabel
     private float aggroTime;
     private float aggroDuration = 5f;
 
+    SkinnedMeshRenderer render;
+
+    [SerializeField]
+    Material originalMat;
+    [SerializeField]
+    Material outlineMat;
     #endregion
     private void Awake()
     {
@@ -92,7 +98,10 @@ public class Enemy : PoolLabel
         if(!TryGetComponent<EnemyAnimsController>(out animController))
         {
             Debug.Log("animController 참조 실패");
-        }            
+        }
+
+        render = GetComponentInChildren<SkinnedMeshRenderer>();
+        originalMat = render.material;    
     }
 
     private void OnEnable()
@@ -101,7 +110,7 @@ public class Enemy : PoolLabel
         GameObject obj = ObjectPoolManager.Instance.pool[6].PopObj();
         obj.TryGetComponent<UnitHUD>(out hud);
         hud.SetTarget(transform);
-        OnDieEvent += enemyAI.Handle_OnDie;    
+        OnDieEvent += enemyAI.Handle_OnDie;
     }
 
     public void Init(Vector3 spawnPos)
@@ -132,6 +141,19 @@ public class Enemy : PoolLabel
             if(Time.time > aggroTime)
             {
                 isProvoked = false;
+            }
+        }
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit))
+        {
+            if(hit.collider.gameObject == gameObject)
+            {
+                render.material = outlineMat;
+            }
+            else
+            {
+                render.material = originalMat;
             }
         }
     }

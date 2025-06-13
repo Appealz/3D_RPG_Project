@@ -11,6 +11,7 @@ public class HpGlobe : MonoBehaviour
     [SerializeField] private float minY = -200f;
     [SerializeField] private float maxY = 0;
 
+    [SerializeField]
     GameObject owner;
     private void Awake()
     {

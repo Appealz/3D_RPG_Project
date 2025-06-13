@@ -6,7 +6,7 @@ public class PlayerHUD : MonoBehaviour
     private GameObject owner;
 
     [SerializeField]
-    private PlayerBar bar;
+    private PlayerBar bar;   
     [SerializeField]
     private HpGlobe hpGlobe;
     [SerializeField]

@@ -1036,6 +1036,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: 2c5239e74de0c2e478db0dfcd084da35, type: 2}
   myType: 0
+  originalMat: {fileID: 0}
+  outlineMat: {fileID: 2100000, guid: 4e5c7c02aacd35244971ccdb3487f19d, type: 2}
 --- !u!114 &458652399240796913
 MonoBehaviour:
   m_ObjectHideFlags: 0

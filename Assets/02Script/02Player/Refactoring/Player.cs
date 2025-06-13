@@ -31,7 +31,7 @@ public struct HpChangeEvent
 
 public class PlayerStatus_Fixed
 {
-    public PlayerStatus_Fixed(PlayerData playerData)
+    public PlayerStatus_Fixed(PlayerData playerData, GameObject newPlayer)
     {
         moveSpeed = playerData.moveSpeed;
         MaxHp = playerData.maxHp;
@@ -40,7 +40,8 @@ public class PlayerStatus_Fixed
         attackRagne = playerData.attackRagne;
 
         CurHp = MaxHp;
-        CurMp = MaxMp;  
+        CurMp = MaxMp;
+        Player = newPlayer.gameObject;
     }
 
     public float moveSpeed;
@@ -235,7 +236,7 @@ public class Player : ManagerBase
 
     public void PlayerDataSetting(PlayerData newData)
     {
-        playerStatus = new PlayerStatus_Fixed(newData);
+        playerStatus = new PlayerStatus_Fixed(newData, gameObject);
     }
 
     public void SetTargetPos(Vector3 newTargetPosition)
