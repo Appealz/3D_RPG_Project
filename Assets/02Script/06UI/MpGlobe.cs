@@ -5,6 +5,7 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class MpGlobe : MonoBehaviour
 {
+    #region _Field_
     Image manaGlobe;
     TextMeshProUGUI mpText;
 
@@ -12,6 +13,7 @@ public class MpGlobe : MonoBehaviour
 
     [SerializeField] private float minY = -200f;
     [SerializeField] private float maxY = 0f;
+    #endregion
     private void Awake()
     {
         manaGlobe = GetComponent<Image>();
@@ -22,17 +24,14 @@ public class MpGlobe : MonoBehaviour
     {
         EventBus.Subscribe<MpChangeEvent>(OnChangeMp);
     }
-
     private void OnDisable()
     {
         EventBus.UnSubscribe<MpChangeEvent>(OnChangeMp);
     }
-
     public void SetTarget(GameObject newOnwer)
     {
         owner = newOnwer;
     }
-
     private void OnChangeMp(MpChangeEvent changeEvent)
     {
         float ratio = Mathf.Clamp01(changeEvent.CurrentMP / changeEvent.MaxMp);
@@ -52,3 +51,5 @@ public class MpGlobe : MonoBehaviour
         mpText.text = $"{Mathf.FloorToInt(changeEvent.CurrentMP)} / {100}";
     }
 }
+
+
